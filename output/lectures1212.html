@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-12-april-21">Lecture 12, October 10</h1>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="Position.java">Position.java</a></li>
+<li><a href="BinaryTree.java">BinaryTree.java</a></li>
+</ul>
+<h2 id="short-assignment-9">Short Assignment 7</h2>
+<p><a href="../../sa/sa7/sa7.html">Short Assignment 7</a> is due Monday.</p>
+<a name="managers"></a>
+<h2>Layout Managers</h2>
+<p>Demonstrate the GUI in PS-3.  Display the code of <a href="../../lab/lab3/provided/Editor.java"><code>Editor.java</code></a>.
+Note two things:<p>
+<ol>
+<li><code>JPanel</code> objects are used to organize buttons.  What is more, a <code>JPanel</code>
+  is used to hold the three button <code>JPanel</code>s. </li>
+<li><p>We have discussed the <code>FlowLayout</code> layout manager.  The GUI for PS-3 uses two 
+      additional managers: <code>GridLayout</code> and <code>BorderLayout</code>. The first of these has
+      two parameters: the number of rows and number of columns.  It lays components out on a grid of
+      this size.  It is used for the <code>JPanel</code> holding the
+      three button panels to get them to line up in a vertical column.</p>
+<p>A <code>BorderLayout</code> allows the user to put one thing at the top (NORTH), one at the bottom
+      (SOUTH), one on the right side (EAST),  one on the left side (WEST), and one in the middle (CENTER).
+      The CENTER will expand to occupy all space not used by the other four.  Here the <code>JPanel</code>
+      holding the three rows  of buttons goes in the NORTH and the canvas goes in the CENTER.</p>
+</li>
+</ol>
+<h2 id="rooted-trees">Rooted trees</h2>
+<p>We use <strong>rooted trees</strong> to represent hierarchical relations. Here is an example of a rooted tree:</p>
+<div class="figure">
+<img src="rooted-tree.png"/>
+</div>
+<p>A tree is built up from <strong>nodes</strong>. The node at the top of the tree is the <strong>root</strong>; in our example, the root is node 7. Each node has zero or more <strong>children</strong>, which are also nodes. For example, node 4 has two children, which are nodes 11 and 2. An <strong>edge</strong> connects a node with its child, for example the edge (4, 11). Nodes with no children are <strong>external nodes</strong> or <strong>leaves</strong> (such as nodes 9 and 10), and nodes with at least one child are called <strong>internal nodes</strong> (such as node 4). A child has exactly one <strong>parent</strong> (except for the root, which has no parent); for example, the parent of node 11 is node 4. Nodes with the same parent are <strong>siblings</strong>, such as nodes 11 and 2. A <strong>path</strong> in a tree is a sequence of unique nodes such that each node in the sequence has an edge to the nodes before and after it. In our example, one path consists of nodes 6, 8, 3, 7, 4. If there is a path from the root to node <span class="math"><em>y</em></span> such that node <span class="math"><em>x</em></span> appears on the path, then node <span class="math"><em>x</em></span> is an <strong>ancestor</strong> of node <span class="math"><em>y</em></span>, and node <span class="math"><em>y</em></span> is a <strong>descendant</strong> of node <span class="math"><em>x</em></span>. For example, node 3 is an ancestor of node 5, and node 5 is a descendant of node 3. A <strong>subtree rooted at a node</strong> consists of all descendents of that node, including the node itself. The subtree rooted at node 3 comprises nodes 3, 8, 6, 5, 9, 12, and 1.</p>
+<p>Here are some examples of relations that can be represented by trees:</p>
+<ul>
+<li>The Java inheritance hierarchy. Nodes represent classes and the children of a node are the direct subclasses. The root is <code>Object</code>.</li>
+<li>Organization charts. Nodes are divisions or groups within the organization and the children of a node are the subdivisions of the parent division.</li>
+<li>File systems on computers. Folders are nested within folders. Each folder can be represented by a node, and each folder or file within is a child. Individual files are the leaves.</li>
+<li>HTML documents. The nested structure of an HTML document gives rise to a rooted-tree representation, where the parent of a tag-delimited construct is the construct in which it's nested.</li>
+</ul>
+<p>The book gives additional examples. We will see more examples as the course progresses.</p>
+<p>The examples above have some cases where the order of children does not matter (the Java inheritance hierarchy, file systems, and organization charts). For an HTML document, however, the order does matter. In representing trees we end up imposing an order on children, whether it is important or arbitrary.</p>
+<h2 id="implementing-rooted-trees">Implementing rooted trees</h2>
+<p>We will not use the tree code from our textbook, but feel free to read it. The book uses a different approach from what we have seen so far. We built our linked lists from <code>Element</code> objects, where <code>Element</code> is an inner class. We access the elements directly from within <code>SentinelDLL</code> or <code>SLL</code> and access fields with code such as <code>current.next</code>. We provide no access to <code>Element</code> objects from outside of the class, however. Instead, we have a <code>current</code> instance variable built into the class, or we provide an iterator. Java does the same thing.</p>
+<p>In the textbook, they build up their lists, trees, graphs, etc. from <code>Position</code> objects. <code>Position</code> is an interface (in <a href="Position.java">Position.java</a>) with a single method: <code>element</code>. This method returns the data stored in the object. Their node classes for lists, trees, etc. implement the <code>Position</code> interface. They then let the user get a reference to one of these nodes via methods such as<code>root</code> in the <code>Tree</code> interface. Although <code>root</code> actually returns a reference to a <code>Node</code> object, its return type is <code>Position</code>.</p>
+<p>Therefore, you can do only two things with a <code>Position</code>:</p>
+<ul>
+<li>Call the method <code>element</code> on it to get the data saved within it.</li>
+<li>Pass it to methods of classes such as <code>LinkedBinaryTree</code>, which deal with positions. These methods will cast the <code>Position</code> to the correct type (after verifying that it is the correct type) and use it.</li>
+</ul>
+<p>We call <code>Position</code> an <strong>opaque type</strong>. You can pass it around and use it to mark where you are in a data structure, but you're not permitted to access anything within it. From a software engineering point of view, this is the way to go. 
+
+<p>This partially protects against the user calling methods on the <code>Position</code> object (although if the user knows that the <code>Position</code> is really a <code>LinkedTree</code> node he or she can cast it and call the functions).  However, this approach complicates the tree code and hides its basic simplicity.  Therefore we implemented our own tree code.  We do not implement code for general trees (although we could do so), but concentrate on the common special case of binary trees.</p>
+<h2 id="binary-trees">Binary trees</h2>
+<p>A <strong>binary tree</strong> is a rooted tree in which each node has zero, one, or two children. We designate each child as either a <strong>left child</strong> or a <strong>right child</strong>, even when it's an only child. Here are two different binary trees:</p>
+<div class="figure">
+<img src="binary-trees.png"/>
+</div>
+<p>They differ only in that node 5 is a left child in the tree on the left, and it's a right child in the tree on the right.</p>
+<p>Binary trees come up in a multitude of applications: decision trees, expression trees, code trees (such as in Huffman encoding, which you'll be doing in Lab Assignment 4), and binary search trees. We'll see binary search trees later in the course, but the idea is that we store a value in each node, called the <strong>key</strong>, such that for every node <span class="math"><em>x</em></span>, the keys in its <strong>left subtree</strong> (the subtree rooted at its left child) are less than or equal to the key in node <span class="math"><em>x</em></span>, and the keys in its <strong>right subtree</strong> (the subtree rooted at its right child) are greater than or equal to the key in node <span class="math"><em>x</em></span>. Here is a binary search tree, with keys appearing inside the nodes:</p>
+<div class="figure">
+<img src="binary-search-tree.png"/>
+</div>
+<p>Rather than having an inner class to represent the nodes and manipulating them via an outer class (as we did for linked lists), this time we make the tree nodes themselves more powerful and manipulate them from other classes. This code is in <a href="BinaryTree.java">BinaryTree.java</a>. The class <code>BinaryTree</code> has three instance variables:</p>
+<ul>
+<li><code>left</code> is a reference to the left child.</li>
+<li><code>right</code> is a reference to the right child.</li>
+<li><code>data</code> is the data stored in the node.</li>
+</ul>
+<p>The values of <code>left</code> or <code>right</code> are <code>null</code> if these children are absent. The book also keeps a reference to the parent node, which can be useful for certain applications.  We will explore this further in sa7.</p>
+<p>We access a binary tree through its root node. If we want to access a subtree, we access it through the root of the subtree. Thus, some of the methods in the <code>BinaryTree</code> class pertain to individual nodes, but we can always consider a node to be the root of a subtree.</p>
+<h3 id="methods-in-the-binarytree-class">Methods in the <code>BinaryTree</code> class</h3>
+<p>Here are the methods in the <code>BinaryTree</code> class. Although they are called on a <code>BinaryTree</code> object, many of them actually pertain to just the node at the root of a subtree, and that's what they're called on.</p>
+<ul>
+<li>A constructor that takes just the data as the lone parameter, setting <code>left</code> and <code>right</code> to <code>null</code>.</li>
+<li>A constructor that takes the data and references to the left and right children as parameters.</li>
+<li><code>isInternal</code> returns a boolean indicating whether the node is an internal node.</li>
+<li><code>isLeaf</code> returns a boolean indicating whether the node is a leaf.</li>
+<li><code>hasLeft</code> and <code>hasRight</code> return booleans indicating whether the node has left and right children, respectively.</li>
+<li><code>getLeft</code> and <code>getRight</code> are getter methods for the left and right children.</li>
+<li><code>setLeft</code> and <code>setRight</code> are setter methods for the left and right children.</li>
+<li><code>getValue</code> and <code>setValue</code> are getter and setter methods for the data in the node.</li>
+<li><code>size</code> returns the number of nodes in the subtree rooted at the node, including the node itself.</li>
+<li><code>height</code> gives the <strong>height</strong> of the node, which is the number of edges in a longest path from the node down to a leaf. For example, in the binary trees above, the node with key 2 has height 2, and the node with key 4 has height 0.</li>
+<li>The ubiquitous <code>equals</code> method determines whether two subtrees have exactly the same structure and the same data.</li>
+<li><code>fringe</code> returns an <code>ArrayList</code> containing the data in all the leaves of the subtree rooted at the node, from left to right across the leaves. It calls the private helper method <code>addToFringe</code>. For the binary trees above, <code>fringe</code> would return an <code>ArrayList</code> with the values 4, 6, 5.</li>
+<li><code>toString</code> returns a <code>String</code> that indents two spaces for each increase in the <strong>depth</strong> of a node: the number of edges in the path up to the root. If you turn your head sideways and look at the string returned by <code>toString</code>, you can see the structure of the binary tree. <code>toString</code> calls the private helper method <code>toStringHelper</code>.</li>
+<li><code>preorder</code>, <code>inorder</code>, and <code>postorder</code> return lists (using the Java interface <code>List</code>) containing the data in the nodes of the subtree rooted at the node, according to the three types of traversal orders that we'll see later in the course.</li>
+<li><code>reconstructTree</code> creates a binary tree, based on the results of preorder and inorder traversals of the tree. We'll see how this method works later in the course.</li>
+</ul>
+<p>You might have noticed that although the <code>BinaryTree</code> class includes a <code>height</code> method, it does not include a <code>depth</code> method. Think about why there is not enough information in a <code>BinaryTree</code> object, as defined, to write a <code>depth</code> method.</p>
+<p>Notice that several of the methods are recursive. For example, the <code>size</code> method. That's because we can characterize the size of a subtree recursively:</p>
+<blockquote>
+<p>The size of a subtree is 1 (for the root of the subtree), plus the size of its left subtree, plus the size of its right subtree. The size of an empty subtree is 0.</p>
+</blockquote>
+<p>The <code>size</code> and <code>height</code> methods use a special <em>ternary</em> operator <code>? :</code> in Java. (Ternary means that it takes three operands.) The first operand, appearing before the question mark, is a boolean expression. If the boolean expression evaluates to <code>true</code>, then the value of the operator is the second expression, between the question mark and the colon. Otherwise, the value of the operator is the third expression, which follows the colon. In the expression <code>hasLeft() ? left.size() : 0</code> in the <code>size</code> method, if the call <code>hasLeft()</code> returns <code>true</code>, the expression's value is the value returned by calling <code>left.size()</code>. Otherwise, <code>hasLeft()</code> returns <code>false</code>, and the expression's value is 0.</p>
+<p>Similarly, we can characterize the height of a node recursively:</p>
+<blockquote>
+<p>The height of a leaf is 0. The height of an internal node is 1 plus the maximum heights of its children.</p>
+</blockquote>
+<p>You might recall that the <code>equals</code> method must take a reference to <code>Object</code> as its parameter, no matter what class it appears in. Therefore, the first thing that <code>equals</code> does is make sure that <code>other</code> references a <code>BinaryTree</code> object. Generic types in Java are designed strangely, and although you would think that the first line should be</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">if</span> (other <span class="kw">instanceof</span> BinaryTree&lt;E&gt;) {</code></pre>
+<p>we have to put a question mark between the angle brackets instead. (I don't fully understand why, but it shows how difficult it is to design a programming language that is both easy to use and internally consistent.) After the <code>instanceof</code> check, we then cast <code>other</code> to a reference to <code>BinaryTree&lt;E&gt;</code>, this time using <code>&lt;E&gt;</code> and not <code>&lt;?&gt;</code>. The line <code>@SuppressWarnings("unchecked")</code> is another strange thing in Java; we could omit the line, but we'd get an annoying warning. Once we have cast the parameter, we have a complicated expression that checks for five requirements being met:</p>
+<ol style="list-style-type: decimal">
+<li>This node has a left child if and only if <code>other</code> does.</li>
+<li>This node has a right child if and only if <code>other</code> does.</li>
+<li>The data in this node and <code>other</code> are equal, according to the <code>equals</code> method on the generic type <code>E</code>.</li>
+<li>If both nodes have left subtrees, then their left subtrees are equal.</li>
+<li>If both nodes have right subtrees, then their right subtrees are equal.</li>
+</ol>
+<p>Notice how we rely on the <code>||</code> operator short-circuiting in the latter two tests. If <code>hasLeft</code> returns <code>false</code>, then do <em>not</em> call <code>left.equals</code> to check the left subtree, and ditto for the right subtree.</p>
+<p>In the <code>toStringHelper</code> method, what's passed in is a string containing some number of spaces. These spaces precede each node in the subtree rooted at <code>this</code>. Each recursive call to <code>toStringHelper</code> increases the number of spaces by two. Although we usually think of processing the left subtree before the right subtree, in <code>toStringHelper</code>, we do the opposite so that when you look at the output with your head tipped to the left it looks like the structure of the binary tree. The <code>toString</code> method just gets things started off with an empty string.</p>
+<p>We could have written the <code>toStringHelper</code> method in one line, using the ternary operator:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">return</span> (<span class="fu">hasRight</span>() ? right.<span class="fu">toStringHelper</span>(indent + <span class="st">"  "</span>) : <span class="st">""</span>)
+    + (indent + data + <span class="st">"</span><span class="ch">\n</span><span class="st">"</span>)
+    + (<span class="fu">hasLeft</span>() ? left.<span class="fu">toStringHelper</span>(indent + <span class="st">"  "</span>) : <span class="st">""</span>);</code></pre>
+<p>In the <code>fringe</code> method, we create an empty <code>ArrayList</code> and pass it to <code>addToFringe</code>. This <code>ArrayList</code> has data added to it if the node is a leaf, and it's passed to the left and right subtrees otherwise. We could have done something like we did for <code>toString</code>, but that would require appending two <code>ArrayList</code> objects.</p>
+<p>The <code>BinaryTree</code> class has a <code>main</code> method as a driver. It starts by creating as <code>tree</code> this tree:</p>
+<div class="figure">
+<img src="binary-tree.png"/>
+</div>
+<p>Then it exercises the <code>size</code>, <code>height</code>, and <code>fringe</code> methods. Next, it traverses the tree using preorder, inorder, and postorder traversals (again, we'll see what these are later on). With the preorder and inorder traversals, it creates a copy of the tree in <code>tree1</code> and exercises <code>equals</code> method, which returns <code>true</code>. After making a change to the data in the right child of the root of <code>tree1</code>, it runs the <code>equals</code> method again, this time getting back <code>false</code>. Finally, it makes another copy of <code>tree</code> in <code>tree2</code>, changes the left child of the root in <code>tree2</code> to have no left child, and runs the <code>equals</code> method again, once again getting back <code>false</code>.</p>
+</p></p></p></body>
+</html>

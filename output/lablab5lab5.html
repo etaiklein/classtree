@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lab-assignment-3-the-kevin-bacon-game-due-wednesday-may-14">Lab Assignment 5: The Kevin Bacon Game<br/>Due: Wednesday, November 5</h1>
+<p>In this assignment, you will build an undirected graph whose vertices are movie actors and edges indicate that the actors appeared in the same film. You will then build a breadth-first search (BFS) tree as a directed graph and answer queries about paths in the BFS tree from actors to Kevin Bacon—their "Kevin Bacon numbers." You will get practice with reading files and doing some simple parsing of them, building graphs, running BFS, and traversing paths in a directed graph.</p>
+<h2 id="organizational-notes">Organizational notes</h2>
+<p><strong>As in the first two lab assignments, you are permitted to work with one other student currently in the class.</strong> You do not have to work with someone else, but you have the option of doing so. Your partner for this assignment does not have to be the same partner you worked with previously. If you choose to work with a partner, you will both get the same grade on the assignment. If you would like to work with a partner and cannot find one, let me know and I'll try to match you up with someone else who is seeking a partner.</p>
+<p>There will be no penalty, in terms of points, for working together on this assignment. Please make sure that <strong>both of you submit the same exact code via Canvas</strong>. If you have a partner, state your partner's name in the comments section of Canvas.</p>
+<p>You should weigh whether you will get more out of this assignment working alone or with someone else. The choice is up to you.</p>
+<p>If you choose to work with someone else, pick your partner carefully. Make sure that there are times that you are both available to work together. If you frequent the lab and you notice someone else who often is there when you are, that person might be a good choice as your partner.</p>
+<h2 id="the-kevin-bacon-game">The Kevin Bacon game</h2>
+<p>In the Kevin Bacon game, you give an actor and try to find the shortest sequence of actors between the given actor and Kevin Bacon, where you list actors consecutively if they appeared in a movie together. For example, the silent film star Renée Adorée was in <em>The Blackbird</em> (1926) with Doris Lloyd, who was in <em>Keep 'Em Flying</em> (1941) with Carol Bruce, who was in <em>Planes, Trains, and Automobiles</em> (1987) with Kevin Bacon. Since that is the shortest sequence of actors between Renée Adorée and Kevin Bacon, we say that Renée Adorée's <strong>Kevin Bacon number</strong> is 3.</p>
+<h2 id="input">Input</h2>
+<p>The input to the Kevin Bacon game comes from three files, which are (unfortunately) outdated and not at all complete. They were downloaded from http://www.cs.luther.edu/~bmiller/CS151/Spring05/index.html.  (The <a href="http://oracleofbacon.org">Oracle of Bacon</a> site maintains a much more up-to-date database internally. They claim to scour the <a href="http://www.imdb.com">Internet Movie Database</a> every couple of weeks. The example above for Renée Adorée comes from the <a href="http://oracleofbacon.org">Oracle of Bacon</a>,  However, their files contain 2.9 million actors and 1.9 million movies and TV shows, which is a bit excessive for a lab assignment!</p>
+<ul>
+<li><p><a href="provided/actors.txt">actors.txt</a>: This file contains one line per actor. Each line consists of an integer ID, a pipe symbol (<code>|</code>), and an actor's name, with no spaces around the pipe. The file contains 9235 lines.</p>
+<p>For testing, we have a much smaller version of this file in <a href="provided/actorsTest.txt">actorsTest.txt</a>, consisting of only seven lines. Here is what <a href="provided/actorsTest.txt">actorsTest.txt</a> looks like:</p>
+<pre>
+1|Kevin Bacon
+3|Tom Hanks
+841|Meg Ryan
+3823|Parker Posey
+3590|Lisa Kudrow
+2976|W.C. Fields
+1534|George Burns</pre>
+</li>
+<li><p><a href="provided/movies.txt">movies.txt</a>: This file contains one line per movie. Each line consists of an integer ID, a pipe symbol, and the name of a movie. The file contains 7067 lines. The smaller version for testing is <a href="provided/moviesTest.txt">moviesTest.txt</a>:</p>
+<pre>
+150|Apollo 13 (1995)
+539|Sleepless in Seattle (1993)
+6885|In the Cut (2003)
+2424|You've Got Mail (1998)
+1160|Six of a Kind (1934)
+1875|Clockwatchers (1997)</pre>
+</li>
+<li><p><a href="provided/movie-actors.txt">movie-actors.txt</a>: This file contains one line for each actor's appearance in a movie. Each line consists of a movie ID, a pipe symbol, and an actor ID, indicating that the actor appeared in the movie. The smaller version for testing is <a href="provided/movie-actorsTest.txt">movie-actorsTest.txt</a>:</p>
+<pre>
+150|1
+150|3
+6885|1
+6885|841
+539|3
+539|841
+2424|3
+2424|3823
+2424|841
+1875|3823
+1875|3590
+1160|2976
+1160|1534</pre>
+<p>For example, the first line indicates that actor 1 (Kevin Bacon) appeared in movie 150 (Apollo 13 (1995)).</p></li>
+</ul>
+<p>Here is the undirected graph that the test files give:</p>
+<div class="figure">
+<img src="test-graph.png"/>
+</div>
+<p>Vertices are labeled by actor names, and edges are labeled by movie names (I've omitted the years). In this small graph, Tom Hanks and Meg Ryan have Kevin Bacon numbers of 1, Parker Posey's Kevin Bacon number is 2, and Lisa Kudrow's Kevin Bacon number is 3. W.C. Fields and George Burns have infinite Kevin Bacon numbers, since there is no path between them and Kevin Bacon. A query for Lisa Kudrow could produce the following output:</p>
+<pre><code>Enter the name of an actor: Lisa Kudrow
+Lisa Kudrow's Kevin Bacon number is 3.
+Lisa Kudrow appeared in Clockwatchers (1997) with Parker Posey.
+Parker Posey appeared in You've Got Mail (1998) with Tom Hanks.
+Tom Hanks appeared in Apollo 13 (1995) with Kevin Bacon.</code></pre>
+<p>In fact, there are two paths with three edges between Lisa Kudrow and Kevin Bacon. Instead of going through Tom Hanks, the path could have gone through Meg Ryan. That's OK, because we don't need <em>all</em> the paths with fewest edges to Kevin Bacon; we just need one of them.</p>
+<p>A piece of advice about processing the lines of the input files. For each line of each file, you will need to find the string to the left of the pipe symbol and the string to the right of the pipe symbol. The <code>String</code> method <code>indexOf</code> returns the index of a character within a string. Once you know where the pipe symbol is within a line, you can use the <code>String</code> method <code>substring</code> to extract the strings on either side of the pipe symbol. As usual, you can read about these methods in the <a href="http://docs.oracle.com/javase/7/docs/api/">Java documentation</a>.</p>
+<h2 id="forming-the-bacon-graph">Forming the Bacon graph</h2>
+<p>From the three input files, you will need to form an undirected graph, which we call the <strong>Bacon graph</strong> (though there's nothing special about Kevin Bacon's place in the graph). It should be like the one above for the test files.</p>
+<p>If you look carefully at the test files, you'll see something interesting. In the figure, the edge between Tom Hanks (ID 1) and Meg Ryan (ID 841) is labeled with the movie <em>Sleepless in Seattle</em> (ID 539). But could also have been labeled it with the movie <em>You've Got Mail</em> (ID 2424). Put another way, we could have had two edges between Tom Hanks and Meg Ryan, since they made both of those rom-coms together. When you form the graph, you will call a method <code>insertEdge</code>, which throws an <code>IllegalArgumentException</code> if the graph already contains an edge between the two vertices given in the call. <em>You must catch this exception and ignore it.</em> The extra edge won't be added to the graph, but you don't want the exception to crash your program. So catch it and ignore it.</p>
+<p>Don't go defining your own classes for graphs. Use <code>NamedAdjacencyMapGraph</code>, which you wrote in sa10.  (You may used the sample solution to sa10 instead of your code if you prefer.) This class takes generic types <code>V</code> and <code>E</code>. <code>V</code> is the type of the information stored in each vertex; you'll want it to be <code>String</code> because it's an actor's name. <code>E</code> is the type of information stored in each edge (in addition to the vertices on which it is incident); you'll want it to be <code>String</code> again, this time because it's the title of a movie. The constructors the classe takes a single parameter, a boolean, indicating whether the graph should be directed (<code>true</code>) or undirected (<code>false</code>).</p>
+<p>The <code>main</code> program given in sa10 for testing your <code>NamedAdjacencyMapGraph</code> methods gives examples of how to create a graph, add vertices and edges, iterate through incident edges, and catch exceptions.  You might want to look at it.</p>
+<p>You may find it useful to create maps for mapping IDs to actor names and IDs to movie names. You can also use a map to figure out which actors appeared in each movie, and can use that information to add the appropriate edges to the graph.  I suggest that you make, for each movie, some sort of ordered set of actors in the movie. For example, you could make an <code>ArrayList</code> of actors for each movie. As you process the <a href="provided/movie-actors.txt">movie-actors.txt</a> file, add the actor in each line to the movie in that line. When you're done reading the file, you have, for each movie, an <code>ArrayList</code> of all the actors in that movie. Once you read the entire file, you're ready to add edges to the Bacon graph. For each movie, go through the <code>ArrayList</code> of actors in that movie. For each actor <span class="math"><em>x</em></span> in the <code>ArrayList</code>, go through all the other actors that appear <em>after</em> him or her in the <code>ArrayList</code> and add an edge between <span class="math"><em>x</em></span> and the other actor. If a movie has <span class="math"><em>k</em></span> actors, then you'll add <span class="math"><em>k</em> − 1</span> edges between the first actor and all those who follow, <span class="math"><em>k</em> − 2</span> edges between the second actor and all those who follow, and so on, until the next-to-last actor, who will have an edge to only the last actor in the <code>ArrayList</code>. The total number of edges added will be <span class="math">(<em>k</em> − 1) + (<em>k</em> − 2) + (<em>k</em> − 3) + ⋯ + 2 + 1 + 0</span>, which equals <span class="math"><em>k</em>(<em>k</em> − 1)/2</span>. (You don't have to use an <code>ArrayList</code>. It's just a suggestion.)</p>
+<h2 id="running-a-breadth-first-search">Running a breadth-first search</h2>
+<p>Once the Bacon graph is formed, you'll need to run BFS from a root vertex (the Kevin Bacon vertex). I have covered the concept of BFS in lecture, but it's up to you to implement it. I suggest that you store the BFS tree in a separate graph, and that you make it be a directed graph. Edges go toward the root, so that you can find a path in the BFS tree by following directed edges from a vertex to the root. As with the Bacon graph, you should use either a <code>NamedAdjacencyMapGraph</code>.</p>
+<p>You will need a queue for your BFS. Any sort of linked list will do. You can use the <code>SentinelDLL</code> class that we've seen, or you can use a linked-list class from the Java library.</p>
+<p>Do you need to record the distance from the root for each vertex? That is, do you need to record Kevin Bacon numbers? I'll leave that decision up to you. You will need to traverse the path from the vertex for a given actor to the root when producing output, and you can determine the length of the path at that time. Or you can store distances as you construct the BFS tree. You might find it convenient to store distances in a <code>Map</code> whose keys are either actor names or <code>Vertex</code> objects.</p>
+<h2 id="traversing-a-path-from-an-actor-to-the-root">Traversing a path from an actor to the root</h2>
+<p>You don't need to compute the BFS tree upon each actor query, since you're using the same BFS tree each time. What you do need to do anew for each query is construct a path from the given actor to the root (Kevin Bacon). As mentioned before, you can just follow directed edges until you get to the root.</p>
+<p>In your directed BFS tree, each vertex has an most one edge leaving it. How do you find that one edge? You can create an iterator for that vertex's outgoing edges (the <code>outgoingEdges</code> method of <code>AdjacencyMapGraph</code> returns such an iterator), and then you can call <code>next</code> once on that iterator. It will return the one edge that leaves the vertex. The <code>opposite</code> method will tell you the next vertex on the page. You can then fire up another iterator on that next vertex to find <em>its</em> leaving edge, and so on, until you arrive at the root. So you would keep creating iterators and running each one's <code>next</code> method one time before going on to the next iterator. One way to know when to stop is that the root of the BFS tree has <em>no</em> leaving edges, and so if you call <code>hasNext</code> after creating an iterator but before calling <code>next</code>, and if <code>hasNext</code> returns <code>false</code>, you're at the root.</p>
+<p>You can print out edges as you find them, or you can append them to a list and then print out the edges in the list. It's up to you. (If you make a list, then you can find the length of the path by just asking for the length of the list.)</p>
+<p>If there is no path from the actor to the root, your program should say so. And if the actor is not even in the <a href="provided/actors.txt">actors.txt</a> file, your program should say that, too. For example:</p>
+<pre><code>Enter the name of an actor: Art Clokey
+Art Clokey's Kevin Bacon number is infinite.
+
+Enter the name of an actor: Moe Howard
+Moe Howard is not in our database.</code></pre>
+<h2 id="extra-credit-ideas">Extra credit ideas</h2>
+<p>A couple of extra-credit ideas are implemented in the sample solution.</p>
+<h3 id="other-roots">Other roots</h3>
+<p>Why be limited to the Kevin Bacon game? Why not be able to play the Tom Hanks game, for example? The sample solution provides an option where if the first character typed into the console is a question mark, then the rest of the line is taken as the name of an actor who becomes the root. For example:</p>
+<pre><code>To quit the program, type return in answer to a question.
+To change the root to another actor, start the line with a question mark.
+To see actors with a specific number, type the number.
+Enter the name of an actor: Parker Posey
+Parker Posey's Kevin Bacon number is 2.
+Parker Posey appeared in You've Got Mail (1998) with Meg Ryan.
+Meg Ryan appeared in In the Cut (2003) with Kevin Bacon.
+
+Enter the name of an actor: ?Tom Hanks
+Now playing the Tom Hanks game.
+
+Enter the name of an actor: John Belushi
+John Belushi's Tom Hanks number is 3.
+John Belushi appeared in Neighbors (1981) with Dan Aykroyd.
+Dan Aykroyd appeared in Great Outdoors, The (1988) with John Candy.
+John Candy appeared in Splash (1984) with Tom Hanks.</code></pre>
+<p>Of course, when you switch to a new root, you <em>do</em> have to compute a whole new BFS tree.</p>
+<h3 id="all-actors-with-a-specific-number">All actors with a specific number</h3>
+<p>The sample solution also provides an option where, if the first character typed into the console is a digit, then the entire line is converted to an integer, and  <em>all</em> actors whose distance from the root is given by that integer are listed. Continuing the previous example:</p>
+<pre><code>Enter the name of an actor: 7
+Actors with a Tom Hanks number of 7:
+Gordon Harker
+Randle Ayrton
+Jobyna Ralston
+Jameson Thomas
+Richard Arlen
+Clara Bow
+Malcolm Keen
+Gibb McLaughlin
+Anny Ondra
+
+Enter the name of an actor: 11
+Actors with a Tom Hanks number of 11:
+No actors have a Tom Hanks number of 11.</code></pre>
+<p>This option was implemented by making a <code>Map</code> that maps actor names to their distance from the root, and filling in entries the BFS tree is built.</p>
+<h3 id="other-extra-credit-ideas-that-i-have-not-implemented">Other extra-credit ideas (not implemented in the sample solution)</h3>
+<p>It's so easy to misspell an actor's name or to just use the wrong form of the name. Perhaps you type in <em>Timothy Allen</em> instead of <em>Tim Allen</em> or <em>Kate Blanchett</em> instead of <em>Cate Blanchett</em>. Devise some sort of scheme for finding "near matches" and reporting near matches to the name entered, so that the user can re-enter the correct form of the name.</p>
+<p>Or come up with some interesting statistics. What is the average Kevin Bacon number among actors with finite Kevin Bacon numbers? The median? What pair of actors has the longest path between them? (The length of a longest path is called the <strong>diameter</strong> of the graph.) Which actor has the shortest longest finite path? (In other words, from which vertex do you minimize the maximum finite path length?)</p>
+<h2 id="how-to-submit-your-work">How to submit your work</h2>
+<p>For the basic assignment, submit everything in Canvas. <em>Do not include net.datastructures</em>; we already have it. You also do not need to include NamedAdjacencyMapGraph.java, unless you have made changes to it (which you will of course clearly indicate, if you have made changes). <strong>Submit the basic part of the assignment on Canvas in the Lab Assignment 5 column.</strong></p>
+<p>If you do extra credit, submit the files needed to run your extra credit submission; if some files are shared submit them twice. Submit the basic part of the assignment on Canvas in the Lab Assignment 5 column, and extra credit in the Lab Assignment 5 Extra Credit column. We ask for your extra credit to be submitted separately so that if it does not work correctly, we can still grade the basic assignment. Again, do not submit net.datastructures or NamedAdjacencyMapGraph.java (unless you have made changes to it).</p>
+<p>Along with your code, include output from test runs.  As well as running the program, also print out the graph generated by BFS on the small data set, so that we can see that your BFS it is working correctly. </p>
+<h2 id="grading">Grading</h2>
+<p>Your section leader will run your program and will grade this assignment looking for the following things:</p>
+<p>Total of 130 points</p>
+<h3>Correctness, Elegance, and Efficiency (85 points)</h3>
+<table class="rubric">
+<tr><th>20</th><td>BFS works correctly</td></tr></table></body></html>
+<tr><th>10</th><td>Reads data files</td></tr>
+<tr><th>20</th><td>Creates the graph</td></tr>
+<tr><th>15</th><td>Interactive interface with the user (read names, print results)</td></tr>
+<tr><th>15</th><td>Traces the path from an actor back to Kevin Bacon</td></tr>
+<tr><th>5</th><td>Handles boundary cases correctly.</td></tr>
+
+<h3>Structure (20 points)</h3>
+<table class="rubric">
+<tr><th>10</th><td>Good decomposition into objects and methods.</td></tr>
+<tr><th>5</th><td>Proper use of instance and local variables</td></tr>
+<tr><th>2</th><td>Instance variables are private</td></tr>
+<tr><th>3</th><td>Proper use of parameters</td></tr>
+</table>
+<h3>Style (15 points)</h3>
+<table class="rubric">
+<tr><th>5</th><td>Comments for classes</td></tr>
+<tr><th>5</th><td>Comments for methods (purpose, parameters, what is returned) in
+  JavaDoc form.</td></tr>
+<tr><th>3</th><td>Good names for methods, variables, parameters</td></tr>
+<tr><th>1</th><td>Layout (blank lines, indentation, no line wraps, etc.)</td></tr>
+<tr><th>1</th><td>Other unspecified style issues</td></tr>
+</table>
+<h3>Testing (10 points)</h3>
+<table class="rubric">
+<tr><th>4</th><td>Output of BFS graph for small data set.</td></tr>
+<tr><th>6</th><td>Demonstrate that your code works, including boundary cases (infinite Bacon number, not found in database, etc.)</td></tr>
+</table>
+
+<h3>Extra Credit Options:</h3>
+<ul>
+<li>Different roots: 10 points</li>
+<li>All actors with a specific number: 10 points</li>
+<li>Finding near matches to misentered names: up to 30 points</li>
+<li>Interesting statistics: up to 20 points</li>
+</ul>
+
+

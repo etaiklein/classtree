@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-21-may-14">Lecture 22, November 3</h1>
+<h2 id="lab-assignment-4">Lab Assignment 5</h2>
+<p><a href="../../lab/lab5/lab5.html">Lab Assignment 5</a> is due Wednesday, November 5.</p>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="Chips.java">Chips.java</a></li>
+<li><a href="Game.java">Game.java</a></li>
+<li><a href="Player.java">Player.java</a></li>
+<li><a href="HumanPlayer.java">HumanPlayer.java</a></li>
+<li><a href="ComputerPlayer.java">ComputerPlayer.java</a></li>
+</ul>
+<p>Finish up the maze program from last lecture.</p>
+<h2 id="playing-games-of-strategy-on-the-computer">Playing games of strategy on the computer</h2>
+<p>There are three basic approaches for programming strategy games such as Nim, Chips, chess, and checkers. These games are called "games of perfect information" because both players know everything about the state of the game (unlike poker, bridge, and other card games, where you know your cards but not your opponent's). They also have no random or chance elements like backgammon or Monopoly, where rolls of the dice play a part in determining outcomes.</p>
+<h3 id="a-simple-strategy">A simple strategy</h3>
+<p>The first step is to come up with a <strong>strategy</strong>: a set of rules that tells you how to decide on your next move. For some games, there is a simple strategy that will allow you to win if a win is possible.</p>
+<p>One such game is called Nim, where you start out with <span class="math"><em>n</em></span> sticks in a pile and two players. In each turn, a player is allowed to take between 1 and <span class="math"><em>k</em></span> sticks. The player who takes the last stick wins. This game has a simple strategy based on the quantity <span class="math"><em>k</em> + 1</span>. If <span class="math"><em>n</em></span> is a multiple of <span class="math"><em>k</em> + 1</span>, player 2 can always win. Think of pairs of turns, with player 1 and then player 2 taking sticks in each pair of turns. In each pair of turns, if player 1 takes <span class="math"><em>m</em></span> sticks, then player 2 takes <span class="math"><em>k</em> + 1 − <em>m</em></span> sticks to get to the next smaller multiple of <span class="math"><em>k</em> + 1</span>. Thus, when we get down to <span class="math"><em>k</em> + 1</span> sticks, after player 1 takes <span class="math"><em>m</em></span> sticks, player 2 takes <span class="math"><em>k</em> + 1 − <em>m</em></span> sticks, emptying the pile, and winning.</p>
+<p>What if <span class="math"><em>n</em></span> is not a multiple of <span class="math"><em>k</em> + 1</span>? Then the shoe goes on the other foot. Player 1 can take enough sticks to leave a multiple of <span class="math"><em>k</em> + 1</span> sticks in the pile. Player 1 now follows the player 2 strategy described above. In this case, player 1 can always win.</p>
+<p>Games that have a simple strategy are not very interesting to play. Fortunately there are many interesting games, such as chess, where no such simple strategy is known.</p>
+<h3 id="game-tree-search">Game tree search</h3>
+<p>The second approach is <strong>game tree search</strong>, which is the classic approach used for playing checkers, chess, kalah, Connect 4, and similar board games. It tries all moves for player 1, all responses for player 2, all third moves for player 1, and so on, building up a game tree.</p>
+<p>Unfortunately, the game tree search approach is hopeless for Go and other games with huge branching factors. (Go has 361 possible first moves, 360 replies to each of those, etc.) It also does not deal well with games that incorporate randomness, such as bridge or backgammon.</p>
+<h3 id="monte-carlo-simulation">Monte Carlo simulation</h3>
+<p>The third approach is <strong>Monte Carlo simulation</strong>. To decide what move to make, simulate thousands of random games that start from the current position, compute for each possible move the percentage of the games that started with that move and that ended up as wins. Choose the move that had the best winning percentage. This seems like a stupid approach, but if enough games are played, it works reasonably well.</p>
+<p>There is a more sophisticated method, called <strong>Monte-Carlo tree search</strong>, that combines the two approaches. The strongest Go and bridge playing programs use this approach. <a href="http://sander.landofsand.com/publications/AIIDE08_Chaslot.pdf">This paper</a> gives a two-page overview of the method, if you'd like to know more.  It is an area of current research.</p>
+<p>This approach can easily deal with random events such as die rolls or with imperfect information such as hidden cards. For random events, it simply simulates them as they arise in the game. For hidden information, it generates a random layout at the start (e.g., a random deal for bridge) and then simulates the game on that layout.</p>
+<h2 id="game-tree-search-and-chips">Game tree search and Chips</h2>
+<p>In our old introductory course, CS 5, we asked students to write a referee program for a variant of Nim called Chips. The game starts with a pile of <span class="math"><em>n</em></span> poker chips and two players. There are several versions. In one, player 1 takes between 1 and <span class="math"><em>n</em> − 1</span> chips. The two players take turns, and for each subsequent turn, the player can take between 1 and twice the number of chips that the player's opponent took on the previous turn. The winner is the player who takes the last chip, just as in Nim. If there is an easy strategy for playing this game, we don't know it. This makes it a more interesting game, and a candidate for game tree search.</p>
+<p>The first step conceptually is to create the "game tree" of all possible games from the given position. The diagram below shows the game tree for Chips starting with 4 chips in the pile. On the first move it is possible to take 3, 2, or 1 chips. Each of these leads to a different game state. If you take 3 chips, then there is only 1 chip left, and so your opponent must take it. If you take 2 chips, then there are 2 chips left, and your opponent can choose to take 1 or 2 chips. If you take 1 chip, then there are 3 chips left, and by the rules of Chips your opponent can take 1 or 2 of them (at most double what you took last move). It is tedious, but in principle you could draw the entire game tree for any game of perfect information.</p>
+<div class="figure">
+<img src="gameTree.GIF"/>
+</div>
+<p>Here, the number in each node represents the number of chips untaken, and the number on each edge represents the number of chips taken in a move. The root is the initial game state. Nodes at odd depths represent outcomes of moves by player 1, and nodes at even depths represent outcomes of moves by player 2.</p>
+<p>Once the game tree is drawn, it is necessary to <strong>evaluate</strong> it. At <strong>terminal</strong> nodes, the game is over. In Chips, terminal nodes have no chips left in the pile. In that case, you know the winner. It is traditional to label the game tree from the point of view of the player making the first move. Therefore, a node where player 1 wins is labeled <em>W</em>, and a node where player 1 loses is labeled <em>L</em>. A terminal node at an odd depth is labeled <em>W</em>, since it means that player 1 took the last chip, and a terminal node at an even depth is labeled <em>L</em>, since it means that player 2 took the last chip.</p>
+<p>Once the terminal nodes are labeled, we can then evaluate the internal nodes, starting from the bottom of the tree and working to the root (the top node). A node at an even depth (with the root having depth 0) is a move that player 1 can make. Therefore, if either of its children are labeled <em>W</em>, then we label that node with a <em>W</em>, since there is a winning strategy for player 1. Otherwise, if all children of a node at even depth are labeled <em>L</em>, we label the node with an <em>L</em>, because player 1 has no winning strategy. We reverse the situation for nodes at odd depth, which are moves that player 2 can make. Here, if any child is labeled <em>L</em>, we label the odd-depth node with an <em>L</em>, since player 2 has a winning strategy. Otherwise, we label the odd-depth node with a <em>W</em>, since player 2 has no winning strategy.</p>
+<p>In this manner, we can label all nodes in the game tree with a <em>W</em> or an <em>L</em>. If the root node is labeled with a <em>W</em>, then player 1 can win and should chose any move that leads to a node labeled <em>W</em>. If the root is labeled <em>L</em>, then player 1 cannot win against the best play by player 2. All player 1 can do is choose a move at random or a move that will prolong the game as much as possible—assuming that player 2 plays optimally.</p>
+<p>This approach is implemented in the files <a href="Chips.java">Chips.java</a>, <a href="Game.java">Game.java</a>, <a href="Player.java">Player.java</a>, <a href="HumanPlayer.java">HumanPlayer.java</a>, and <a href="ComputerPlayer.java">ComputerPlayer.java</a>.</p>
+<p>The <code>Game</code> class records the state of the game. It keeps track of the size of the pile, the maximum move that can be made by the next player, and two <code>Player</code> objects. It also keeps track of which player should move next. It provides methods to make a move, test if the game is over, determine the winner, copy itself, and return various pieces of information about the state of the game.</p>
+<p>Note that <code>Player</code> is an abstract class, and it keeps track of the player name and the number of chips that a player has taken. It provides methods to get and update this information. It also requires non-abstract classes that extend it to implement methods to make a copy of this player object and to get the move to make.</p>
+<p>We choose to make each player either a <code>HumanPlayer</code> (which asks the user for a move) or a <code>ComputerPlayer</code> (which picks moves using game tree search). This is why I put the <code>getMove</code> method in the <code>Player</code> rather than elsewhere. Each player can use a different method of picking a move.</p>
+<p>The <code>Chips</code> class supplies the high-level control of the game. It creates the players and creates the initial <code>Game</code> object. It then enters a loop that continues until the game is over. In this loop, it describes the state of the game, gets a move from the player whose turn it is to move, and reports the move. When the game is over, it prints the final state and the winner.</p>
+<p>The rules for this game are a bit different from the one described above. The initial number of chips must be an odd number, at least 3. Player 1 can take between 1 and <span class="math"><em>n</em>/2</span> of the chips, and the winner is the one who takes an even number of chips. However, this program can be changed to last wins by changing a few things in the <code>Game</code> class. Specifically:</p>
+<ul>
+<li>Change the initial value of <code>maxMove</code> from <code>chips/2</code> to <code>chips-1</code> in the constructor.</li>
+<li>Change the method <code>getWinner</code> to use the new rule for deciding the winner.</li>
+<li>Change the <code>inputInitChips</code> method to not require the number of chips to be odd.</li>
+</ul>
+<p>Everything else is unchanged.</p>
+<p>The game tree search is done in the recursive function <code>pickBestMove</code>. This deceptively simple function is as follows:</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">private</span> <span class="dt">static</span> <span class="dt">int</span> <span class="fu">pickBestMove</span>(Game state) {
+    <span class="co">// Try moves from maximum first looking for a winning move</span>
+    <span class="kw">for</span> (<span class="dt">int</span> move = state.<span class="fu">getMaxMove</span>(); move &gt; <span class="dv">0</span>; move--) {
+      <span class="co">// Don't want to change current state, so make copy</span>
+      Game newState = state.<span class="fu">makeCopy</span>();
+          
+      newState.<span class="fu">makeMove</span>(move);  <span class="co">// Make the move on the copy made</span>
+    
+      <span class="kw">if</span> (newState.<span class="fu">isOver</span>())  {
+        <span class="kw">if</span> (newState.<span class="fu">getWinner</span>() == newState.<span class="fu">getOtherPlayer</span>())
+          <span class="kw">return</span> move;    <span class="co">// Winner was player who just made move</span>
+      }
+      <span class="kw">else</span> <span class="kw">if</span> (<span class="fu">pickBestMove</span>(newState) == <span class="dv">0</span>)  <span class="co">// No winning move for other player?</span>
+        <span class="kw">return</span> move;            <span class="co">// If other player can't win, then I can</span>
+    }
+    
+    <span class="kw">return</span> <span class="dv">0</span>;                   <span class="co">// No winning move found, so current player loses</span>
+  }</code></pre>
+<p>This function tries all legal moves, from <code>maxMove</code> down to 1. For each move, the function first <em>copies</em> the state of the game into <code>newState</code> by calling the <code>makeCopy()</code> method. It then calls <code>newState.MakeMove(move)</code>. This makes the move that is being considered.</p>
+<p>After making the move, there are two possibilities. If the game is over, then we figure out who wins and return this move if it is a winner for the player currently moving. (Note once the current player finds a winning move, there is no reason to search further, so we can just return this winning move.)</p>
+<p>If the game is not over, then we call <code>newState.PickBestMove()</code>. This asks for the best move for the opponent, because <code>newState</code> holds the state of the game <em>after</em> the move was made. If the opponent has no winning move, then this is a winning move for us and we return it.</p>
+<p>If we exhaust all the moves without finding a winning move, then this is a losing position for us and we return 0 to indicate that.</p>
+<h3 id="how-about-complete-game-tree-search-for-real-games">How about complete game tree search for real games?</h3>
+<p>This approach works fine for Chips with about 30 chips, but if you try it for 100 chips, you will wait a long time for the computer to decide its move. The reason is that the game tree grows exponentially with the number of moves. For a game like chess, we could easily write a program to search the entire game tree, but it would not be practical.</p>
+<p>John McCarthy at Stanford, a pioneer in AI (and once a Dartmouth math professor), defined "computable in theory, but not in practice" as follows. If</p>
+<ul>
+<li>every atom in the known universe were a computer, and</li>
+<li>each atom was were able to do a computation in the time that it takes light to cross a hydrogen atom, and</li>
+<li>if this giant computer began computing at the Big Bang, and</li>
+<li>and it were to continue until the projected "heat death" of the universe, and</li>
+<li>it still would not complete the computation,</li>
+</ul>
+<p>then the computation is not practical. McCarthy computed that doing a game tree search for chess is not practical in this sense. Even if an entire game of chess could be evaluated in the time it takes light to cross a hydrogen atom, there are so many possible games that the computation would not complete in the projected life of the universe.</p>
+<p>So what can we do instead? We look ahead a certain number of moves, and then <em>estimate</em> who is winning. This estimate is called <strong>static evaluation</strong>. Here "static" means without looking ahead. For chess, it would depend on who had more pieces (and more valuable pieces), how mobile the pieces were, how well protected the king was, the pawn structures, and other similar considerations.</p>
+<p>There is a tradeoff between doing an accurate static evaluation and depth of lookahead. An accurate but slow static evaluation can be worse than a fast but less accurate evaluation. In the 1970's there was a chess program called Chess 4.2. It incorporated a lot of chess knowledge, but was mediocre in tournaments. Its authors ripped out most of the chess knowledge and concentrated on making it fast and it became national champion, because looking ahead a few moves was more useful than having an accurate evaluation of a static position.</p>
+<p>The static evaluation of the game is then used in game tree search evaluation. Instead of just <em>W</em> or <em>L</em>, each node is assigned a number corresponding to the score. In games such as Go, where you not only win or lose but there is a measure of by how much you win or lose, you would use scores in this way even if you evaluated the entire game tree, so that you could find the biggest win. Scores are assigned in terms of player 1. Scores for player 2 would be the negative of scores for player 1.</p>
+<p>Each terminal node (or node where the look-ahead depth is exhausted) is given a score. On moves where it is player 1's move, that player will choose the move to <strong>maximize</strong> the score. On moves where it is player 2's move, that player will choose the move to <strong>minimize</strong> the score. (Alternatively, player 2 can maximize the negatives of player 1's scores.) The following picture shows a game tree for this sort of game, with integer values instead of <em>W</em> and <em>L</em> for values:</p>
+<div class="figure">
+<img src="gameTreeInt.GIF"/>
+</div>
+<p>This approach of looking ahead a fixed number of moves is not a perfect solution. It works well when the static evaluation function is fairly accurate, but in dynamic situations it often is not that accurate. An example arises in chess. If you capture your opponent's queen, that is good, because the queen is the strongest piece. If, however, on the next move your opponent captures your queen, then you have exchanged queens, which leaves the relative strengths of the two sides approximately where they were before the exchange took place.</p>
+<p>However, consider what happens if you are looking ahead 5 moves, and on the last of those 5 moves you capture your opponent's queen. Your opponent will capture your queen on the sixth move, but that is beyond what your lookahead can see. Therefore the situation looks very good, and you might choose a move that leads to this situation rather than one that is in practice a much better move, because it leads to a real rather than an illusionary gain. This problem is called the <strong>horizon effect</strong>. The bad event of your queen getting captured is beyond the look-ahead horizon, so that it is invisible and for your program does not exist.</p>
+<p>It is even worse than this. It may be that it is inevitable that your queen will be captured (perhaps it is pinned or trapped). However, if giving away a pawn (or a bishop or knight or rook) pushes the capture over the horizon, your program will begin to behave very irrationally. It will compare the result of losing the queen if it plays normally vs. losing a rook and will decide to sacrifice the rook. But this does not prevent the capture of the queen, and so the program will lose the rook and then still have to lose the queen.</p>
+<p>To avoid this problem, chess-playing programs try to extend their lookahead depth when the situation is dynamic (pieces in threat of being captured, etc.). The problem with this idea is that they then can go on looking ahead many moves and run out of time without ever deciding on a move.</p>
+</body>
+</html>

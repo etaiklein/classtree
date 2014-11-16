@@ -1,0 +1,515 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">
+/*<![CDATA[*/
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode, table.sourceCode pre 
+   { margin: 0; padding: 0; border: 0; vertical-align: baseline; border: none; }
+td.lineNumbers { border-right: 1px solid #AAAAAA; text-align: right; color: #AAAAAA; padding-right: 5px; padding-left: 5px; }
+td.sourceCode { padding-left: 5px; }
+code.sourceCode span.kw { color: #007020; font-weight: bold; } 
+code.sourceCode span.dt { color: #902000; }
+code.sourceCode span.dv { color: #40a070; }
+code.sourceCode span.bn { color: #40a070; }
+code.sourceCode span.fl { color: #40a070; }
+code.sourceCode span.ch { color: #4070a0; }
+code.sourceCode span.st { color: #4070a0; }
+code.sourceCode span.co { color: #60a0b0; font-style: italic; }
+code.sourceCode span.ot { color: #007020; }
+code.sourceCode span.al { color: red; font-weight: bold; }
+code.sourceCode span.fu { color: #06287e; }
+code.sourceCode span.re { }
+code.sourceCode span.er { color: red; font-weight: bold; }
+/*]]>*/
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-1-march-24">Lecture 1, September 15</h1>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="Counter.java">Counter.java</a></li>
+</ul>
+<a name="what"></a><h2>What's this course about?</h2>
+<p>"Problem solving via object oriented programming."  Examples of problems from
+your experience?  In this class: process images, search
+social networks, play games, compress files, identify
+clusters in data sets, solve puzzles like Sudoku, play the Kevin Bacon
+game on a movie database....</p>
+<p>While those are fun (I hope), the goal of the course is to develop
+expertise in core programming techniques useful throughout computer
+science, including representation, abstraction, recursion and
+modularity, and concurrency.  One of the most important
+themes in this course is abstraction:</p>
+<ul>
+<li>Identify a pattern or interaction (computational or otherwise).</li>
+<li>Give it a name.</li>
+<li>Define its interface (i.e., describe inputs/outputs and their
+relationships to each other)</li>
+</ul>
+<p>Proper abstraction allows us to treat complex ideas as "black boxes"
+so that we can reason about their behavior about without knowing their
+exact contents.  For instance, we can abstract the notion of square
+root, giving a black box into which we feed a number and from which we
+receive that number's square root.  We don't care what's inside the
+black box, as long as it preserves the input/output relationship; we
+could use Newton's method or another algorithm, a look-up table, or some
+combination.</p>
+<p>You use abstraction when you drive an automobile. Do you really know what happens 
+when you step on the accelerator? Lots of parts do their thing: accelerator cable, 
+fuel injector, cylinders, pistons, cams, drive shaft, transmission, universal joint, 
+and all under computer control. But to you, the driver, you rely on the abstraction
+ "step on accelerator, car moves."</p>
+<p>The same analogy applies to standard interchangeable parts (a big
+revolution in military and industrial technology).  Lots of different
+pieces, but with standard connections and cables, so you can hook them
+up as you please.  Similarly with computers — USB ports, video
+output, headphone mini-jacks, etc.</p>
+<p>In order to define our abstractions, we need to have a kind of
+notation for describing them.  Ideally, we want a notation that can be
+read by the computer as well as by humans.  In this class we will use
+the object-oriented (OO) language Java.  Simula, a simulation language,
+was the first OO language.  The idea is to express a simulation (or
+other problem) in 
+terms of interacting objects.  Sometimes those objects model things
+in the world, like the wildebeasts that stampeded in <em>The Lion King</em>.
+It would be too complex to try to control them all directly, so they created an object
+for each wildebeast that contained rules for 
+how to interact with  other wildebeasts and with the environment.  They started them 
+up and let them interact.  They thus simulated wildebeast behavior and 
+interaction and put it onto film.</p>
+<p>Often objects are more abstact.  But they usually have:</p>
+<ul><li>Some data or information that they "know".</li>
+<li>Some actions that they can perform when asked (methods),
+    usually involving the data that they hold.</li>
+</ul></body></html>
+<p>Objects are a good way to perform abstraction.  If the data
+is private (which is usually the case in Java), the only way to
+interact with it is through the methods.  The methods become
+an interface between the data and the world.  The exact way that
+the data is stored becomes invisible to the outside world, so it
+can be changed without breaking anything.</p>
+<p>This ability is important, because as we will see there are often
+a number of different data structures that can be used to represent
+the data, each with its advantages and drawbacks. In this class we
+will spend a lot of time looking at:</p>
+<ul>
+<li>Abstract Data Types (ADTs). In spite of the name, these are
+      collections of operations.  Some, like lists, sets, dictionaries,
+      maps, stacks, queues, priority queues, graphs, etc. have become 
+      somewhat standardized because they are widely applicable.  We
+      will look at a number of these abstractions.</li>
+<li>Data structures.  These are concrete ways of representing 
+      data.  Some examples are arrays, linked lists, binary search
+      trees, and hash tables.  We will look at all of these. We
+      will see that an array can be used to implement most of the
+      ADTs listed above, but for some (e.g. sets) they are much slower
+      than other choices.  We will look at the tradeoffs of choosing
+      one data structure or another to implement each ADT.</li>
+</ul>
+<p>The idea of "data abstraction" came from a 1972 paper by Parnass entitled, 
+<a href="criteria.pdf">"On the Criteria To Be Used in Decomposing Systems Into Modules"</a>   
+He compared two approaches for decomposing a program to create a KWIC (Key Words in Context) Index
+into modules.  The first was the standard way at the time, which was to break the program down
+into sequential steps (e.g. Input, Shift, Alphabetize, Output).  The other broke it by giving
+a module to each type of data (e.g. Line Storage).  He showed that changing how a type of data was 
+represented required changing every module in the first decomposition, but only required
+changing a single module in the second.</p>
+<a name="admin"></a><h2>Administrative stuff</h2>
+<p>See <a href="http://www.cs.dartmouth.edu/~cs10/">http://www.cs.dartmouth.edu/~cs10/</a> for</p>
+<ul>
+<li>Who, when, where</li>
+<li>Requirements: homeworks (short assignments, problem sets), exams</li>
+<li>Collaboration policies (please <span style="font-weight:bold;color:#c00000">follow the honor code</span>)</li>
+<li>Schedule</li>
+<li>Java info</li>
+</ul>
+<p>We have an x-hour Thursday!</p>
+<p>I need you to fill out and submit two Word document forms to me:</p>
+<ul>
+<li>The <a href="../../Questionnaire.doc">questionnaire</a>. It gives me basic information 
+about you that can help me help you.</li>
+<li>The <a href="../../section-times.doc">section times form</a>. It tells us when you're 
+available to attend your recitation section. Attending sections is optional, but everyone has 
+to be placed into one, because your section leader will also be your grader.</li>
+</ul>
+<p>To make my life a little easier, please follow the instructions at the top of each form 
+when submitting them.</p>
+<p>You can get my planned schedule for the course by clicking the Schedule link on any of 
+the course web pages. As I put up the lecture notes for each lecture, a link to the notes 
+will go live.</p>
+<p>I'll post short assignments and lab assignments under the corresponding links. Note that 
+<a href="../../sa/sa0/sa0.html">Short Assignment 0</a> is already posted and due on Wednesday.</p>
+<p>Lecture notes are there to help you, to keep you from having to
+write down and type in a lot of stuff that we go over in class.
+However, they aren't necessarily complete, and they're also simple,
+sometimes terse, not necessarily grammatical, etc.  They're my working
+notes, and are not intended to take the place of the lectures or the
+readings. <em>Lecture notes are not always complete. I 
+always reserve the right to cover material in lecture that was not in the online lecture 
+notes.</em> </p>
+<p>Other instructors in CS 10 (particularly Tom Cormen) have modified and
+expanded my notes, and I will be using some of their writing.  Additions, corrections, and 
+suggestions are welcome, and will improve the notes for this and future classes.</p>
+<a name="basics"></a><h2>Java basics</h2>
+<p>You all know a programming language. For most of you it is Python.
+For some of you it is Java or C.  Learning a second programming language
+is much easier than learning a second natural language like English.
+The first hundred pages in the book go over what we will use in Java
+rather formally with a lot of detail.  The on-line text introduces 
+Java in a more conversational, interactive way.</p>
+<p>Lectures are an awful
+way to communicate detail.  I expect you to read these sections and
+come to me or course staff with questions. In lecture I will try
+to give you a framework on which to hang the details, and a way of
+approaching and thinking about the language.</p>
+<h3>Dr. Java and Eclipse</h3>
+<p>We will introduce you to two systems for programming in Java. 
+Dr. Java has an Interaction window, which lets you type Java statements
+and expressions and see the results immediately.  It is sort of like a Python
+interpreter, where you can type a single line of code and run it.  It is great for experimentation.
+Eclipse is a much more powerful IDE,
+and supplies all sorts of help like code completion (you type a variable
+name and a dot and it shows you all of the variables and methods in the 
+object referred to by that variable, with templates describing the parameters
+of methods) and refactoring (reorganizing your code - e.g renaming a variable,
+where only the references in the current scope are changed).  But if
+you want to run a command you have to write a program to do
+it.</p>
+<p>I will start using Dr. Java to demonstrate things interactively, but will move
+to Eclipse for more complicated programs.  You may use either for any
+assignment.</p>
+<h3>A quick look at a Java class</h3>
+<p>We will start by skimming a Java class.  
+The class that we will look at is <code>Counter</code> .  An object of this class 
+represents a counter that starts at 0.  Each time the method
+<code>tick()</code> is called, one is added to the counter.  When the counter reaches a
+pre-defined limit it "wraps," going back to 0.  Such an object could be used as part of 
+a digital timer or digital clock class.</p>
+<p>In Java, all code must reside in some class. (That makes Java different from Python or C++. 
+And it's very different from C, which doesn't have classes at all.) By convention, the name 
+of a class starts with an uppercase letter. By rule, the name of the file containing the 
+class is the name of the class, with ".java" appended. Hence, the class 
+<code>Counter</code> is in the file Counter.java.</p>
+<p>An object includes <strong>instance variables</strong>, which represent the object's state, 
+and <strong>methods</strong>, which operate on the object. You've seen these concepts if 
+you've taken CS 1 or the Computer Science AP course. If you've learned C, then you can 
+think of instance variables like members of a struct and methods like functions, but that 
+operate on the struct. Java doesn't have functions, only methods.</p>
+<p>An object of this class represents a counter whose value starts at 0. A <code>Counter</code> 
+object has two instance variables:</p>
+<ul>
+<li><code>myValue</code> gives the current value of the counter.</li>
+<li><code>myLimit</code> gives a value that, once the counter's value reaches it, the counter's 
+value immediately wraps around back to 0. For example, if a <code>Counter</code> object has 
+<code>myLimit</code> of 5, then it counts 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, …</li>
+</ul>
+<p>Three methods of the <code>Counter</code> class can change the value of the counter:</p>
+<ul>
+<li><code>tick</code> increments the counter's value, wrapping around to 0 if the value reaches 
+  the limit.</li>
+<li><code>set</code> takes a parameter that becomes the counter's new value, but only if this 
+  new value is legal, meaning that it's at least 0 and strictly less than <code>myLimit</code>.</li>
+<li><code>reset</code> sets the counter's value to 0, which is of course always legal.</li>
+</ul>
+<p>The way that the <code>tick</code> method works, we could use a <code>Counter</code> object 
+as part of a digital timer or digital clock class.</p>
+<p>Let's back up a little. The first thing we see in the <a href="Counter.java">Counter.java</a> 
+file is a comment. Java has three forms of comments:</p>
+<ul>
+<li>If a line of code contains <code>//</code>, then everything to the right, up to the end of the line, is a comment. Python has the same thing, but using <code>#</code> instead of <code>//</code>.</li>
+<li>The code <code>/*</code> begins a comment that may span multiple lines, until a closing <code>*/</code> appears. C comments have the same form.</li>
+<li>The code <code>/**</code> begins a special kind of comment, designed to generate documentation automatically, through a program called Javadoc. Although you might guess that you end such a comment with <code>**/</code>, just <code>*/</code> will do. The Javadoc for this class appears in <a href="Counter.html">Counter.html</a>. Not everything in a Javadoc comment will necessarily appear in the generated documentation, but you should certainly indicate the purpose of the program and who wrote it, even if this information doesn't make it into the Javadoc documentation.</li>
+</ul>
+<p>Next we see the line</p>
+<pre class="sourceCode"><code class="sourceCode java"><span class="kw">import</span><span class="kw"> java.text.DecimalFormat;</span></code></pre>
+<p>Like an <code>import</code> statement in Python or a <code>#include</code> in C, this line 
+says that there's code elsewhere that we'll be using. In this case, it's a class named 
+<code>DecimalFormat</code> in a module named <code>java.text</code>.</p>
+<p>Notice that the <code>import</code> statement ends with a semicolon. In Java, just about 
+all statements end with a semicolon. If you've programmed in C, you're used to this syntactic 
+requirement. If your background is only in Python, then the end of the line (the newline 
+character) serves the purpose that the semicolon serves in Java.</p>
+<p>Next, we see the line</p>
+<pre class="sourceCode"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Counter {</code></pre>
+<p>This line says that we're starting to define a class named <code>Counter</code>, and that 
+by being declared as <code>public</code>, this class will be known throughout the entire 
+program. The left curly brace (again, familiar to C programmers but not to Pythonistas) 
+says that we're starting the definition. The closing right curly brace at the end of the 
+file matches this left curly brace and ends the class definition. Curly braces in Java 
+always come in matching pairs (unless they appear in quoted string literals), and they nest.</p>
+<p>Next we have our instance variables:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="kw">private</span> <span class="dt">int</span> myLimit;                          <span class="co">// upper limit on the counter</span><br/>  <span class="kw">private</span> <span class="dt">int</span> myValue;                          <span class="co">// current value</span></code></pre>
+<p>Here, we declare the instance variables <code>myLimit</code> and <code>myValue</code> as 
+ints. In Java, as in C, you have to declare the type of each variable, although in Python 
+you do not. The keyword <code>private</code> says that only methods within the current class 
+(<code>Counter</code>) are allowed to access these instance variables. Each <code>Counter</code> 
+object that is created will have its own copy of these instance variables, so that one 
+<code>Conter</code> object might have a <code>myLimit</code> of 12 and a <code>myValue</code> 
+of 5, while another <code>Counter</code> object has a <code>myLimit</code> of 10 and a 
+<code>myValue</code> of 8.</p>
+<p>Then we have two other variables:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="kw">private</span> <span class="dt">final</span> <span class="dt">static</span> <span class="dt">int</span> DEFAULT_LIMIT = <span class="dv">12</span>;  <span class="co">// the default counter limit</span><br/>  <span class="kw">private</span> <span class="dt">final</span> <span class="dt">static</span> String FORMAT = <span class="st">"00"</span>;    <span class="co">// minimum number of digits displayed</span></code></pre>
+<p>These look like instance variables, but they're not. Actually, they have a couple of 
+differences from the instance variables <code>myLimit</code> and <code>myValue</code>. First, 
+by being declared <code>final</code>, we're saying that the values we give them when we 
+declare them may never change after their initial assignments. Python doesn't supply the 
+equivalent to <code>final</code>, but C's <code>const</code> declaration is the same as 
+<code>final</code> in Java. Notice the convention that <code>final</code> variable names 
+are written in all uppercase, just as in C and Python. Second, by declaring these variables 
+as <code>static</code>, we're saying that instead of each <code>Counter</code> object having 
+its own copy of these variables, there's just one copy of each, and that copy is shared 
+among <em>all</em> the <code>Counter</code> objects that exist at any time. After all, 
+since <code>DEFAULT_LIMIT</code> is an int with the value 12 and it's never going to change, 
+if we gave each <code>Counter</code> object its own copy of <code>DEFAULT_LIMIT</code>, then 
+we'd waste space. We'll see later in the course that non-final static variables have their 
+own uses. Static variables in Java are also known as <strong>class variables</strong>, since 
+there's just one for each class.</p>
+<p>Notice also that the static variable <code>FORMAT</code> is declared as a <code>String</code>. 
+The <code>String</code> class is built into Java. Like both C and Python, Java allows quoted 
+string literals, such as <code>"00"</code>, which is a string comprising two 
+characters, both of which are the character <code>0</code> (not to be confused with the 
+integer 0).</p>
+<p>Next, we have two special methods that are called <strong>constructors</strong>.</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="co">/**</span> <br/>   * Constructor for the Counter class, with initial value <span class="dv">0</span> and limit <span class="dv">12</span><span class="co">. </span><br/>   <span class="co">*/</span><br/>  <span class="kw">public</span> <span class="fu">Counter</span>() {<br/>    myLimit = DEFAULT_LIMIT;<br/>    myValue = <span class="dv">0</span>;<br/>  }<br/><br/>  <span class="co">/**</span> <br/>   * Constructor for the Counter class, with initial value <span class="dv">0</span> and given limit<span class="co">.</span><br/>   <span class="co">*</span> <span class="kw">@param </span><span class="kw">limit </span>- the upper bound for the counter <br/>   <span class="co">*/</span><br/>  <span class="kw">public</span> <span class="fu">Counter</span>(<span class="dt">int</span> limit) {<br/>    myLimit = limit;<br/>    myValue = <span class="dv">0</span>;<br/>  }</code></pre>
+<p>The name of a constructor is always the name of its class. As we'll see, all methods 
+other than constructors have to declare the type of what they return to their callers. 
+Constructors do not declare any return type. They are the <em>only</em> methods that do 
+not declare a return type.</p>
+<p>Python programmers: note that curly braces surround the method bodies. Like C, Java 
+requires curly braces around bodies. Python indicates structure by indenting, but Java 
+does not require proper indentation. In fact, line breaks are irrelevant. The following 
+code would mean exactly the same thing as the first of the two constructors:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="kw">public</span> <span class="fu">Counter</span>() { myLimit =<br/>           DEFAULT_LIMIT  ;  myValue<br/>= <span class="dv">0</span><br/><br/>       ;}</code></pre>
+<p>In CS 10, however, <em>we</em> require proper indentation. As does the rest of the world. 
+And we will insist that your code be properly formatted, so that we humans can read it.</p>
+<p>Constructors are run automatically when objects are created. Python programmers have 
+seen constructors, but C programmers have not. <strong>The purpose of a constructor is to 
+initialize every instance variable of the object being created.</strong> Not just some of 
+the instance variables. <em>All</em> the instance variables. You should make sure that 
+whenever you create an object, a constructor is run on the object and that this constructor 
+gives an initial value to every instance variable.</p>
+<p>Why do we care so much about running constructors and initializing every instance variable? 
+Because if you fail to give every instance variable an initial value, the object is in an 
+unknown state. The unknown state is not only unreliable, but it might also be illegal. For 
+example, suppose a <code>Counter</code> had <code>myLimit</code> of 12 but <code>myValue</code> 
+of 15. That would be an illegal state. By running a constructor on a <code>Counter</code> 
+object, we can ensure that its state starts out known and legal. (Exercise: Show how, with 
+the constructors above, we can still make a <code>Counter</code> that starts out in an 
+illegal state.)</p>
+<p>Unlike C or Python, Java has <strong>overloading</strong>: you can have multiple methods 
+with the same name. Notice that we have two constructors, both with the name 
+<code>Counter</code> of the class. They differ, however, in that the first constructor 
+takes no parameters, but the second one takes one parameter, <code>limit</code>, which is 
+declared to be an int. C programmers are familiar with this style of declaring parameters. 
+Python programmers are not, because they don't ever declare variable types. As you can see, 
+you declare the type of a parameter right before the parameter's name in the method header. 
+As long as the number or types of the parameters differ—we call this the method's 
+<strong>signature</strong>—you may overload a method.</p>
+<p>We'll see later how a constructor gets called.</p>
+<p>Next is the parameterless method <code>tick</code>:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="co">/**</span><br/>   * Increment the value of the Counter, wrapping back to <span class="dv">0</span> when it reaches<br/>   * the limit<span class="co">.</span><br/>   <span class="co">*/</span><br/>  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">tick</span>() {<br/>    myValue++;<br/>    <span class="kw">if</span> (myValue == myLimit) <span class="co">// has it hit the limit?</span><br/>      myValue = <span class="dv">0</span>;          <span class="co">// wrap if it has</span><br/>  }</code></pre>
+<p>The keyword <code>public</code> says that this method can be called from anywhere, and 
+<code>void</code> says that this method does not return a value to its caller. (C programmers, 
+but not Python programmers, are used to seeing <code>void</code>.) The <code>tick</code> 
+method operates on a particular <code>Counter</code> object, using the instance variables 
+of the <code>Counter</code> object on which it is called. (We'll see later how we call a 
+method on an object.) First, the method increments the <code>myValue</code> instance 
+variable using the <code>++</code> increment operator of Java (and C, but not Python). 
+Then, if the value of the <code>myValue</code> instance variable has reached the value of 
+the <code>myLimit</code> instance variable, <code>myValue</code> is set to 0. This syntax 
+for an if-statement is just as in C, but it differs from Python: parentheses around the 
+test replace the colon following the test.</p>
+<p>Then the methods <code>set</code> and <code>reset</code>:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="co">/**</span><br/>   * Set the value of the Counter to newValue<span class="co">.  </span><br/>   <span class="co">*</span> If newValue is too large or is negative sets it to <span class="dv">0</span>.<br/>   <span class="co">*</span> (We will learn better ways to handle errors later.)<br/>   <span class="co">*</span> <br/>   <span class="co">*</span> <span class="kw">@param </span><span class="kw">newValue </span>the value to reset the counter to<br/>   <span class="co">*/</span><br/>  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">set</span>(<span class="dt">int</span> newValue) {<br/>    <span class="kw">if</span> (newValue &gt;= <span class="dv">0</span> &amp;&amp; newValue &lt; myLimit)<br/>      myValue = newValue;<br/>    <span class="kw">else</span><br/>      myValue = <span class="dv">0</span>;<br/>  }<br/><br/>  <span class="co">/**</span><br/>   *  Reset the value of the Counter to <span class="dv">0</span><span class="co">.</span><br/>   <span class="co">*/</span><br/>  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">reset</span>() {<br/>    <span class="fu">set</span>(<span class="dv">0</span>);        <br/>  }</code></pre>
+<p>The <code>set</code> method takes a parameter, <code>newValue</code>, which becomes the 
+new value of the counter, if <code>newValue</code> is legal. Otherwise, the counter's value 
+is set to 0. The <code>reset</code> method just sets the counter's value to 0.</p>
+<p>Both C and Python programmers will recognize the legality test 
+<code>newValue &gt;= 0 &amp;&amp; newValue &lt; myLimit</code>, which runs the two relational 
+operators <code>&gt;=</code> and <code>&lt;</code> and then combines their results with the 
+short-circuiting logical connective <code>&amp;&amp;</code>. Savvy Python programmers would 
+have written this test as <code>0 &lt;= newValue &lt; myLimit</code> in Python. Alas, this 
+style of stringing together relational operators is not allowed in Java. The Java compiler 
+would interpret <code>0 &lt;= newValue</code> as giving a boolean value, which you'd then 
+be attempting to compare with the int value <code>myLimit</code>, thereby generating a 
+compile-time error.</p>
+<p>Next is the "getter" method <code>getValue</code>:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="co">/**</span><br/>   *  Return the value of the Counter<span class="co">.</span><br/>   <span class="co">*</span>  <br/>   <span class="co">*</span>  <span class="kw">@return </span>the current value of the counter.<br/>   <span class="co">*/</span><br/>  <span class="kw">public</span> <span class="dt">int</span> <span class="fu">getValue</span>() {<br/>    <span class="kw">return</span> myValue;<br/>  }</code></pre>
+<p>This method returns an int value to its caller, and so the return type in the header is 
+<code>int</code>. The Javadoc documentation also includes this information in the 
+<code>@return</code> part.</p>
+<p>The next method in the <code>Counter</code> class is <code>toString</code>:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="co">/**</span><br/>   * Return a String representation with at least <span class="dv">2</span> digits, padding with a<br/>   * leading <span class="dv">0</span> if necessary<span class="co">.</span><br/>   <span class="co">*</span> <br/>   <span class="co">*</span> <span class="kw">@return </span>a String representation of the counter with at least <span class="dv">2</span> digits.<br/>   <span class="co">*/</span><br/>  <span class="kw">public</span> String <span class="fu">toString</span>() {<br/>    DecimalFormat fmt = <span class="kw">new</span> DecimalFormat(FORMAT);  <span class="co">// use at least 2 digits</span><br/>    <span class="kw">return</span> fmt<span class="fu">.format</span>(myValue);</code></pre>
+<p>The <code>toString</code> method is called automatically whenever we need the string 
+representation of an object. Notice that it returns a <code>String</code>. If we don't 
+supply the <code>toString</code> method in a class definition and we try to convert the 
+object to a string, we just get the object's address in memory, in hexadecimal (base 16), 
+which is rarely useful. Here, the <code>toString</code> method converts the counter's value 
+to a character string of at least two digits. It uses the class <code>DecimalFormat</code> 
+that we imported up at the top of the file. The <code>toString</code> method first creates 
+a <code>DecimalFormat</code> object with the Java keyword <code>new</code>. <strong>The 
+only way to create a new object in Java is via the keyword <code>new</code>.</strong> The 
+class variable <code>FORMAT</code> is passed to the constructor for <code>DecimalFormat</code>.</p>
+<p>The <code>new</code> operator does three things:</p>
+<ol style="list-style-type: decimal">
+<li>It allocates memory for the object.</li>
+<li>It runs a constructor on the object being created.</li>
+<li>It returns the address of the object in memory. We call this address a <strong>reference</strong> to the object.</li>
+</ol>
+<p>Let's take a look at the variable <code>fmt</code>. It is a <strong>local variable</strong>, 
+which means it exists only during the call to the <code>toString</code> method. The variable 
+is created when <code>toString</code> executes, and it ceases to exist when <code>toString</code> 
+completes.</p>
+<p>Now that you know that the <code>new</code> operator returns a reference to the object 
+created, you know what is assigned to <code>fmt</code>: a reference to the 
+<code>DecimalFormat</code> object that <code>new</code> created and ran a constructor on. 
+Not surprisingly, then, <code>fmt</code> is declared as a <code>DecimalFormat</code> object. 
+Except that it's not. It's actually declared as a <em>reference</em> to a 
+<code>DecimalFormat</code> object. If you've seen aliasing in C or Python, where two 
+different variables hold the address of the same object, you can appreciate the difference 
+between an object and a reference to an object.</p>
+<p>Having created a <code>DecimalFormat</code> object and assigning its address to the local 
+variable <code>fmt</code>, the <code>toString</code> method then calls the <code>format</code> 
+method on this <code>DecimalFormat</code> object, with <code>myValue</code> as a parameter 
+(the only parameter) to the <code>format</code> method. We don't know how the <code>format</code> 
+method works, but that's abstraction acting in our favor. Of course, we haven't even said 
+<em>what</em> the <code>format</code> method does, but we can worry about that later.</p>
+<p>What's important here is how we call a method on an object. We called 
+<code>fmt.format(myValue)</code>. Here, <code>fmt</code> is a reference to a 
+<code>DecimalFormat</code> object, <code>format</code> is a method of the 
+<code>DecimalFormat</code> class, and <code>myValue</code> is the parameter to the call. 
+The general form of a method call is</p>
+<blockquote>
+<p>objectReference.methodName(parameters)</p>
+</blockquote>
+<p>Python programmers have seen this syntax before, but C programmers have not.</p>
+<p>I like to think of objects as "things" and methods as "actions." 
+Indeed, most of the time, the name of a class should be a noun or a noun phrase. And the 
+name of a method should include a verb. (With the obvious exception for constructors, which 
+are required to have the same name as the class.)</p>
+<p>Now, what does the <code>format</code> method return? You can tell from how it's used. 
+The <code>toString</code> method just takes what <code>format</code> returns and immediately 
+returns it to its caller. And we know that <code>toString</code> returns a <code>String</code> 
+or, more precisely, a reference to a <code>String</code>. Therefore, the <code>format</code> 
+method must return a reference to a <code>String</code>.</p>
+<p>The last method in the <code>Counter</code> class has the special name <code>main</code>:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="co">/**</span> <br/>   * A main program to test the counter<span class="co">.  </span><br/>   <span class="co">*</span> (Including such testing programs is a good idea.)<br/>   <span class="co">*/</span><br/>  <span class="kw">public</span> <span class="dt">static</span> <span class="dt">void</span> <span class="fu">main</span>(String args[]) {<br/>    <span class="co">// Create variables that can reference two Counters.</span><br/>    Counter c1, c2;<br/><br/>    c1 = <span class="kw">new</span> <span class="fu">Counter</span>(<span class="dv">5</span>);  <span class="co">// wraps at 5</span><br/>    c2 = <span class="kw">new</span> <span class="fu">Counter</span>();   <span class="co">// wraps at 12</span><br/><br/>    <span class="dt">final</span> <span class="dt">int</span> TIMES = <span class="dv">50</span>;<br/><br/>    System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"c1</span><span class="ch">\t</span><span class="st">c2</span><span class="ch">\t</span><span class="st">sum"</span>);<br/>    <span class="co">// Show lots of Counter values.</span><br/>    <span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; TIMES; i++) {<br/>      System.<span class="fu">out</span>.<span class="fu">println</span>(c1 + <span class="st">"</span><span class="ch">\t</span><span class="st">"</span> + c2 + <span class="st">"</span><span class="ch">\t</span><span class="st">"</span> + (c1.<span class="fu">getValue</span>() + c2.<span class="fu">getValue</span>()));<br/><br/>      <span class="co">// Tick both Counters.</span><br/>      c1.<span class="fu">tick</span>();<br/>      c2.<span class="fu">tick</span>();<br/>    }<br/><br/>    c1.<span class="fu">reset</span>();<br/>    c2.<span class="fu">reset</span>();<br/>    System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"After reset:</span><span class="ch">\t</span><span class="st">"</span> + c1 + <span class="st">"</span><span class="ch">\t</span><span class="st">"</span> + c2);<br/>    c1.<span class="fu">set</span>(<span class="dv">4</span>); <br/>    c2.<span class="fu">set</span>(<span class="dv">10</span>);<br/>    System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"After set:</span><span class="ch">\t</span><span class="st">"</span> + c1 + <span class="st">"</span><span class="ch">\t</span><span class="st">"</span> + c2);<br/>    c1.<span class="fu">set</span>(<span class="dv">5</span>); <br/>    c2.<span class="fu">set</span>(-<span class="dv">1</span>);<br/>    System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"After invalid:</span><span class="ch">\t</span><span class="st">"</span> + c1 + <span class="st">"</span><span class="ch">\t</span><span class="st">"</span> + c2);<br/>  }</code></pre>
+<p>The <code>main</code> method is where program execution starts. In Eclipse, we always have 
+to say which class contains the <code>main</code> method in which we want to start executing 
+the program. So we can have lots of <code>main</code> methods in an Eclipse project, but only 
+one will be <em>the</em> <code>main</code> method.</p>
+<p>The header of the <code>main</code> method is boilerplate: 
+<code>public static void main(String args[])</code>. As we'll see, a static method is not 
+called on any object. The <code>main</code> method <em>must</em> be static, because it's the 
+first thing executed, and so no objects can possibly have been created at the time <code>main</code> 
+starts executing. The parameter <code>String args[]</code> allows for command-line arguments. 
+The <code>[]</code> part indicates that <code>args</code> is actually an <strong>array</strong> 
+of references to <code>String</code>. C programmers have seen arrays. So have Python programmers, 
+but they're called "lists" in Python.</p>
+<p>What does the <code>main</code> method do? It starts by declaring local variables 
+<code>c1</code> and <code>c2</code> as references to <code>Counter</code> objects. Then it 
+creates two <code>Counter</code> objects. The first one has a limit of 5; the <code>new</code> 
+operator calls the one-parameter constructor. The second object has a limit of 12; the 
+<code>new</code> operator calls the parameterless constructor (which is also called a 
+<strong>default constructor</strong>). Remembering that <code>new</code> returns a reference 
+to the object it creates, we see that <code>c1</code> is assigned a reference to the 
+<code>Counter</code> whose limit is 5 and <code>c2</code> is assigned a reference to the 
+<code>Counter</code> whose limit is 12.</p>
+<p>Next, <code>main</code> declares a final local variable <code>TIMES</code> with the value 50. 
+Then, <code>main</code> prints some output to the console by calling the method 
+<code>println</code> on a built-in object referenced by <code>System.out</code>. 
+The <code>println</code> method takes a string and prints it on the console. As in C and Python, 
+we can include escaped characters in a string literal; here, <code>\t</code> denotes the tab 
+character.</p>
+<p>Then comes a for-loop. The syntax is exactly the same as in C, but this syntax will be 
+new for Python programmers. Java for-loops are quite a bit more general than in Python, and 
+they do not require lists (or arrays) to be involved. A for-loop has the form</p>
+<pre class="sourceCode"><code class="sourceCode java"><span class="kw">for</span> (initial; test; update)<br/>  body</code></pre>
+<p>and it is equivalent to a while-loop with the form</p>
+<pre class="sourceCode"><code class="sourceCode java">initial<br/><span class="kw">while</span> (test) {<br/>  body<br/>  update<br/>}</code></pre>
+<p>Therefore, we could have written the for-loop as the equivalent while-loop</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="dt">int</span> i = <span class="dv">0</span>;<br/>  <span class="kw">while</span> (i &lt; TIMES) {<br/>    System.<span class="fu">out</span>.<span class="fu">println</span>(c1 + <span class="st">"</span><span class="ch">\t</span><span class="st">"</span> + c2 + <span class="st">"</span><span class="ch">\t</span><span class="st">"</span> + (c1.<span class="fu">getValue</span>() + c2.<span class="fu">getValue</span>()));<br/><br/>    <span class="co">// Tick both Counters.</span><br/>    c1.<span class="fu">tick</span>();<br/>    c2.<span class="fu">tick</span>();<br/>    i++;<br/>    }</code></pre>
+<p>Although you might find the Python loop header <code>for i in range(TIMES):</code> to be 
+easier, the more general form of Java for-loops has advantages that we'll see later on.</p>
+<p>The body of the for-loop calls the <code>tick</code> method on each of the two 
+<code>Counter</code> objects, using the objectReference.methodName(parameters) syntax.</p>
+<p>After the for-loop terminates, the <code>main</code> method calls <code>reset</code> on 
+each <code>Counter</code> and then prints the values of the two objects. There's a lot going 
+on in the parameter to <code>println</code>, so let's take a look. The parameter to 
+<code>println</code> must be a <code>String</code> (more precisely a reference to a 
+<code>String</code>). But we're "adding" the string literal 
+<code>"After reset:\t"</code> and the reference <code>c1</code>. To whatever that 
+addition gives back, we're adding the string literal <code>"\t"</code>, and then 
+we add the reference <code>c2</code>. What is going on?</p>
+<p>Java assumes that if you apply the <code>+</code> operator and one of the operands is a 
+<code>String</code> (again, really a reference to a <code>String</code>…do you see how a 
+string literal's type is really "reference to a <code>String</code> object"?), 
+then the other operand is converted to a <code>String</code> if necessary and 
+<strong>concatenated</strong> with the <code>String</code> operand. And so we convert the 
+<code>Counter</code> object that <code>c1</code> references to a <code>String</code> and 
+concatenate that <code>String</code> with the string literal <code>"After reset:\t"</code>. 
+Just how is that <code>Counter</code> object converted to a <code>String</code>? By an 
+implicit call to its <code>toString</code> method! In other words, Java will automatically 
+call <code>toString</code> on this <code>Counter</code> object and use the reference to a 
+<code>String</code> that <code>toString</code> returned. We concatenate the two strings, and 
+then we concatenate the string literal <code>"\t"</code> to that result, and then 
+call <code>toString</code> implicitly on the <code>Counter</code> that <code>c2</code> 
+references, concatenating the string returned by <code>toString</code> what we've built up so 
+far. Then we concatenate another tab character, followed by concatenating an int value that is 
+implicitly converted to a <code>String</code>. That int value is the sum of the values of the 
+two <code>Counter</code> objects, using values returned by calls to <code>getValue</code> on 
+each of the two objects. Notice how the parentheses around that last sum makes it so that last 
+sum is <em>not</em> concatenation, but plain old addition. That ultimate string is what is 
+passed to <code>println</code> and printed on the console. Whew!</p>
+<p>A word about the <code>toString</code> method. Remember that it calls the <code>format</code> 
+method of the <code>DecimalFormat</code> class on an object that was initialized with a string 
+of <code>00</code>. The <code>format</code> method in this situation will take its parameter 
+(the <code>myValue</code> instance variable of a <code>Counter</code>) and return its string 
+representation, but padded with leading zeros if necessary. For example, if <code>myValue</code> 
+is 7, then <code>format</code> returns <code>07</code>, but if <code>myValue</code> is 107 then 
+<code>format</code> returns <code>107</code>.</p>
+<p>From here on, the <code>main</code> method is easy. It sets the value of the <code>Counter</code> 
+referenced by <code>c1</code> to 4 and the value of the <code>Counter</code> referenced by 
+<code>c2</code> to 10, and then it prints out the values again. Then, <code>main</code> sets 
+the value of the <code>Counter</code> referenced by <code>c1</code> to 5, and it attempts to 
+set the value of the <code>Counter</code> referenced by <code>c2</code> to $-$1. But $-$1 is 
+not a legal value for any counter, and so the value 0 will be used instead. Finally, 
+<code>main</code> prints the new values of the two <code>Counter</code> objects.</p>
+<h3 id="abstraction">Abstraction</h3>
+<p>I said that abstraction is an important concept. How does it play into this example? Because 
+all the instance variables of a <code>Counter</code> object are private, no code from outside 
+the <code>Counter</code> class can access them. The <em>only</em> way to interact with a 
+<code>Counter</code> is by calling its methods. The caller knows <em>what</em> the methods 
+do, but not <em>how</em> it does them. Granted, the implementations of the <code>tick</code>, 
+<code>set</code>, <code>reset</code>, and <code>getValue</code> methods are pretty obvious, 
+but the <code>toString</code> method could have been implemented in several different ways. 
+The caller cares not. As long as the methods do what they're supposed to do, the caller should 
+be happy.</p>
+

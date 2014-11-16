@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">
+/*<![CDATA[*/
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode, table.sourceCode pre 
+   { margin: 0; padding: 0; border: 0; vertical-align: baseline; border: none; }
+td.lineNumbers { border-right: 1px solid #AAAAAA; text-align: right; color: #AAAAAA; padding-right: 5px; padding-left: 5px; }
+td.sourceCode { padding-left: 5px; }
+code.sourceCode span.kw { color: #007020; font-weight: bold; } 
+code.sourceCode span.dt { color: #902000; }
+code.sourceCode span.dv { color: #40a070; }
+code.sourceCode span.bn { color: #40a070; }
+code.sourceCode span.fl { color: #40a070; }
+code.sourceCode span.ch { color: #4070a0; }
+code.sourceCode span.st { color: #4070a0; }
+code.sourceCode span.co { color: #60a0b0; font-style: italic; }
+code.sourceCode span.ot { color: #007020; }
+code.sourceCode span.al { color: red; font-weight: bold; }
+code.sourceCode span.fu { color: #06287e; }
+code.sourceCode span.re { }
+code.sourceCode span.er { color: red; font-weight: bold; }
+/*]]>*/
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-3-march-28">Lecture 3, September 18</h1>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="ShortList.java">ShortList.java</a></li>
+<li><a href="GeomShape.java">GeomShape.java</a></li>
+<li><a href="Circle.java">Circle.java</a></li>
+<li><a href="Rectangle.java">Rectangle.java</a></li>
+<li><a href="GeomShapeDriver.java">GeomShapeDriver.java</a></li>
+</ul>
+<h2 id="Finish up">Finish up from last time</h2>
+<h3 id="java-classes">Java classes</h3></body></html>
+<p>As I said before, think of a class like a blueprint, and of an object like a house. Defining a class does not create an object of that class, just as drawing a blueprint does not cause a house to be built. A blueprint says that <em>when</em> we build a house, here's what it will be like. And a class says that <em>when</em> we create an object, here are the instance variables and methods it will have.</p>
+<h3 id="calling-a-method">Calling a method</h3>
+<p>Just as in C and Python, when you call a method, parameters get their values via <strong>call by value</strong>. Some terminology:</p>
+<ul>
+<li><p>A parameter declared in a method header is a <strong>formal parameter</strong>. Remember that a formal parameter is also a local variable.</p></li>
+<li><p>The value of a parameter supplied at the point of call is an <strong>actual parameter</strong>, or an <strong>argument</strong>.</p></li>
+</ul>
+<p>In call by value, the value of each actual parameter is copied into the corresponding formal parameter. Actual parameters match up with formal parameters one by one, left to right. A formal parameters must be a single variable. An actual parameter can be any expression of the correct type.</p>
+<h3 id="how-an-object-references-itself">How an object references itself</h3>
+<p>Suppose that an object needs a reference to itself. Java supplies the keyword <code>this</code> for just such a purpose. In Python, <code>self</code> accomplishes the same purpose. (Note that whereas Python requires the first parameter of a method to be <code>self</code>, you don't make a parameter for <code>this</code> in Java.)</p>
+<p>Here's one simple reason you'd want to use <code>this</code>. Suppose that we wrote our <a href="../3/Counter.java"><code>Counter</code> class</a> as follows:</p>
+<pre class="sourceCode"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Counter {<br/>  <span class="kw">private</span> <span class="dt">int</span> limit;    <span class="co">// upper limit on the counter</span><br/>  <span class="kw">private</span> <span class="dt">int</span> value;    <span class="co">// current value</span><br/>  ...<br/><br/>  <span class="kw">public</span> <span class="fu">Counter</span>(<span class="dt">int</span> limit) {<br/>    <span class="co">// How to assign the parameter limit to the instance variable limit?</span><br/>  }<br/><br/>  ...<br/>}</code></pre>
+<p>So how could we assign the parameter <code>limit</code> to the instance variable <code>limit</code>? We can't say <code>limit = limit;</code> because that would just assign a variable's value to the same variable. The problem here is that we have an instance variable and a local variable (the formal parameter) with the same name. Java's rule is that when such a conflict occurs, the local variable wins. So the line <code>limit = limit;</code> assigns the value of the formal parameter <code>limit</code> to the formal parameter <code>limit</code>.</p>
+<p>But we can use <code>this</code> to say that we mean the instance variable:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="kw">public</span> <span class="fu">Counter</span>(<span class="dt">int</span> limit) {<br/>    <span class="kw">this</span>.<span class="fu">limit</span> = limit;<br/>  }</code></pre>
+<p>When we write <code>this.limit</code>, we're saying "the instance variable <code>limit</code> in the object that the constructor is running on." Similarly, we could write the <code>set</code> method as</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">set</span>(<span class="dt">int</span> value) {<br/>    <span class="kw">if</span> (value &gt;= <span class="dv">0</span> &amp;&amp; value &lt; limit)<br/>        <span class="kw">this</span>.<span class="fu">value</span> = value;<br/>    <span class="kw">else</span><br/>        <span class="kw">this</span>.<span class="fu">value</span> = <span class="dv">0</span>;<br/>  }</code></pre>
+<p>The tests use the formal parameter, and the assignment is to the instance variable of the object that <code>set</code> is called on.</p>
+<p>Now, you might wonder whether we really need <code>this</code>. After all, if we had the sequence</p>
+<pre class="sourceCode"><code class="sourceCode java">c = <span class="fu">Counter</span>();<br/>c.<span class="fu">set</span>(<span class="dv">4</span>);</code></pre>
+<p>couldn't we just refer to <code>c</code> in the <code>set</code> method? No way! First, <code>c</code> is probably local to some other piece of code, and it's not known within the <code>set</code> method. Second, what if we had two <code>Counter</code> objects:</p>
+<pre class="sourceCode"><code class="sourceCode java">c1 = <span class="fu">Counter</span>();<br/>c2 = <span class="fu">Counter</span>();<br/>c1.<span class="fu">set</span>(<span class="dv">4</span>);<br/>c2.<span class="fu">set</span>(<span class="dv">7</span>);</code></pre>
+<p>Now how do you know which <code>Counter</code> you want to use in <code>set</code>? Sometimes it's the one that <code>c1</code> references, and sometimes it's the one that <code>c2</code> references. The pronoun <code>this</code> always references the object that the method was called on. Problem solved.</p>
+<h2 id="arrays">Arrays</h2>
+<p>You have seen arrays in C and lists in Python. You give an <strong>index</strong> and get or store an <strong>element</strong>. As in C and Python, array indices in Java <em>always</em> start at 0. So array indices always go as 0, 1, 2, 3, 4, … . (Java is different from languages such as Pascal, where you can select a lower bound other than 0.)</p>
+<p>Then again, just because indices <em>start</em> at 0, that doesn't mean you always have to use <em>all</em> the entries starting from 0. If you'd rather start from 1, go ahead. The cost is just the wasted space of the 0-indexed entry.</p>
+<p>We can store any type in an array, as long as <em>all entries are declared as the same type</em>. So for starters, our array entries will be something simple, such as integers.</p>
+<p>To declare an array of 10 <code>int</code>s you have to do two steps:</p>
+<ul>
+<li><p>Create a variable that can hold a reference to an array of the proper type.</p></li>
+<li><p>Create the actual array by using <code>new</code>.</p></li>
+</ul>
+<pre class="sourceCode"><code class="sourceCode java"><span class="dt">int</span> [] bozo;<br/>bozo = <span class="kw">new</span> <span class="dt">int</span>[<span class="dv">10</span>];</code></pre>
+<p>This style is reminiscent of objects, and <strong>arrays are a special kind of object</strong>. As with objects, we can combine the two lines above into one:</p>
+<pre class="sourceCode"><code class="sourceCode java"><span class="dt">int</span> [] bozo = <span class="kw">new</span> <span class="dt">int</span>[<span class="dv">10</span>];</code></pre>
+<p>Our picture is the following:</p>
+<div class="figure">
+<img src="bozo-array.gif"/><p class="caption"></p>
+</div>
+<p>Here,</p>
+<ul>
+<li><p><code>int</code> gives the <strong>type</strong> of each array element. The empty square brackets say that we have a reference to an array. Think of the whole notation <code>int []</code> as saying "array of <code>int</code>s." (By the way, it doesn't matter how much space you leave between <code>int</code> and <code>[]</code>, so you could write <code>int[] bozo</code> if you wanted to.)</p></li>
+<li><p><code>bozo</code> gives the <strong>name</strong> of the variable that stores a <strong>reference to the array</strong>.</p></li>
+<li><p><code>int[10]</code> says <strong>how many</strong> elements are in the array.</p></li>
+</ul>
+<p>The 10 elements of this array are <code>bozo[0]</code>, <code>bozo[1]</code>, <code>bozo[2]</code>, …, <code>bozo[9]</code>. Note that</p>
+<blockquote>
+<p>An array of <span class="math"><em>n</em></span> elements has elements indexed from 0 to <span class="math"><em>n</em> - 1</span>, only. An array of <span class="math"><em>n</em></span> elements does <strong>not</strong> have an element with index <span class="math"><em>n</em></span>.</p>
+</blockquote>
+<p>Computer scientists like to start counting from 0.</p>
+<p>You can think of array indices as being like subscripts. Our array <code>bozo</code> is like having <code>bozo</code><span class="math">$_{0}$</span>, <code>bozo</code><span class="math">$_{1}$</span>, <code>bozo</code><span class="math">$_{2}$</span>, …, <code>bozo</code><span class="math">$_{9}$</span>.</p>
+<p>Technically, since an array is an object, we should not say that <code>bozo</code> is an array; we should say that <code>bozo</code> is a <em>reference to an array</em>. That would become incredibly tedious, however, and so we shall sometimes just say that <code>bozo</code> is an array. But you should understand that arrays are <em>always</em> objects, and that when we declare a variable to be an array, it's really a reference to an array.</p>
+<p>You can make arrays of other sizes and of other types. To make an array <code>blap</code> of 30 <code>double</code>s:</p>
+<pre class="sourceCode"><code class="sourceCode java"><span class="dt">double</span> [] blap = <span class="kw">new</span> <span class="dt">double</span>[<span class="dv">30</span>];</code></pre>
+<p>Array elements can be of any type. Even objects. Even other arrays!</p>
+<p>Our first example of code that uses an array is in <a href="ShortList.java">ShortList.java</a>. We have a 10-element array named <code>list</code>. The first for-loop assigns the value <code>i+1</code> to <code>list[i]</code> for <code>i</code> = 0, 1, …, 9<code>.  For example,</code>list[5]` is assigned the value 6.</p>
+<p>Note how we set up the first for-loop:</p>
+<pre class="sourceCode"><code class="sourceCode java"><span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; N; i++)</code></pre>
+<p>As C programmers know, this scheme will be a very common paradigm for stepping through an <code>N</code>-element array. We start at 0 and continue as long as the index is <strong>strictly less</strong> than <code>N</code>. As soon as it hits <code>N</code>, we are out of bounds of the legal array indices, so we must stop. In other words, the loop test <code>i &lt;= N</code> would be wrong, because within the loop body, we would be trying to access <code>list[N]</code>, and no such array entry exists. An attempt to access <code>list[N]</code> (or any other array element out of range) would cause an <code>ArrayIndexOutOfBoundsException</code> error at run time. (This situation shows another advantage of Java over C/C++, which would happily make the reference, returning garbage or overwriting other data or code).</p>
+<p>Remember:</p>
+<blockquote>
+<p>The legal indices into an array of <span class="math"><em>n</em></span> elements are integers in the range 0, 1, …, <span class="math"><em>n</em> - 1</span>. There is no element with index <span class="math"><em>n</em></span>. No indices are allowed to be negative, and no indices are allowed to be greater than <strong>or equal to</strong> <span class="math"><em>n</em></span>.</p>
+<p>The most common paradigm for processing each element of an <span class="math"><em>n</em></span>-element array has a for-loop with the header</p>
+</blockquote>
+<pre class="sourceCode"><code class="sourceCode java"><span class="kw">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; n; i++)</code></pre>
+<blockquote>
+<p>and the body uses the variable <code>i</code> to index into the array.</p>
+</blockquote>
+<p>The second for-loop in <a href="ShortList.java">ShortList.java</a> prints out the values in the array in increasing order of the index. That is, it prints in order <code>list[0]</code>, <code>list[1]</code>, <code>list[2]</code>, up through <code>list[9]</code>.</p>
+<p>Java 5.0 added another way to access every element of an array. The third loop in <a href="ShortList.java">ShortList.java</a> shows it:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="kw">for</span> (<span class="dt">int</span> element : list) {<br/>    <span class="co">// Print it out in increasing order using a foreach loop</span><br/>    System.<span class="fu">out</span>.<span class="fu">print</span>(element + <span class="st">"  "</span>);<br/>  }</code></pre>
+<p>This style of loop is called a <strong>foreach-loop</strong> or <strong>foreach-statement</strong>. The idea is that the loop variable, which is <code>element</code> in this example, takes on each value in the array (<code>list</code> in this example). In each iteration of the foreach-loop, the loop variable takes on the next value in the array. Python programmers will recognize this style of loop as similar to for-loops in Python.</p>
+<p>Foreach-loops have the advantage that you cannot make an indexing error. You don't have to worry about indices being too large or too small. There are a few disadvantages to foreach-loops, however:</p>
+<ul>
+<li><p>You don't have access to the index within an iteration, so if you need to do something that depends on the index, you don't have it.</p></li>
+<li><p>Foreach-loops access the array elements in only one order: at index 0, index 1, index 2, and so on. If you want to access the array elements in any other order, you cannot use a foreach-loop.</p></li>
+<li><p>If you are using only some, but not all, of the array elements, a foreach-loop will access array elements that you're not using. Depending on what you do with the array elements, severe problems could result.</p></li>
+</ul>
+<p>The bottom line on foreach-loops is that for the restricted cases in which they apply, they are wonderful. For all other cases (such as those listed above), you are best off avoiding them and instead using for-loops with explicit index variables (such as the first for-loop in <a href="ShortList.java">ShortList.java</a>.</p>
+<p>The fourth for-loop prints out the values in decreasing order of the index: <code>list[9]</code>, <code>list[8]</code>, <code>list[7]</code>, down through <code>list[0]</code>. Note how the loop index <code>i</code> decreases in this loop. We could not have used a foreach-loop for this job.</p>
+<p>The fifth for-loop prints out the array in decreasing order again, but using a slightly different method. The loop index <code>i</code> increases, but we use a more complex expression, <code>N-i-1</code>, in the array index. When <code>i</code> is 0, <code>N-i-1</code> is 9. When <code>i</code> is 1, <code>N-i-1</code> is 8, and so forth. Finally, when <code>i</code> is 9, <code>N-i-1</code> is 0. This for-loop points out that the array index in a program can be any expression that evaluates to an integer in the correct range of indices.</p>
+<p>There is an alternate way to create an array, using an <strong>initializer list</strong>:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="dt">int</span> [] list2 = {<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">9</span>};</code></pre>
+<p>Instead of calling <code>new</code>, we put a list of numbers in curly braces on the right side of the assignment statement. The Java compiler counts the number of items in the list, verifies that they are all of type <code>int</code>, and creates an array of that length with the first item assigned to <code>list2[0]</code>, the second to <code>list2[1]</code>, etc. Initializer lists may be used only when you declare the array.</p>
+<p>Note that when you do this that you don't necessarily know the length of the array. But the program shows that you can still determine the length of any array: <code>list2.length</code> gives the length of the array <code>list2</code>. Think of <code>length</code> as a final instance variable of an array object.</p>
+<h2 id="multidimensional-arrays">Multidimensional arrays</h2>
+<p>In a <strong>multidimensional array</strong>, you can think of the array entries as themselves being arrays. For example, suppose we have the declaration</p>
+<pre class="sourceCode"><code class="sourceCode java">Rect [][] box = <span class="kw">new</span> Rect[<span class="dv">6</span>][<span class="dv">8</span>];</code></pre>
+<p>where <code>Rect</code> is a class. The usual way to think of <code>box</code> is as a 2-dimensional array with 6 rows and 8 columns:</p>
+<div class="figure">
+<img src="empty-rectangular-2d-array.gif"/><p class="caption"></p>
+</div>
+<p>Note that the entry in row <code>i</code> and column <code>j</code> is denoted <code>box[i][j]</code>. In some other languages, you might write <code>box[i,j]</code>, but not in Java (also not in C/C++ or Python). You must always use a separate set of brackets for each index: <code>box[i][j]</code>.</p>
+<p>A more accurate picture notes that we really have an array of 6 entries, each of which is an array of 8 entries. Therefore <code>box[i]</code> is a 1D array of references to <code>Rect</code>. The picture is</p>
+<div class="figure">
+<img src="empty-2d-array.gif"/><p class="caption"></p>
+</div>
+<p>A consequence of the fact that 2D arrays are really arrays of arrays is that the number of rows is <code>box.length</code> and the number of columns is <code>box[0].length</code>. (Any valid subscript could be substituted for 0.)</p>
+<p>Note that so far all of the references in <code>box</code> are null. After we assign a <code>Rect</code> object to each reference the picture would look like:</p>
+<div class="figure">
+<img src="rect-2d-array.gif"/><p class="caption"></p>
+</div>
+<p>You can also use initializers with 2D arrays. For example, here is an initialized <span class="math">3 × 4</span> matrix:</p>
+<pre class="sourceCode"><code class="sourceCode java"><span class="dt">int</span> [][] matrix = {{<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">11</span>, <span class="dv">2</span>}, {<span class="dv">7</span>, <span class="dv">13</span>, <span class="dv">3</span>, <span class="dv">6</span>}, {<span class="dv">10</span>, <span class="dv">0</span>, -<span class="dv">5</span>, <span class="dv">9</span>}};</code></pre>
+<p>Here, we have an array with three arrays of ints (one per row), each of which contains four ints.</p>
+<h2 id="polymorphism-and-interfaces">Polymorphism and Interfaces</h2>
+<p><strong>Polymorphism</strong> comes from Greek words for "many" and "shape." So a polymorphic variable is one that can hold multiple types. It is easy to see why Simula, an early OO language designed for simulation, found this idea helpful. In simulation you may have many objects, perhaps representing animals. It would be useful to have an array that could hold any animal type. The first object in the array might be a fish, the second a frog, the third a wildebeest, etc. For the simulation,, it would be useful to be able to go through the array and tell each animal to move. The fish would swim, the frog would hop, the wildebeest would run, etc. Therefore, we would like to have an array of in which each element is of type <code>Animal</code>. <code>Fish</code>, <code>Frog</code>, <code>Wildebeest</code>, etc. would be subtypes of <code>Animal</code>. They should be able to do anything that a generic <code>Animal</code> can do, and perhaps other things as well.</p>
+<p>Java gives us two ways to achieve this type of polymorphism. The first is to create an interface. That is what we will consider for the rest of this lecture. The second is inheritance, which we will see soon.</p>
+<p>An <strong>interface</strong> is like a class where the method headers (name, return type, parameters) are given, but there are no bodies that implement these methods. We will see a large number of interfaces this term, because interfaces are ideal for specifying Abstract Data Types (ADTs). An ADT consists of some data and a collection of operations that can be performed on that data. "A collection of operations" is exactly what an interface defines. We will see interfaces <code>List</code>, <code>Set</code>, <code>Map</code>, and many others.</p>
+<p>Let's look at a simple interface and how it can be used. The file <a href="GeomShape.java">GeomShape.java</a> contains such an interface. It looks at first like a class definition, but instead of using the word <code>class</code> in the header, it uses the word <code>interface</code>. The other difference is that the methods are not implemented. Instead of a method body, each one has a semicolon after the method header, which makes them <strong>abstract methods</strong>. An interface can have only abstract methods and constants.</p>
+<p>The classes <code>Circle</code> in <a href="Circle.java">Circle.java</a> and <code>Rectangle</code> in <a href="Rectangle.java">Rectangle.java</a> both <strong>implement</strong> the <code>GeomShape</code> interface. Note that the the first line of the definition of both classes ends with <code>implements GeomShape</code>. (There could be a list of interface names, separated by commas.) <strong>The <code>implements</code> tag is a promise to include a definition for <em>every</em> abstract method in the interface.</strong> We say that the implementing class implements every method in the interface. It is an error to fail to implement any method from the interface, and the compiler will complain. (This is a slight lie; we will see later that classes can be abstract. But it is true about any class that can create objects.)</p>
+<p><strong>An <code>implements</code> tag is a promise to implement all the methods of the interface, but the class may include even more.</strong> For example, both the <code>Circle</code> and <code>Rectangle</code> class contain constructors and <code>toString</code>. Moreover, the <code>Rectangle</code> class has a <code>flip</code> method; the <code>Circle</code> class does not, but that's just to show you that the two classes need not implement the same exact set of methods, as long as each implements at least the methods in the interface (which are the methods it has promised to implement).</p>
+<p>The advantage is that a variable (including a formal parameter) can be declared using the interface name as if it were a class name. <strong>As long as the object actually referenced by the variable is from a class that implements the interface, it's OK.</strong> For example, we can declare a variable to be a reference to a <code>GeomShape</code> and have it actually be a reference to a <code>Circle</code>, a reference to a <code>Rectangle</code>, or, for that matter, a reference to any class that implements <code>GeomShape</code>. We can call any of the methods specified in the interface on the object. We know that the methods specified in the interface are defined for the object, because that's exactly what the <code>implements</code> tag tells us.</p>
+<p>The program <a href="GeomShapeDriver.java">GeomShapeDriver.java</a> demonstrates our interface in action. The <code>main</code> method creates an array <code>shapes</code> that contains references to <code>GeomShape</code> objects. <code>shapes[0]</code> refers to a <code>Circle</code> and <code>shapes[1]</code> refers to a <code>Rectangle</code>. In the for-loop, the methods <code>areaOf</code>, <code>move</code>, and <code>scale</code> are called on <code>shapes[0]</code> the first time through the loop and on <code>shapes[1]</code> the second time through the loop. <strong>Java uses the actual type of the object referenced by <code>shapes[i]</code> to decide <em>at run time</em> which <code>areaOf</code>, <code>move</code>, and <code>scale</code> methods to call.</strong> Deciding at run time which method is actually called is known as <strong>dynamic binding</strong>. It is a feature of <strong>polymorphism: the ability of a single variable to reference more than one type of object.</strong> It can be quite powerful.</p>
+<p>Let's revisit what is happening here, because it is important and also very cool. We have declared <code>shapes</code> as an array of type reference to <code>GeomShape</code>. Except that there's no such thing as a <code>GeomShape</code> object. <strong><code>GeomShape</code> is a placeholder for any class that implements the <code>scale</code>, <code>move</code>, and <code>areaOf</code> methods that appear in the <code>GeomShape</code> interface declaration.</strong> When we actually create an object that implements <code>GeomShape</code>, say a <code>Circle</code>, we may assign the reference to that object to a place in <code>shapes</code>.</p>
+<p>The truly remarkable part happens when we call a method with <code>shapes[i]</code> as the reference to the left of the dot, e.g., <code>shapes[i].areaOf()</code>. At compile time, we have no idea from which class the object will actually be. Perhaps <code>shapes[i]</code> references a <code>Circle</code>, but perhaps <code>shapes[i]</code> references a <code>Rectangle</code>. We don't know at compile time. And it doesn't matter! <strong>The decision as to which <code>areaOf</code> method gets called—the one in <code>Circle</code> or the one in <code>Rectangle</code>—is based entirely on what kind of object <code>shapes[i]</code> references at the time the call is made.</strong> That's dynamic binding.</p>
+<p>An additional observation: there is an if-statement that tests if <code>shapes[i]</code> is of type <code>Rectangle</code>. That is what the operator <code>instanceof</code> tests. There is a call to <code>flip</code> inside this if-statement. To make this call, we have to cast the variable <code>shapes[i]</code> to be a reference to a <code>Rectangle</code> object, because <code>GeomShape</code> does not include a <code>flip</code> method. Therefore, there is no reason for the compiler to treat as legal a call of <code>flip</code> on an object that implements <code>GeomShape</code>. <em>We</em> know that <code>shapes[i]</code> references a <code>Rectangle</code> at that moment, and so we are willing to assume responsibility for the call to <code>shape</code> being legal. In order to convince the compiler that the call is legal, however, we cast <code>shapes[i]</code> to a reference to <code>Rectangle</code>. The compiler then follows President Reagan's maxim: "Trust but verify." Because it is doing something that may be unsafe, it puts in a runtime test to make sure that <code>shapes[i]</code> really refers to a <code>Rectangle</code> before it allows the call to <code>flip</code>.</p>
+<p>What would have happened if we had tried to cast <code>shapes[i]</code> to a reference to <code>Rectangle</code> when it actually was a reference to some other kind of object (such as a <code>Circle</code>)? We would get a run-time error known as a <code>ClassCastException</code>, and our program would crash at that point. You can see this behavior yourself: eliminate the if-statement that tests if <code>shapes[i]</code> is an instance of <code>Rectangle</code>.</p>
+
+

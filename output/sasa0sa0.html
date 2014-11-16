@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">
+/*<![CDATA[*/
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode, table.sourceCode pre 
+   { margin: 0; padding: 0; border: 0; vertical-align: baseline; border: none; }
+td.lineNumbers { border-right: 1px solid #AAAAAA; text-align: right; color: #AAAAAA; padding-right: 5px; padding-left: 5px; }
+td.sourceCode { padding-left: 5px; }
+code.sourceCode span.kw { color: #007020; font-weight: bold; } 
+code.sourceCode span.dt { color: #902000; }
+code.sourceCode span.dv { color: #40a070; }
+code.sourceCode span.bn { color: #40a070; }
+code.sourceCode span.fl { color: #40a070; }
+code.sourceCode span.ch { color: #4070a0; }
+code.sourceCode span.st { color: #4070a0; }
+code.sourceCode span.co { color: #60a0b0; font-style: italic; }
+code.sourceCode span.ot { color: #007020; }
+code.sourceCode span.al { color: red; font-weight: bold; }
+code.sourceCode span.fu { color: #06287e; }
+code.sourceCode span.re { }
+code.sourceCode span.er { color: red; font-weight: bold; }
+/*]]>*/
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="short-assignment-0-due-wednesday-march-26">Short Assignment 0 <br/>Due: Wednesday, September 17</h1>
+<p>This short assignment is a bit wordier than will be typical. It also has a lot of technical detail about 
+installing the course software and using it. It is to get you started off. Future assignments will be more 
+creative and will require less following of picky instructions.</p>
+<p>I will be using two Java IDEs (Interactive Development Enviroments)
+in class.  The first is DrJava.  It has
+the advantage of having an Interactions Pane, which allows you to type lines
+of Java and to have them interpreted interactively.  This lets you 
+create objects and play around with them without having to write a 
+main program.  For the early lectures this is a great advantage, because
+we can easily experiment.</p>
+<p>The second is Eclipse.  This is an industrial-strength IDE.  This has
+advantages.  It provides code completion. (You type an object reference
+followed by a dot, and up pops a list of all of the methods or instance variable
+that can legally appear after the dot.  You pick the one you like.)  It provides
+refactoring.  (One example is that you can change a variable name, and it will
+rename all instances of that variable, but will
+not change instances of variables with the same name that are declared
+elsewhere.)  It has a powerful debugger and a lot of other useful features.
+I prefer this for actually developing programs, but it is a lot to learn
+and deal with.</p>
+<p>This assignment asks you to install both IDEs.  For assignments
+you may use either IDE (or both IDEs, one for developing the code and the 
+other for playing with it and debugging it).  I used DrJava when writing the sample solutions for sa-1 and sa-2 and Laboratory 1, and 
+Eclipse for later short assignments and labs.  Both will be installed on
+Sudikoff computers, if you prefer to use them there.</p>
+<h2 id="things-to-do-to-get-started">Things to do to get started</h2>
+<ol style="list-style-type: decimal">
+<li><p>Get the textbook from either <a href="http://www.wiley.com/WileyCDA/WileyTitle/productCd-EHEP002900.html">the publisher</a> 
+or <a href="http://www.amazon.com/Data-Structures-Algorithms-Michael-Goodrich/dp/1118771338/ref=sr_1_2?ie=UTF8&amp;qid=1394580262&amp;sr=8-2&amp;keywords=goodrich+tamassia+java">Amazon</a>.</p></li>
+<li><p>Familiarize yourself with the layout of the CS 1o web site. All materials for the course, other than 
+the textbook, will reside on the website, 
+<a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">www.cs.dartmouth.edu/~scot/cs10/syllabus.html</a> 
+or on the course Canvas site.</p></li>
+<li><p>Install Java 7 and Eclipse on your computer:</p>
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/mac_install/mac_install.html">Instructions for Mac OS X</a></li>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/windows_install/windows_install.html">Instructions for Windows</a></li>
+</ul>
+<p>You can also find instructions on the Software tab of the course website.</p>
+<p>Pay careful attention to the instructions. <em>Follow them exactly. Do not skip steps.</em> From here on, 
+we'll assume that you have installed Java 7 and Eclipse correctly.</p></li>
+<li><p>If Eclipse is not already running, launch it. You should see a window like this:</p>
+<div class="figure">
+<img src="EmptyEclipse.jpg"/><p class="caption"></p>
+</div>
+<p>This image is from Mac OS X. If you're running Windows, you'll see something equivalent. (Mac OS X uses slashes to separate folder names; Windows uses backslashes.)</p>
+<p>Here, /Users/scot/Documents/workspace is my workspace folder on my Mac.</p></li>
+<li><p>From the File menu in Eclipse, select New and on the popup menu that appears choose 
+"Java Project." You should get a window like this:</p>
+<div class="figure">
+<img src="New-Project.jpg"/><p class="caption"></p>
+</div></li>
+<li><p>Fill in the project name. I chose the name cs10proj. You should get a screen that looks like this:</p>
+<div class="figure">
+<img src="cs10proj.jpg"/><p class="caption"></p>
+</div>
+<p>Click the Finish button.</p></li>
+<li><p>At this point, your screen should look like this:</p>
+<div class="figure">
+<img src="WS-With-Project.jpg"/><p class="caption"></p>
+</div></li>
+<li><p>Click the triangle next to cs10proj. You will see the following:</p>
+<div class="figure">
+<img src="src.jpg"/><p class="caption"></p>
+</div>
+<p>"src" is short for "source," and it's where you will put programs in order to run them. 
+We call the actual text of a computer program the <strong>source code</strong>.</p></li>
+<li><p>The code that you'll first run is <a href="Mystery.java">Mystery.java</a>. Click on this link and 
+save the file onto your hard drive. Don't save this file into the workspace folder that you made, however. 
+Just save it someplace innocuous, such as your Desktop or leave it in your Downloads folder.</p></li>
+<li><p>Drag the Mystery.java file from wherever you saved it onto either the word src or the icon to 
+its left. You should see a window like this:</p>
+<div class="figure">
+<img src="File-Operation.png"/><p class="caption"></p>
+</div>
+<p>Click on "OK". You are telling Eclipse to make a copy of the file Mystery.java in the 
+folder you selected as your workspace. For example, in my system, Eclipse has made a copy of Mystery.java 
+within the folder /Users/scot/Documents/workspace/cs10proj/src/.</p>
+<p>At this point, you should see something like this:</p>
+<div class="figure">
+<img src="Default-Package.jpg"/><p class="caption"></p>
+</div>
+<p>If you don't, then click on the triangle next to (default package).</p></li>
+<li><p>To run the program Mystery.java, first click on the file name Mystery.java in the Package Explorer tab. 
+(In other words, click on the file name under (default package). The name Mystery.java will become highlighted. 
+Then go to the Run menu. One of the choices is "Run as." The only choice in the continuation menu 
+should be "1 Java Application." Select it, which will cause your program to compile (translate the 
+Java to an internal form called Java byte code), to link (join up with needed libraries), and to run.</p>
+<p>Note that this action causes a new tab, Console, to appear near the bottom of the window. Click on 
+Console and you will find a question. Click to position the cursor in the console tab to the right of the 
+question, answer the question, and note what happens. You should see a new window come up with something in it. 
+If you don't see that window, it's probably because your Eclipse is covering it; in that case, move the 
+Eclipse window until you see the new window completely. In a plain text file, tell us what you see in that 
+new window. You do not have to say much. We want to know that you have succeeded.</p></li>
+<li><p>Double-click on the Mystery.java name under (default package). Doing so will open a listing of the 
+Mystery.java program in the center of the window with Mystery.java as a tab above it. When you open a 
+number of different files, each will have its own tab, so that you can quickly select any of them. 
+This listing can be edited and saved. This panel is where you will enter and debug your programs. It 
+should look like this:</p>
+<div class="figure">
+<img src="Mystery-Listing.jpg"/><p class="caption"></p>
+</div></li>
+<li><p>Next, remove Mystery.java from the project. To do so, select it again by clicking on Mystery.java 
+in the Package Explorer tab, go into the Edit menu, and choose Delete. When you are asked, "Are 
+you sure you want to delete file 'Mystery.java'"?, click OK.</p></li>
+<li><p>Now you will type in a new program that you will write. This program prints your name, followed 
+by a blank line, followed by a haiku about programming.</p>
+<p>In case you have forgotten, a haiku is a poem in three lines. The first and third lines have five syllables each, and the second line has seven syllabus. No rhyming is required.</p>
+<p>The haiku you write should be about computer programming. Feel free to make one up, or you can easily find haikus about programming on the Internet. Here's the haiku I made up:</p>
+<blockquote>
+<p>When in CS 10 <br/>Starting assignments early <br/>Pays off in the end</p>
+</blockquote>
+<p>First, click on src to highlight it. Then go to the File menu and drag down to New, then choose File from the popup menu that appears. You need to select a parent folder. Because you have already selected the default package in src under cs10proj, you will see that cs10proj/src has already been chosen as a parent folder; that's just what you want:</p>
+<div class="figure">
+<img src="Parent-Folder.png"/><p class="caption"></p>
+</div>
+<p>You then need to type in the name of your new file next to where it says, "File name:." Choose Haiku.java as the file name. The ".java" is essential, because the name of the file has to be the same as the name of the class inside it. Then click Finish.</p>
+<p>The middle of the window will be a tab labeled with the name of your program (Haiku.java in our example.) Type in the haiku program, with your name, a blank line, and a haiku of your choosing. (See the explanation below under <a href="#exercises">Exercises</a>.) Note that Eclipse automatically indents your program as you type it, and does things like putting closing braces and parentheses when you type the opening ones. Also, if a line has an error in it, a red error mark will appear in the left margin in front of it.</p>
+<p>You can have Eclipse help you even more by selecting File -&gt; New -&gt; Class instead of File -&gt; New -&gt; File. A screen will pop up. Type in the name and click the box next to "public static void main(String[] args)". When you type in the name, bear in mind that it's the name of a <em>class</em>, not the name of a <em>file</em>. For example, if you want your class to be named Haiku, then you should type "Haiku" rather than "Haiku.java." Don't worry; Eclipse will create the file Haiku.java for you. If the name of the class is Haiku, the window will look as follows just before you click Finish.</p>
+<div class="figure">
+<img src="New-Java-Class.png"/><p class="caption"></p>
+</div>
+<p>If you create the <code>Haiku</code> class this way, then a class declaration and a declaration of the main method will be provided, and you must fill in the bodies. You might see that they're in a package named cs10proj; that's OK.</p>
+<p>You might have noticed a subtle difference between the parameter in the <code>main</code> method that I've written and the parameter provided when you choose File -&gt; New -&gt; Class. In the code I write, the parameter is written as <code>String args[]</code>, but in the code Eclipse creates, the parameter is written as <code>String[]   args</code>. The difference is where the empty square brackets go. It turns out that in this case, it doesn't matter whether they go after the type <code>String</code> or the parameter name <code>args</code>, and it wouldn't matter even if we really were going to use the command-line arguments. Later, we'll see situations in which where you place the empty square brackets does matter.</p></li>
+<li><p>Type in your program.</p></li>
+<li><p>Run your program by highlighting the file name in the Package Explorer tab and going to the Run menu, 
+as you did with Mystery.java. If Eclipse asks you to "Select the resources to save," just click 
+"OK." Either your program will run correctly (writing to the Console panel) or Eclipse will 
+describe the errors in the program in the Problems panel.</p>
+<p>Your program may not run correctly the first time. You've programmed before, and so you've made many an 
+error in the past. If you have an error, check the syntax of your program carefully. Are the semicolons, c
+urly braces, parentheses, and quotation marks correctly placed? Did you misspell something?</p>
+<p>If you need help, you can contact the TA, a section leader, or me to get help. Remember that if you 
+blitz <script type="text/javascript">
+<!--
+h='&#x63;&#x73;&#46;&#100;&#x61;&#114;&#116;&#x6d;&#x6f;&#x75;&#116;&#104;&#46;&#x65;&#100;&#x75;';a='&#64;';n='&#x63;&#x73;&#x31;&#48;&#104;&#x65;&#108;&#112;';e=n+a+h;
+document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+'cs10help'+'<\/'+'a'+'>');
+// -->
+</script><noscript>cs10help (cs10help at cs dot dartmouth dot edu)</noscript> , the first available person will respond. If you ask for help by Blitz, please remember to enclose a copy of your program: without it, we cannot tell you what's wrong with it. Remember that when you blitz a program it must be an <em>attachment</em>. Please do not copy and paste your program into the message; we will have a hard time running it if you copy and paste, but it's easy for us to run it if you make it an attachment. Your program is found somewhere in the src folder within the cs10proj folder within the folder that you selected as your workspace.</p>
+<p>When your program execution completes, you'll be left with the Console panel containing the output of your 
+program. We have not yet found a way to print the Console panel. (You'd think that you could click in the 
+Console panel and then choose "Print..." from the File menu, but the good people who wrote Eclipse 
+disabled printing when the Console panel is active. Go figure.) So what you need to do is to copy the output 
+and paste it into a word processor's window (Notepad on Windows or TextEdit on the Mac are easy ones to use, 
+although Word will also work.  I personally use TextWrangler on the Mac, which is free on the web.) Alternatively, 
+you can take a screenshot. (On Windows, use the PrntScrn button. 
+On the Mac, you can take a shot of just the window you want by using the Grab utility.)</p></li>
+<li> <p>Install Dr. Java on your computer.  You can get it by going to 
+  <a href="http://www.drjava.org/">drjava.org</a> and chosing the appropriate download in
+  the section "Current Stable Release".  
+  For Windows it is easy - choose the Windows app and unpack the file.  
+  Unpack the file and you have the DrJava application. 
+  (You can then throw away the downloaded file.)</p>
+<p>Unfortunately the Mac version of Dr. Java does not work with Java 7 (which you just 
+  installed).  (If you have Java 6 installed from earlier, you can use the app.)  So instead you download the <code>.jar</code> file.  Put it in your CS 10 folder (or some useful place) and double-click on it.  If it runs, fine.  If you have the privacy and security settings that you probably should have, you will get the following window:</p>
+<img src="CantOpen.jpg"/>
+<p>Click "OK" and go to "System Preferences" under the Apple menu. "Show All", and click 
+on "Security &amp; Privacy".  You should get a window that looks like:
+
+<img src="SecurityPrivacy.jpg"/>
+<p>Click on "Open Anyway".  You may get a warning:</p>
+<img src="OpenAnyway.jpg"/>
+<p>Click on "Open" and you should be all set.  Having done this once, Dr. Java should open whenever you click on its <code>.jar</code> file.</p>
+<p>After you have installed Dr. Java you need to also install the java source and media libraries
+  from the Media Computing site.  The files that you want 
+  are 
+<a href="java-source.zip"><tt>java-source</tt></a> and
+<a href="media-sources.zip"><tt>media-sources.zip</tt></a>.
+(These are reduced versions of what is available from a Georgia Tech educational site, which is 
+<a href="http://coweb.cc.gatech.edu/mediaComp-teach#DS">here</a> in case you want to know more about them.)
+  Put them in a CS 10 folder somewhere where you can find it.  Unpack the .zip files.<p>
+<p> You now need to tell DrJava how to find the code in the <tt>java-source</tt> directory.  Use the 
+  Preferences in DrJava to add the <tt>java-source</tt> directory to the list of locations where DrJava 
+  looks for unknown classes.  (This list is called the <em>classpath</em>.) Then click on APPLY and OK.
+  (This is a simplified version of what appears on pp. 18-20 of the on-line textbook 
+  <a href="http://www.cc.gatech.edu/~mark.guzdial/mediacomp/BETA-dsBook-7-22-09-first4chapters.pdf">here</a>.
+  The description there tells you how to install music and instrument files, which we will not use.) </p>
+<p><em>Quit and re-start DrJava.</em>  Then test your DrJava installation by typing the following code into the Interaction
+  Pane in DrJava:</p>
+<pre>
+String fileName = FileChooser.pickAFile();
+Picture p = new Picture(fileName);
+p.explore();
+</pre>
+<p>The first command will cause a file-chooser window to appear.  
+Navigate to where you put the <code>media-sources</code> directory
+and choose <code>beach.jpg</code>.  Play with the picture if you like.  
+Then take a screen shot of that window.  
+  (I like using Grab on the Mac.  You can use the PrntScrn button
+  on Windows.)</p>
+<p>If you get the error message "Static Error: Undefined name 'FileChooser'" it
+  probably means that you did not set up the class path to java-source correctly. </p>
+</p></p></p></li></ol>
+<h2 id="reading">Reading</h2>
+<p>Your textbook, <em>Data Structures and Algorithms in Java</em>, 6th edition, by Michael T. Goodrich, 
+Roberto Tamassia, and Michael H. Goldwasser, contains a lot of good reading. Some of it is background 
+information that you will read very lightly. Some is more important. Spend a little time now to see 
+how the book is laid out.</p>
+<p>Remember that the <a href="../../schedule.html">schedule</a> page tells you what reading to do 
+for each lecture.  I suggest reading it before the lecture, but some people prefer to read it after the lecture.
+</p>
+<p>For Wednesday, read Chapter 1 and Sections 2.1–2.3. Yes, that's 81 pages of reading. You thought you 
+could escape lots of reading by taking a Computer Science course?? Hah!</p>
+<h2 id="exercises">Exercises</h2>
+<p>Here's what you should do for Wednesday. Remember that short assignments are due at 10:00 am. You submit them through Canvas.</p>
+<ol style="list-style-type: decimal">
+<li><p>Run the Java program Mystery.java, and writen into a plain text file what you observed.</p></li>
+<li><p>Write a Java program, Haiku.java, that prints out your name, a blank line, and a haiku about programming. Here's the output of my program:</p>
+<pre><code>Scot Drysdale
+
+When in CS 10
+Starting assignments early
+Pays off in the end.
+</code></pre>
+<p>The program should be very simple, essentially consisting of just a few <code>System.out.println()</code> statements within your <code>main</code> method. In this example, the third statement might be</p>
+<pre class="sourceCode"><code class="sourceCode java">System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"When in CS 10"</span>);</code></pre>
+<p>Submit your Haiku.java file and the output of your program.</p></li>
+<li>Submit the screen shot of <code>beach.jpg</code> that you got from running the 
+<code>explore</code> call in Dr. Java.</li>
+</ol>
+</body>
+</html>

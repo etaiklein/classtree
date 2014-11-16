@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-28-nov-17">Lecture 28, November 17</h1>
+<h2>Code discussed in lecture</h2>
+<ul>
+<li><a href="../27/ForksMonitor.java">ForksMonitor</a></li>
+<li><a href="../27/PhilosopherMonitor.java">PhilosopherMonitor</a></li>
+<li><a href="../27/PhilosopherSemaphore.java">PhilosopherSemaphore</a></li>
+</ul>
+<a name="philosophers"></a>
+<h2>Dining Philosophers</h2>
+<p>Allowing only one thread in any synchronized method at a given time allows us to
+deal with the concurrency problems we saw with <code>Incrementer</code>, but it can
+be overly restrictive in some cases.  For instance, allowing only one thread to access
+a large database would be overly restrictive.  It would be better to allow a program
+to "lock" a given piece of data while it processed it, while allowing other programs
+to process other pieces of data in the same database.  It is often useful to have resources
+that can be "checked out" for your exclusive use and then "checked back in" when you are done. 
+This can be accomplished via a mechanism called a semaphore in some of the literature
+and a lock in other parts of the literature.  The basic idea is that you can ask to
+acquire a resource, and only one request will be granted at a time and the resource
+will be unavailable to other threads or processes until it is released.</p>
+<p>While this allows more flexible access to resources and more concurrent processing,
+it leads to two nasty problems: deadlock and starvation.  Deadlock occurs when the 
+pattern of resource acquisition
+has produced a state where no thread in a set of threads may proceed because each needs a
+resource that another is holding.  They wait forever.  Starvation is when some thread never
+gets a resource that it needs, even though the needed resources are acquired and freed by
+other processes.  The particular process just never manages to get all of the resources it
+needs at the same time.</p>
+<p>These two problems are commonly illustrated in the "dining
+philosophers" problem.  Suppose there are <em>n</em> philosophers
+sitting around a circular table with <em>n</em> forks, one between
+each pair of philosophers.  Every so often, a philosopher decides to
+eat, and to do so must pick up two forks — one on his
+left and one on his right.  After acquiring the forks, the
+philosopher eats for a while before putting them both back down.
+Deadlock and starvation can arise because of the limited resources
+(for some reason, those poor philosophers never have enough forks
+to go around).</p>
+<p>In the naive fork acquisition algorithm, a philosopher first
+picks up the left fork and then the right fork.  So it can
+be the case that each gets the left fork, but the right fork
+is held by their neighbor.  We have a deadlock, where nobody can proceed.</p>
+<p>For a deadlock to occur, we need three conditions:</p>
+<ol>
+<li>Each process or thread needs multiple resources.</li>
+<li>A thread can hold some resources while waiting to acquire others</li>
+<li>A circular "wait-for" pattern can occur</li>
+</ol></body></html>
+<p>The algorithm described certainly satisfies all of these conditions.  Each
+philosopher needs 2 forks.  As described above he picks up one and then
+tries to pick up the other.  And we can have each philosopher holding his
+left fork while waiting for his right fork, so we can get a circular
+wait-for pattern.</p>
+<p>So how can we solve this problem?  One easy way it to make 2 impossible.
+We can allow a philosopher to pick up forks only if both are available.
+But how can we do this?  What if both forks are free when the philosopher
+checks, but a neighbor grabs the second one after he picks up the first?  A
+monitor will solve that problem.  Consider the classes 
+<a href="../27/ForksMonitor.java">ForksMonitor</a> and 
+<a href="../27/PhilosopherMonitor.java">PhilosopherMonitor</a>.</p>
+<p>First, we create a class to deal with the forks.  The forks are represented
+by a boolean array, where true indicates the fork is in use.  Note that a 
+philosopher trying to pick up forks can only do so if both are free.
+The synchronized qualifier prevents anyone from grabbing them after
+he checks.  After eating a philosopher puts down both forks and notifies
+any waiting philosophers that they can try to proceed.</p>
+<code>
+public class ForksMonitor {
+  public boolean [] forks;     // True indicates that the fork is taken
+  
+  /**
+   * Construct a object with num forks.
+   * Mark all as not in use.
+   * @param num number of forks (and philosophers)
+   */
+  public ForksMonitor(int num) {
+    forks = new boolean[num];
+    for(int i = 0; i &lt; forks.length; i++)
+      forks[i] = false;
+  }
+  
+  /**
+   * Pick up forks numbered pNum and pNum+1 (wrapping).  
+   * Block if either fork is in use.
+   * pNum the number of the first fork
+   */
+  public synchronized void pickUpForks(int pNum) throws InterruptedException {
+    // If either fork is in use wait
+    while (forks[pNum] || forks[(pNum+1) % forks.length] )   
+        wait();
+    
+    // Take the forks
+    forks[pNum] = true;
+    forks[(pNum+1) % forks.length] = true;
+  }
+  
+  /**
+   * Put down forks numbered pNum and pNum+1 (wrapping).  
+   * Assumes that this philosopher had been granted the forks.
+   * pNum the number of the first fork
+   */
+  public synchronized void putDownForks(int pNum) throws InterruptedException {  
+    // Put down the forks
+    forks[pNum] = false;
+    forks[(pNum+1) % forks.length] = false;
+    notifyAll();
+  }
+}
+</code>
+<p>The philosophers each get a thread. In their <code>eat</code> method each
+picks up the forks (perhaps after waiting), eats, puts down the forks, and
+thinks.  This is repeated <code>NUM_MEALS</code> times in each philosopher's
+<code>run</code> method.  Demonstrate.</p>
+<code>
+public class PhilosophersMonitor extends Thread {
+  private int myNum;   // Number of this philosopher
+  private ForksMonitor forks;
+  private Random generator;
+  private static final int EAT_TIME = 1000;
+  private static final int THINK_TIME = 1000;
+  private static final int NUM_MEALS = 10;
+  private static final int NUM_PHILOSOPHERS = 6;
+  
+  public PhilosophersMonitor(int philNum, ForksMonitor theForks) {
+    myNum = philNum;
+    forks = theForks;
+    generator = new Random();
+  }
+  
+  /**
+   * Eat using a monitor to control the forks
+   * @param meal the number of the meal eaten
+   */ 
+  public void eat(int meal) 
+        throws InterruptedException {
+    
+    System.out.println("Philosopher " + myNum + " trys to pick up forks");
+    forks.pickUpForks(myNum);
+    System.out.println("Philosopher " + myNum + " picks up forks and eats meal " + meal);
+    System.out.println("Philosopher " + myNum + " puts down forks and thinks");
+    forks.putDownForks(myNum);
+    
+    sleep(THINK_TIME + generator.nextInt(THINK_TIME));
+  }
+  
+  /**
+   * The code to eat NUM_MEALS meals is in the run method of the thread.
+   */
+  public void run() {
+    try {
+      for(int meal = 1; meal &lt;= NUM_MEALS; meal++) 
+        eat(meal);    
+    } catch(InterruptedException e){}
+  }
+  
+  /**
+   * Create NUM_PHILOSOPHERS philosopher threads and start them eating
+   */
+  public static void main(String [] args) {
+    ForksMonitor forks = new ForksMonitor(NUM_PHILOSOPHERS);  
+    
+    for(int num = 0; num &lt; NUM_PHILOSOPHERS; num++) {
+      PhilosophersMonitor phil = new PhilosophersMonitor(num, forks);
+      phil.start();
+    }
+  }
+}
+</code>
+<p>This approach does have drawbacks.  A philosopher can starve if
+one of his neigbors always has a fork.  As long as one of them is eating
+while the other is thinking this can occur.  Using a monitor also prevents
+two philosophers on opposite sides of the table from picking up forks 
+simultaneously, which is not necessary.</p>
+<p>An alternate approach is to protect each fork.  There is a construct
+called a semaphore in which threads wait for the semaphore, take the semaphore
+and do their thing, and then release the semaphore.  Java does not directly
+provide semaphores, but we can use sychronization to achieve this.  Consider
+the <code>ForkSemaphore</code> inner class in
+<a href="../27/PhilosopherSemaphore.java">PhilosopherSemaphore</a>.  The
+semaphore has an instance variable <code>available</code> that is true when the fork
+is available.  As in <code>BoundedBuffer</code>, the <code>acquire</code> method has
+a while loop, within which is a call to <code>wait</code>.  The <code>release</code>
+method sets <code>available</code> to true and notifies any other threads that the fork is now
+available.</p>
+<code>
+private class ForkSemaphore {
+  private boolean available;  // true means it is available
+			
+  public ForkSemaphore() {
+    available = true;
+  }
+
+  public synchronized void acquire() throws InterruptedException {
+    while (!available) {
+      wait();
+    }
+    available = false;
+  }
+
+  public synchronized void release() {
+    available = true;
+    notifyAll();
+  }
+}
+</code>
+<p>The class <code>PhilosophersSemaphore</code> creates an array of forks,
+creates the appropriate number of philosophers (each with its own number), and 
+and calls <code>start</code> on each philosopher to start it running.</p>
+<p>A second inner class <code>Philosoper</code> extends <code>Thread</code>.  Each 
+philosopher remembers its own number. When it is time to eat he first acquires the 
+left fork and then the right.  We call the method that does this <code>starve</code>,
+because it can deadlock.  The <code>run</code> method calls <code>starve</code> repeatedly,
+with pauses for eating before putting down the forks and pauses for thinking before
+trying to eat again.  Demonstrate.  The <code>sleep(10)</code> before picking up the 
+second fork delays it enough to cause a deadlock.</p>
+<code>
+public class Philosopher extends Thread {
+  private int myNum;        // this philosopher's positon number
+
+  public Philosopher(int num) {
+    myNum = num;
+  }
+
+			
+  /**
+    * Eat using semaphores to control the forks
+    */ 
+  public void starve(int meal) 
+      throws InterruptedException {
+		  	
+    System.out.println("Philosopher " + myNum + " trys to pick up fork " + myNum);
+    forks[myNum].acquire();
+    System.out.println("Philosopher " + myNum + " has fork " + myNum + 
+      " and trys to pick up fork " +  ((myNum+1) % NUM_PHILOSOPHERS));
+    sleep(10);	  	
+    forks[(myNum+1) % NUM_PHILOSOPHERS].acquire();
+    System.out.println("Philosopher " + myNum + " eats meal " + meal);
+		  	
+    sleep(EAT_TIME + generator.nextInt(EAT_TIME));
+		  	
+    System.out.println("Philosopher " + myNum + " puts down forks and thinks");
+    forks[myNum].release();
+    forks[(myNum+1) % NUM_PHILOSOPHERS].release();
+		  	
+    sleep(THINK_TIME + generator.nextInt(THINK_TIME));
+  }
+		  
+		  
+  public void run() {
+    try {
+      for(int meal = 1; meal &lt;= NUM_MEALS; meal++) 
+        starve(meal);		
+    } catch(InterruptedException e){}
+  }
+}
+</code>
+<p>How can we avoid this deadlock?  Make it so that condition 3 (circular wait)
+cannot happen.  One approach is for each philosopher to grab the lower-numbered
+fork first.  This is a special case of a general approach to avoiding deadlocks.
+This approach puts a linear order resources and requires a task to acquire the
+resources in increasing order and release them in decreasing order.  (If all 
+resources are released at the same time the order that they are released in does
+not matter, but if you are going to release some - but not all - resources and then
+acquire others it does matter.)  Doing this prevents a loop.  If there were a loop
+one of the threads T in the loop would hold a resource R that is larger than any resource
+held by any other thread in the loop.  But this thread cannot be waiting for a 
+resource held by another thread, because resources that they hold all have lower
+values that R so would have been acquired before T acquired R.</p>
+<p>Another approach is to have a waiter prevent the last philosopher from 
+taking the last fork until some other philospher puts down his forks.</p>
+<p>Perhaps the
+most elegant approach is to have even-numbered philosophers grab their left
+fork first and odd-numbered philosophers grab their right fork first.  (For an even
+number of philosophers this effectively
+breaks the forks into two resource classes, those to be acquired first and those to
+be acquired second.  For an odd number it is a bit more complicated, but still works.)  
+This is approach is seen in the <code>eat</code> method of 
+<a href="../27/PhilosopherSemaphore.java">PhilosopherSemaphore</a>.  Demonstrate
+it.</p>
+<code>
+/**
+  * Eat using semaphores to control the forks
+   * This version cannot deadlock
+   */ 
+public void eat(int meal) 
+    throws InterruptedException {
+		  	
+  if(myNum % 2 == 0) {
+    System.out.println("Philosopher " + myNum + " trys to pick up fork " + myNum);
+    forks[myNum].acquire();
+    System.out.println("Philosopher " + myNum + " has fork " + myNum + 
+        " and trys to pick up fork " +  ((myNum+1) % NUM_PHILOSOPHERS));
+    sleep(10);
+    forks[(myNum+1) % NUM_PHILOSOPHERS].acquire();
+    System.out.println("Philosopher " + myNum + " eats meal " + meal);
+  }
+  else {
+    System.out.println("Philosopher " + myNum + " trys to pick up fork " + 
+        ((myNum+1) % NUM_PHILOSOPHERS));
+    forks[(myNum+1) % NUM_PHILOSOPHERS].acquire();
+    System.out.println("Philosopher " + myNum + " has fork " + 
+        ((myNum+1) % NUM_PHILOSOPHERS) + " and trys to pick up fork " +  myNum);
+    sleep(10);
+    forks[myNum].acquire();
+    System.out.println("Philosopher " + myNum + " eats meal " + meal);
+  }
+  sleep(EAT_TIME + generator.nextInt(EAT_TIME));
+		  	
+  System.out.println("Philosopher " + myNum + " puts down forks and thinks");
+  forks[myNum].release();
+  forks[(myNum+1) % NUM_PHILOSOPHERS].release();
+		  	
+  sleep(THINK_TIME + generator.nextInt(THINK_TIME));
+ }
+</code>
+<h2>Other Approaches</h2>
+<p>There are other approaches for handling concurrent processes and threads.  One
+is message passing.  Instead of sharing memory processes send messages to one another.</p>
+<p>Another is called Software Transactional Memory.  The idea is that you specify a group
+of actions that should take place atomically.  That is, nothing else should access or
+change the information that the actions are reading or changing.  The idea comes from
+databases.  When you are dealing with records in a database it is impractical to lock the
+entire database to do a transaction.  The way that databases work is that you perform a group
+of operations called a transaction.  All actions are recorded in a log.  You then commit the 
+transaction.  If no other process has interacted with the records that the transaction has dealt
+with (which can be determined from the log) you record all changes.  Otherwise you "roll back" 
+to the state before you began the transaction.  Thus the whole transaction completes successfully
+or nothing appears to have happened at all. </p>
+
+

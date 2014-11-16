@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-15-oct-17">Lecture 15, October 17</h1>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="SetDemo.java">SetDemo.java</a></li>
+<li><a href="AnimalSounds.java">AnimalSounds.java</a></li>
+<li><a href="Ballot.java">Ballot.java</a></li>
+<li><a href="Election.java">Election.java</a></li>
+<li><a href="VoteTally.java">VoteTally.java</a></li>
+<li><a href="InstantRunoffOO.java">InstantRunoffOO.java</a></li>
+<li><a href="InstantRunoffProc.java">InstantRunoffProc.java</a></li>
+</ul>
+<h2 id="collections">Collections</h2>
+<p>Java has a group of interfaces for holding collections of objects and classes that implement them. We have briefly touched up <code>List</code>, which is an interface with two Java-provided implementations: <code>ArrayList</code> and <code>LinkedList</code>. Today will look at two other interfaces for holding collections of objects: <code>Set</code> and <code>Map</code>. Each has two Java-provided implementations. <code>Set</code> is implemented by <code>HashSet</code> and <code>TreeSet</code>. Map is implemented by <code>HashMap</code> and <code>TreeMap</code>. We will be looking at their underlying data structures, hash tables and binary search trees, in the next few lectures.</p>
+<h2 id="the-list-interface">The <code>List</code> interface</h2>
+<p>Among other methods, the <code>List&lt;E&gt;</code> interface provides the following:</p>
+<ul>
+<li><code>boolean add(E o)</code><br/> Adds the specified element to the end of the list. Always returns <code>true</code>.</li>
+<li><code>void add(int index, E o)</code><br/> Inserts the specified element at position <code>index</code> of this list.</li>
+<li><code>void clear()</code><br/> Removes all of the elements from this list.</li>
+<li><code>boolean contains(Object o)</code><br/> Returns <code>true</code> if this list contains the specified element, <code>false</code> otherwise.</li>
+<li><code>E get(int index)</code><br/> Returns the element at position <code>index</code>.</li>
+<li><code>boolean isEmpty()</code><br/> Returns <code>true</code> if this list contains no elements, <code>false</code> otherwise.</li>
+<li><code>int indexOf(Object o)</code><br/> Returns the index of the first occurrence of the specified element in the list, or <span class="math"> − 1</span> if the list does not contain the element.</li>
+<li><code>Iterator&lt;E&gt; iterator()</code><br/> Returns an iterator that goes through the elements in this list in the order that they appear in the list.</li>
+<li><code>ListIterator&lt;E&gt; listIterator()</code><br/> Returns a list iterator that goes through the elements in this list in the order that they appear in the list.</li>
+<li><code>E remove(int index)</code><br/> Removes the element at the specified position in this list and returns it.</li>
+<li><code>boolean remove(Object o)</code><br/> Removes the first occurrence of the specified element from this list if it is present. Returns <code>true</code> if the element is present, <code>false</code> otherwise.</li>
+<li><code>E set(int index, E element)</code><br/> Replaces the element at the specified position with the given element. Returns the old element.</li>
+<li><code>int size()</code><br/> Returns the number of elements in this list.</li>
+</ul>
+<p>If both <code>ArrayList</code> and <code>LinkedList</code> implement this set of operations, why have both? Efficiencies differ. Access operations (<code>set</code> and <code>get</code>) take constant time in an <code>ArrayList</code>, but require time proportional to the distance to the nearest end for a <code>LinkedList</code>. (The <code>LinkedList</code> is a doubly-linked circular linked list, and it's smart enough to start at the closest end.) On the other hand, modification operations (<code>add</code> and <code>remove</code> at a given index) require time proportional to the number of elements after the index in an <code>ArrayList</code>, because all of these elements must be copied. But for a <code>LinkedList</code>, they take constant time after the time to access the index (distance from nearest end). Therefore, all <code>Iterator</code> or <code>ListIterator</code> operations take constant time for a <code>LinkedList</code>, but <code>add</code> and <code>remove</code> operations take time proportional to the number of remaining elements for an <code>ArrayList</code>.</p>
+<h2 id="the-set-interface">The <code>Set</code> interface</h2>
+<p>A <code>Set</code> differs from a <code>List</code> in that a <code>List</code> has a linear order, whereas a <code>Set</code> does not. Furthermore, an element can appear multiple times in a <code>List</code> but only once in a <code>Set</code>.</p>
+<p>Here are the primary operations on a <code>Set&lt;E&gt;</code>:</p>
+<ul>
+<li><code>boolean add(E o)</code><br/> Adds the specified element to this set if it is not already present. Returns <code>true</code> if <code>o</code> was not in the set, <code>false</code> if <code>o</code> was already in the set.</li>
+<li><code>void clear()</code><br/> Removes all of the elements from this set.</li>
+<li><code>boolean contains(Object o)</code><br/> Returns <code>true</code> if this set contains the specified element, <code>false</code> otherwise.</li>
+<li><code>boolean isEmpty()</code><br/> Returns <code>true</code> if this set contains no elements, <code>false</code> otherwise.</li>
+<li><code>Iterator&lt;E&gt; iterator()</code><br/> Returns an iterator over the elements in this set.</li>
+<li><code>boolean remove(Object o)</code><br/> Removes the specified element from this set if it is present. Returns <code>true</code> if the <code>o</code> was present, <code>false</code> otherwise.</li>
+<li><code>int size()</code><br/> Returns the number of elements in this set (i.e., its cardinality).</li>
+</ul>
+<p>All of these methods are also part of the <code>List</code> interface. So why have a separate interface?</p>
+<p>The main reason is implementation efficiency. The <code>contains</code> operation on either an <code>ArrayList</code> or a <code>LinkedList</code> with <span class="math"><em>n</em></span> elements takes <span class="math"><em>O</em>(<em>n</em>)</span> time, and for an <code>ArrayList</code> the <code>remove</code> operation can take <span class="math"><em>O</em>(<em>n</em>)</span> time. For applications such as a dictionary for a spell checker, these running times are too slow.</p>
+<p>There are two implementations of <code>Set</code> in the Java class library. Both implement the <code>contains</code> operation more efficiently than it can be implemented for a <code>List</code>.</p>
+<p>The first implementation is <code>TreeSet</code>, which uses a data structure called a balanced binary tree to store the data. You can think of it as a little like a linked list on which you can do binary search. We will talk about this data structure soon. The important point is that the <code>add</code>, <code>remove</code>, and <code>contains</code> methods all take <span class="math"><em>O</em>(lg <em>n</em>)</span> time for a set with <span class="math"><em>n</em></span> elements. It works only on <code>Comparable</code> objects. The iterator is guaranteed to return the elements in increasing order by <code>compareTo</code> and takes <span class="math"><em>O</em>(<em>n</em>)</span> time to iterate through the entire set. Getting the first element from the iterator takes <span class="math"><em>O</em>(lg <em>n</em>)</span> time.</p>
+<p>The second is <code>HashSet</code>, which uses a data structure called a hash table. We will talk about hash tables next time.</p>
+<p>If the hash table is used properly, then the <code>add</code>, <code>remove</code>, and <code>contains</code> operations all take <span class="math"><em>O</em>(1)</span> time on average (although it is possible that they could take <span class="math">Θ(<em>n</em>)</span> time if you were extremely unlucky). The iterator returns the elements in a somewhat arbitrary order.</p>
+<p>As an example of the use of sets, consider the program <a href="SetDemo.java">SetDemo.java</a>. It creates a set consisting of all of the keywords in Java. It then uses an iterator to go through the set and print each of the words. (Note that an iterator on a <code>Set</code> is identical to an iterator on a <code>List</code>.) Finally, it lets the user type words and determines if they are keywords by using <code>contains</code> to see if they are in the set.</p>
+<h2 id="the-map-interface">The <code>Map</code> interface</h2>
+<p>The <code>Map</code> interface describes a data structure that can be thought of as a set where each element has associated data. Each data element is associated with a <strong>key</strong>. By looking up the key, you can get the associated data, just like a dictionary in Python. A key is typically something like your student ID number, and the associated data might be your student record. A <code>Map</code> can be implemented using balanced a binary tree or a hash tables, just like a <code>Set</code>.</p>
+<p>The primary operations in a <code>Map&lt;K,V&gt;</code> are the following (where <code>K</code> is the generic type for the key and <code>V</code> is the generic type for the associated data):</p>
+<ul>
+<li><code>void clear()</code><br/> Removes all mappings from this map.</li>
+<li><code>boolean containsValue(Object value)</code><br/> Returns <code>true</code> if this map maps one or more keys that map to the specified value, <code>false</code> otherwise.</li>
+<li><code>V get(Object key)</code><br/> Returns the value to which this map maps the specified key.</li>
+<li><code>boolean isEmpty()</code><br/> Returns <code>true</code> if this map contains no key-value mappings.</li>
+<li><code>Set&lt;K&gt; keySet()</code><br/> Returns a <code>Set</code> containing the keys contained in this map.</li>
+<li><code>V put(K key,  V value)</code><br/> Associates the specified value with the specified key in this map. Returns the previous value associated with key, or <code>null</code> if key was not in the map.</li>
+<li><code>V remove(Object key)</code><br/> Removes the mapping for this key from this map if it is present. Returns the value associated with key (or <code>null</code> if key is not in the map).</li>
+<li><code>int size()</code><br/> Returns the number of key-value mappings in this map.</li>
+</ul>
+<p>For an example of the use of a map, consider <a href="AnimalSounds.java">AnimalSounds.java</a>. This program allows the user to insert animal names as keys and the sounds that they make as the associated data. The user can then ask for the sound that a given animal makes, or to remove an animal from the map.</p>
+<p>Note the way the the print operation works. The code for this is</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">if</span> (animalMap.<span class="fu">isEmpty</span>())
+  System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"The map is empty"</span>);
+<span class="kw">else</span> {
+  System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"Here are the animals and their sounds:"</span>);
+
+  Set&lt;String&gt; animalNames = animalMap.<span class="fu">keySet</span>();
+  Iterator&lt;String&gt; iter = animalNames.<span class="fu">iterator</span>();
+
+  <span class="kw">while</span> (iter.<span class="fu">hasNext</span>()) {
+    animal = iter.<span class="fu">next</span>();
+    System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="fu">toTitleCase</span>(<span class="fu">getArticle</span>(animal)) + <span class="st">" "</span>
+        + animal + <span class="st">" says "</span> + animalMap.<span class="fu">get</span>(animal) + <span class="st">"."</span>);
+  }
+}</code></pre>
+<p>Note that the first step is to call <code>keySet</code> to get all of the keys in the map. Then we create iterator for the set, and we use it to iterate through the set, printing each key and the value returned by <code>get</code> for that key.</p>
+<h2 id="a-more-complex-example-voting">A more complex example: voting</h2>
+<p>The method of voting in which the candidate with the most votes wins the election has some drawbacks. If two conservatives get in a race against a liberal in a conservative district they could split the conservative vote and the liberal gets elected, even though he is the third choice of the majority of the voters in the election. Also, third parties have a hard time getting established, because voting for a third-party candidate can be throwing away your vote. If about a third of the 22,000 New Hampshire voters who voted for Nader in the Bush-Gore election had voted for Gore instead, he would have won the state and the presidency. Florida, and its hanging chads, would not have mattered.</p>
+<p>Some states solve these problems by having a runoff election between the top two candidates if nobody gets a majority of the votes. But a runoff election costs time and money. A popular alternative suggestion is the instant runoff election.</p>
+<p>In an instant runoff election, the voters fill out a ballot with an ordered list of candidates, from most favorable to least favorable. The election takes place in rounds. In the first round, each ballot awards a vote to the first candidate on the ballot. If nobody has a majority, then the candidate with the fewest votes is dropped from the election. (In case of ties we will chose one at random.) Then another round is run. This time, each ballot's vote is awarded to the first candidate in its list who has not been eliminated. The bottom candidate is dropped, and the process repeats until one candidate has a majority. (In fact, it can repeat until there is just one candidate left and get the same result. Once someone has a majority they will never be eliminated.)</p>
+<p>How could we write a program to determine the winner of an instant runoff election? The first step is to determine what objects appear in the problem and how they interact with one another. One obvious choice is a ballot. We could say, "Oh, that is just a list" and not create an object for it. But let's take an object-oriented approach and say that there should be a <code>Ballot</code> class.</p>
+<p>Another object would be the set of all the ballots in the election. We could just say, "Make a set of lists," but let's make <code>Election</code> a class, also.</p>
+<p>A final object that might be less obvious is one that represents the results of the voting. Let's create a <code>VoteTally</code> class. The alternative is to use a map from candidate names to the number of votes that they received.</p>
+<p>We could have a class to keep track of the current set of candidates, but the <code>Set</code> class seems to do everything that we are likely to need. Unless we discover an action that we need to do that the <code>Set</code> class doesn't handle, we will just use a <code>Set</code>.</p>
+<p>What actions do we need to perform? We first need to get our set of candidates. Note that we can limit this set to candidates who get at least one first-round vote. Others will have zero votes and will be dropped before any of the candidates who got first-round votes. It sounds like <code>Election</code> is the class that has access to the data to perform this, with help from the <code>Ballot</code> class to get the first element on each ballot.</p>
+<p>Next, we have to run a round of the election. This task requires going through all of the ballots, determining to whom each vote should go, and increasing that candidate's tally by 1. The <code>Ballot</code> class has the data to determine who should get the vote. The <code>Election</code> class has the ballots. The <code>VoteTally</code> class should update itself by adding a vote for the candidate.</p>
+<p>After running a round, we have to find the candidate with the fewest votes. The <code>VoteTally</code> class has the information to do so. But what if there is a tie? Maybe we should return a list of candidates who share the lowest vote total. In this program we will pick one at random to eliminate from the current candidate set, but there could be other choices.  Returning a list makes it easier to implement another choice mechanism if we change our mind.</p>
+<p>We have to repeat running a round of the election and eliminating the candidate with fewest votes until we have only one candidate left. This procedure does not seem to be appropriate for any class. A method in a new class, <code>InstantRunoff</code>, can do this.</p>
+<p>So what sorts of things do we want to be able to do with a <code>Ballot</code> object?</p>
+<ul>
+<li>Initialize it with the ordered list of candidates. One way to do that is to start with an empty ballot and use an <code>addCandidate</code> method to add candidates to the ballot.</li>
+<li>Get the first candidate on the ballot (in order to be able to create the set of initial candidates).</li>
+<li>Given the current set of candidates, return the first candidate on the ballot who is in the current set of candidates.</li>
+</ul>
+<p>There are many other possible things we could do with a ballot. Getting all of the candidates in order is one possibility, and so we could supply an iterator. A <code>toString</code> method could be useful. A way of getting the number of candidates on the ballot could be useful. But for now we will do the minimum. We can always come back later to add new methods.</p>
+<p>What should we do with an <code>Election</code> object? We need to create it, plus perform the jobs mentioned above.</p>
+<ul>
+<li>Get the ballots into the <code>Election</code>. A constructor to create an empty <code>Election</code> and an <code>addBallot</code> method could take care of this.</li>
+<li>Compute the initial set of candidates.</li>
+<li>Count the votes.</li>
+</ul>
+<p>What about the <code>VoteTally</code> object?</p>
+<ul>
+<li>Record the votes for candidates when asked to do so.</li>
+<li>Get the list of losers (the lowest vote-getter in each round).</li>
+</ul>
+<p>The code in <a href="Ballot.java">Ballot.java</a>, <a href="Election.java">Election.java</a>, and <a href="VoteTally.java">VoteTally.java</a> do these operations. The class <a href="InstantRunoffOO.java">InstantRunoffOO.java</a> supplies the method to loop through the rounds and the main method for testing.</p>
+<p>You can run this code using <a href="ballots.txt">ballots.txt</a> as input, a file we made with 200 randomly created ballots using candidate names from the 2012 Republican primaries, but according to a probability distribution. You'll need to modify the string in <code>ballotFileName</code> for your own computer.</p>
+<p>An alternate approach is <a href="InstantRunoffProc.java">InstantRunoffProc.java</a>. This code does the same thing as <a href="InstantRunoffOO.java">InstantRunoffOO.java</a>, but through fixed data structures and static methods. It has less code, which is a plus. There are longer lists of parameters, as all of the data must be passed around "bare." We see data declarations such as <code>List&lt;List&lt;String&gt;&gt; ballots</code>. These declarations are not easy to read and take getting used to. In short, there is no data encapsulation, which is a minus.</p>
+<p>In a program this short, encapsulation and data hiding aren't that important. On the other hand, I originally had a <code>Set</code> of ballots instead of a <code>List</code>. The <code>Set</code> of <code>Ballot</code> objects in <a href="InstantRunoffOO.java">InstantRunoffOO.java</a> wasn't a problem, because <code>Ballot</code> did not override <code>equals</code>. Therefore the <code>Set</code> did not consider two <code>Ballot</code> objects with the same names in the same order as duplicates. But in <a href="InstantRunoffProc.java">InstantRunoffProc.java</a>, it was a problem, because two ballots with choices "Romney Huntsman" were entered into an election but Romney got only one vote. The two <code>ArrayList</code> objects ended up being equal, so only one was kept in the set. Changing from <code>Set&lt;List&lt;String&gt;&gt;</code> to <code>List&lt;List&lt;String&gt;&gt;</code> required five changes spread out over four methods. Finding all of the appropriate changes in a much bigger program (and avoiding changes where the <code>Set&lt;List&lt;String&gt;&gt;</code> wasn't dealing with ballots and may have been correct as it was) would have been tedious and error-prone. In contrast, making the same change in <a href="InstantRunoffOO.java">InstantRunoffOO.java</a> required two changes in <a href="Ballot.java">Ballot.java</a>: declaring the instance variable and initializing it in the constructor. Even if the program had millions of lines, I still would have only needed to make those two changes.</p>
+<h3 id="scanner-class"><code>File Reading and the Scanner</code> class</h3>
+<p>We open a file to read in the ballots.  This is done by the call:</p>
+<pre>
+  ballotFile = new Scanner(new File(ballotFileName));
+</pre>
+<p>The way to open a file is to create a new <code>File</code> object, giving it the
+full path name of the file.  But what do we do with the file after it is open?  We
+pass it to a  <code>Scanner</code> object. We saw the <code>Scanner</code> class before, but will summarize here.  You can open it on an input stream (usually <code>System.in</code>) or even on a <code>String</code>. Then you can read any type of data. The <code>next</code> method reads the next token as a <code>String</code>. (Recall that tokens are like words, separated by white space. But you can also change the separator. The class is very flexible.) You can also call <code>nextLine</code>, <code>nextInt</code>, <code>nextLong</code>, <code>nextDouble</code>, <code>nextFloat</code>, <code>nextBoolean</code>, <code>nextBigInteger</code>, <code>nextBigDecimal</code>, <code>nextShort</code>, and <code>nextByte</code>. It will read characters from the input and convert them to the corresponding type. There is also a "has" version of each of these that returns true if the next thing in the input can be converted to the corresponding type (<code>hasNext</code>, <code>hasNextLine</code>, <code>hasNextInt</code>, etc.).</p>
+<p>Also, note the use of a <code>try</code> - <code>catch</code> block to test for an 
+invalid file name.  If we were asking the user for the name we might prompt the user to enter a different name.  Because the name is hard-wired into the program we instead print an error message to </p></body></html>System.err and exit the program.
+
+

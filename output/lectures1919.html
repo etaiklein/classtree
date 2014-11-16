@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-19-may-7">Lecture 19, October 27</h1>
+<h2 id="lab-assignment-3">Lab Assignment 4</h2>
+<p><a href="../../lab/lab4/lab4.html">Lab Assignment 4</a> is due next Wednesday, October 29.</p>
+<h1 id="breadth-first-search-on-a-graph">Breadth-first search on a graph</h1>
+<p>One question we might ask about a graph is how few edges we need to traverse to find a path from one vertex to another. In other words, assuming that some path exists from vertex <span class="math"><em>x</em></span> to vertex <span class="math"><em>y</em></span>, find a path from <span class="math"><em>x</em></span> to <span class="math"><em>y</em></span> that has the fewest edges.</p>
+<p>One application is the famous <em>Kevin Bacon game</em>, which you will implement in <a href="../../lab/lab5/lab5.html">Lab Assignment 5</a>. Consider a movie actor, say Renée Adorée, a silent film actress from the 1920s. She appeared in a film with Bessie Love, who made a movie with Eli Wallach, who acted in a film with Kevin Bacon, and so we say that Renée Adorée's "Kevin Bacon number" is 3. If we were to make a graph where the vertices represent actors and we put an edge between vertices if their actors ever made a movie together, then we can use breadth-first search to find anyone's Kevin Bacon number: the minimum number of actors between a given actor and Kevin Bacon.</p>
+<p>I'll describe <strong>breadth-first search</strong>, which we abbreviate as <strong>BFS</strong>, for you, but I'll give you no code. That's because you'll be implementing BFS in Lab Assignment 5.</p>
+<p>We perform BFS from a given <strong>start vertex</strong> <span class="math"><em>s</em></span>. We sometimes call <span class="math"><em>s</em></span> the <strong>root vertex</strong>. We can either designate a specific <strong>goal vertex</strong>, or we can just search to all vertices that are reachable from the start vertex (i.e., there exist paths from the start vertex to the vertices). We want to determine, for each vertex <span class="math"><em>x</em></span> that the search encounters, an <strong>unweighted shortest path</strong> from <span class="math"><em>s</em></span> to <span class="math"><em>x</em></span>, that is, a path from <span class="math"><em>s</em></span> to <span class="math"><em>x</em></span> with the minimum length (fewest edges). Later in the course, when we consider weighted graphs, we'll extend the notion of shortest paths to account for edge weights.</p>
+<p>We usually record two pieces of information about each vertex <span class="math"><em>x</em></span>:</p>
+<ol style="list-style-type: decimal">
+<li><p>The length of an unweighted shortest path from <span class="math"><em>s</em></span> to <span class="math"><em>x</em></span>, as the number of edges.(This is optional in many applications, including the Kevin Bacon game.)</p></li>
+<li><p>A <strong>back-pointer</strong> from <span class="math"><em>x</em></span>, which is the vertex that <em>immediately</em> precedes <span class="math"><em>x</em></span> on a shortest path from <span class="math"><em>s</em></span> to <span class="math"><em>x</em></span>. For example, let's look at that graph again:</p>
+<div class="figure">
+<img src="letter_graph.png"/>
+</div>
+<p>In this graph, an unweighted shortest path from vertex D to vertex A is D, I, C, A, and so A would have a back-pointer to C, C would have a back-pointer to I, and I would have a back-pointer to D. Because vertex D is the start vertex, no vertex precedes it. We can say that its back-pointer is <code>null</code> (depending on the type of the back-pointer), or we can say that D is its own back-pointer, so that a vertex that is its own back-pointer must be the start vertex.</p>
+<p>This unweighted shortest path is not unique in this graph. Another unweighted shortest path from vertex D to vertex A is D, B, E, A. In this path, A would have a back-pointer to E, E would have a back-pointer to B, B would have a back-pointer to D, and D's back-pointer would be <code>None</code>.</p></li>
+</ol>
+<p>One way to think of BFS in terms of sending waves of runners over the graph in discrete timesteps. We'll focus on undirected graphs. I'll call the start vertex <span class="math"><em>s</em></span>, and at first I won't designate a goal vertex.</p>
+<ul>
+<li>Record the "distance" from the start vertex <span class="math"><em>s</em></span> to itself as 0, and record the back-pointer for <span class="math"><em>s</em></span> as <code>null</code>.</li>
+<li>At time 0, send out runners from <span class="math"><em>s</em></span> by sending out one runner over each edge incident on <span class="math"><em>s</em></span>. (So that the number of runners sent out at time 0 equals the degree of <span class="math"><em>s</em></span>.)</li>
+<li>Each runner arrives at a vertex adjacent to <span class="math"><em>s</em></span> at time 1. For each of these vertices, record its distance from <span class="math"><em>s</em></span> as 1 and its back-pointer as <span class="math"><em>s</em></span>.</li>
+<li>At time 1, send out runners from each vertex whose distance from <span class="math"><em>s</em></span> is 1. As we did with <span class="math"><em>s</em></span> at time 0, send out one runner along each edge from each of these vertices.</li>
+<li>Each runner will arrive at another vertex at time 2. Let's say that the runner left vertex <span class="math"><em>x</em></span> at time 1 and arrives at vertex <span class="math"><em>y</em></span> at time 2. Vertex <span class="math"><em>y</em></span> could have already been visited by a runner (perhaps it is <span class="math"><em>s</em></span> or perhaps it is another vertex that was visited at time 1). Or vertex <span class="math"><em>y</em></span> might not have been visited before. If vertex <span class="math"><em>y</em></span> had already been visited, forget about it; we already know its distance from <span class="math"><em>s</em></span> and its back-pointer. But if vertex <span class="math"><em>y</em></span> had not already been visited, record its distance from <span class="math"><em>s</em></span> as 2, and record its back-pointer as <span class="math"><em>x</em></span> (the vertex that the runner came from).</li>
+<li>At time 2, send out runners from each vertex whose distance from <span class="math"><em>s</em></span> is 2. As before, send out one runner along each edge from each of these vertices.</li>
+<li>Each runner will arrive at another vertex at time 3. If the vertex has been visited before, forget about it. Otherwise, record its distance from <span class="math"><em>s</em></span> as 3, and record its back-pointer as the vertex from which the runner came.</li>
+<li>Continue in this way until all vertices that are reachable from the start vertex have been visited.</li>
+</ul>
+<p>If there is a specific goal vertex, you can stop this process once it has been visited.</p>
+<p>In the above graph, let's designate vertex D as the start vertex, so that D's distance is 0 and its back-pointer is <code>null</code>. At time 1, runners visit vertices G, B, and I, and so each of these vertices gets a distance of 1 and D as their back-pointers. At time 2, runners from G, B, and I visit vertices D, G, B, I, F, E, C, and H. D, G, B, and I have already been visited, but F, E, C, and H all get a distance of 2. F and E get B as their back-pointer, and C and H get I as their back-pointer. At time 3, runners from F, E, C, and H visit vertices B, A, and I. B and I have already been visited, but A gets a distance of 3, and its back-pointer is set arbitrarily to either of E and C (it doesn't matter which, since either E or C precedes A on an unweighted shortest path from D). Now all vertices have been visited, and the breadth-first search terminates.</p>
+<p>To determine the vertices on a shortest path, we use the back-pointers to get the vertices on a shortest path <em>in reverse order</em>. (But you know how easy it is to reverse a list, and sometimes you're fine with knowing the path in reverse order, such as when you want to display it.) Let's look at the vertices on an unweighted shortest path from D to A. We know that A is reachable from D because it has a back-pointer. So A is on the path, and it is preceded by its back-pointer. Let's say that A's back-pointer is E (which I chose arbitrarily over C so that I wouldn't get a reversed path that spells "ACID"). So E is the next vertex on the reversed path. E's back-pointer is B, and so B is the next vertex on the reversed path. B's back-pointer is D, and so D is the next vertex on the reversed path. D's back-pointer is <code>null</code>, and so we are done constructing the reversed path: it contains, in order, vertices A, E, B, and D.</p>
+<h2 id="implementing-bfs">Implementing BFS</h2>
+<p>You can't implement BFS by following the above description exactly. That's because you can't send out lots of runners at exactly the same time. You can do only one thing at a time, and so you couldn't send runners out along all edges incident on vertices G, B, and I all at the same time. You need to <em>simulate</em> doing that by sending out one runner at a time.</p>
+<p>Let's define the <strong>frontier</strong> of the BFS as the set of vertices that have been visited by runners but have yet to have runners leave them. If you send out runners one at a time, at any moment, the vertices in the frontier are all at either some distance <span class="math"><em>i</em></span> or distance <span class="math"><em>i</em> + 1</span> from the start vertex. For example, suppose that we have sent out runners from vertices D, G, and B so that they are no longer in the frontier. The frontier consists of vertex I, at distance 1, and vertices F and E, at distance 2.</p>
+<p>One key to implementing BFS is to treat the frontier properly. In particular, you want to maintain it as a FIFO queue.</p>
+<p>Here is "pseudocode" (i.e., not real Java code) for BFS:</p>
+<pre class="sourceCode java"><code class="sourceCode java">queue = <span class="kw">new</span> Queue();
+queue.<span class="fu">enqueue</span>(s);  <span class="co">// initialize the queue to contain only the start vertex s</span>
+distance of s = <span class="dv">0</span>;
+<span class="kw">while</span> (!queue.<span class="fu">isEmpty</span>()) {
+  x = queue.<span class="fu">dequeue</span>(); {  <span class="co">// remove vertex x from the queue</span>
+  <span class="kw">for</span> (each vertex y that is adjacent to x) {
+    <span class="kw">if</span> (y has not been visited yet) {
+      y's distance = x's distance + <span class="dv">1</span>;
+      y's back-pointer = x;
+      queue.<span class="fu">enqueue</span>(y);   <span class="co">// insert y into the queue</span>
+    }
+  }
+}</code></pre>
+<p>One property of BFS is that at any time, the distances of vertices on the queue are all either <span class="math"><em>d</em></span> or <span class="math"><em>d</em> + 1</span>, for some nonnegative integer <span class="math"><em>d</em></span>, with all the vertices at distance <span class="math"><em>d</em></span> preceding those at distance <span class="math"><em>d</em> + 1</span>. We can show this property by induction on the number of <code>enqueue</code> and <code>dequeue</code> operations. (You will not be asked about this proof on the final.)  Anyone still reading?  At first, we have just one vertex on the queue, and its distance is 0. Now let's consider the two operations, with <code>dequeue</code> first. If the property holds before dequeueing, then surely removing a vertex from the queue cannot cause a vioation. Now let's consider enqueueing. Suppose that the most recently dequeued vertex had distance <span class="math"><em>d</em></span>. Because we assume that the property holds, after dequeueing, the first vertex in the queue must have distance <span class="math"><em>d</em></span> or <span class="math"><em>d</em> + 1</span>. Any vertex enqueued has distance <span class="math"><em>d</em> + 1</span> (<span class="math">1</span> greater than the distance of the dequeued vertex), and because enqueued vertices follow all others in the queue, the property holds after enqueueing.</p>
+<p>Now we have a couple more questions to answer:</p>
+<ul>
+<li>How do we represent the distance and back-pointer for each vertex?</li>
+<li>How do we know whether a vertex has been visited?</li>
+</ul>
+<h3 id="representing-vertex-information">Representing vertex information</h3>
+<p>Again, you have a couple of choices. If you create a class, say <code>Vertex</code>, to represent what you need to know about a vertex, it can have whatever instance variables you like. So a <code>Vertex</code> object could have instance variables <code>distance</code>, <code>backPointer</code>, and even <code>visited</code>. Of course, you could make <code>visited</code> unnecessary by initializing <code>distance</code> to <code>-1</code> and saying that the vertex has been visited only if its <code>distance</code> variable is not <code>-1</code>. In Lab Assignment 5, you do not necessarily need to keep track of distances.</p>
+<p>This approach is nice because it encapsulates what you'd like to know about a vertex within its object. But this approach has a downside: you need to initialize the instance variables for <em>every</em> vertex before you commence send out runners from the start vertex. You wouldn't want to use, say, the <code>visited</code> value from a previous BFS, right? Ditto for the <code>distance</code> value.</p>
+<p>There's another way: use a <code>Map</code>. If you want to store back-pointers, store them in a <code>Map</code>, where the key is a reference to a <code>Vertex</code> object and the value is a reference to the <code>Vertex</code> object for its immediate predecessor on an unweighted shortest path from the start vertex. You can use this same <code>Map</code> to record whether a vertex has been visited, because you can say that a vertex has been visited if and only if its <code>Vertex</code> object appears in the <code>Map</code>. You can use the <code>containsKey</code> method from the <code>Map</code> interface to determine whether the <code>Map</code> contains a reference to particular <code>Vertex</code> object. The beauty of using a <code>Map</code> is that initializing is E-Z: just make a new <code>Map</code>. There is one other detail you need to take care of: the start vertex. It has no predecessor, but you want to record that it has been visited initially. So you'll need to store a reference to its <code>Vertex</code> object in the <code>Map</code>, and you can just use <code>null</code> as the corresponding value.</p>
+<p>There is yet another way: store the breadth-first tree as a separate directed graph. This is also called a shortest-path tree. This is what we want you to do on Lab 5. Each directed edge <span class="math">(<em>u</em>, <em>v</em>)</span> is equivalent to <span class="math"><em>u</em></span>'s back-pointer being <span class="math"><em>v</em></span>. Looked at another way, each directed edge is oriented on a path toward the start vertex. Every vertex has at most one leaving edge in a breadth-first tree, since every vertex has at most one back-pointer.  The way to tell if a vertex has been visited is to see if it has been added to this shortest-path tree.</p>
+<p>How long does BFS take? We visit each vertex and each edge at most once. For a graph with <span class="math"><em>n</em></span> vertices and <span class="math"><em>m</em></span> edges, the running time is <span class="math"><em>O</em>(<em>n</em> + <em>m</em>)</span>.</p>
+<h1 id="depth-first-search">Depth-first search</h1>
+<p>You can think of BFS like a "layered" search, where we visit the start vertex at distance 0, then the next "layer" of vertices at distance 1, then the next layer at distance 2, and so on. We really need the queue to keep track of which vertex we search from next.</p>
+<p>Instead, you can search the graph as if it were a maze. That's <strong>depth-first search</strong>, or <strong>DFS</strong>. You keep going deeper and deeper in the maze, making choices at the various forks in the road, until you hit a dead-end. Then you back up to one of the choice points and make a different choice. If you're fairy-tale clever, you'll scatter some bread crumbs behind you, so that you can see if you've come back to the same point and are just walking in circles. Then you'd want to do the same thing as if you hit a dead end.</p>
+<p>Whereas BFS keeps track of vertices on a queue, DFS uses a stack. We can either use our own stack, or take advantage of the run-time stack and write DFS recursively.  If we use our own stack the code above almost works for DFS, with the stack replaced by a queue, <code>enqueue</code> replaced by <code>push</code>, and <code>dequeue</code> replaced by <code>pop</code>.  We do have to be careful about how we define "visited."  For DFS a vertex becomes visited when it is popped off of the stack, not when it is pushed onto the stack. So we don't want to record the distance and back pointer until we pop the vertex. The same would also work for BFS, but because a queue is FIFO the nodes come out of the queue in the order that they entered it.  Therefore we might as well visit the node when we first discover it and avoid enqueuing the same vertex multiple times.</p>
+<p>I prefer to use the run-time stack, because I find recursive code more natural to understand than maintaining a data structure. So here is recursive pseudocode for DFS:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="fu">visit</span>(s);
+
+<span class="dt">void</span> <span class="fu">visit</span>(u) {
+  <span class="kw">do</span> whatever it means to start a visit of u;
+  <span class="kw">for</span> (each vertex v that is adjacent to u)
+    <span class="kw">if</span> (v has not been visited yet)
+       <span class="fu">visit</span>(v);
+  <span class="kw">do</span> whatever it means to finish a visit of u;
+}</code></pre>
+<p>Now, we can use a <code>Set</code> to keep track of which vertices have been visited. Or we can record depth-first distances, but they're not very interesting.</p>
+<p>What's more interesting are <strong>discovery times</strong> times and <strong>finishing times</strong> for vertices. Keep a static integer <code>time</code>, and when we start or finish a visit of a vertex, record the current value of <code>time</code> and then increment <code>time</code>:</p>
+<pre class="sourceCode java"><code class="sourceCode java">time = <span class="dv">0</span>;
+<span class="fu">visit</span>(s);
+
+<span class="dt">void</span> <span class="fu">visit</span>(u) {
+  u's discovery time = time;
+  time++;
+  <span class="kw">for</span> (each vertex v that is adjacent to u)
+    <span class="kw">if</span> (v has not been visited yet)
+       <span class="fu">visit</span>(v);
+  u's finishing time = time;
+  time++;
+}</code></pre>
+<p>I'll go through an example in class.</p>
+<p>If the graph is not connected it is possible that some vertices will not be reached by running BFS or DFS.  In fact, the standard way to determine if a graph is connected is to run one of these algorithms from an arbitrary vertex and see if all vertices get visited.  Usually if BFS does not reach all the vertices we will ignore those which are not reached.  (Or in the case of the Kevin Bacon game, we say that their Bacon numbers are infinite.)  But for many applications of DFS it is better to pick an arbitrary unvisited vertex as the new start vertex and call <code>visit</code> again.  However, <em>do not</em> reset <code>time</code> to 0.</p>
+<p>Like BFS, DFS visits each vertex and edge at most once, and so its running time is <span class="math"><em>O</em>(<em>n</em> + <em>m</em>)</span>.</p>
+<p>Why are discovery and finishing times helpful? For one thing, we can use them to perform a topological sort of a directed acyclic graph.</p>
+<h2 id="topological-sorting">Topological sorting</h2>
+<p>A directed graph is <strong>acyclic</strong> if it contains no directed cycles. We call a directed acyclic graph a <strong>dag</strong>. Sometimes, we want to find a linear order of the vertices of a dag such that all edges in the dag go in the direction of the linear order. That is a <strong>topological sort</strong> of the dag. For example, if we order all the vertices from left to right, then all directed edges should go from left to right.</p>
+<p>Here's a dag that represents dependencies for putting on goalie equipment in ice hockey:</p>
+<div class="figure">
+<img src="goalie-1.png"/>
+</div>
+<p>An edge <span class="math">(<em>u</em>, <em>v</em>)</span> indicates that you have to put on article <span class="math"><em>u</em></span> before putting on article <span class="math"><em>v</em></span>. For example, the edge from chest pad to sweater says that you have to put on the chest pad before the sweater. On the other hand, some articles have no particular relative order. For example, it doesn't matter whether you put on compression shorts before or after the T-shirt.</p>
+<p>You can put on only one article at a time, and so you'd like to find a linear order so that you don't have to undo having put on one article in order to put on another. In other words, you'd like to topologically sort this dag of goalie gear. Here's one possible order, given by the numbers next to the vertices:</p>
+<div class="figure">
+<img src="goalie-1-num.png"/>
+</div>
+<p>So undershorts would go on first, then socks, compression shorts, hose, cup, pants, skates, leg pads, T-shirt, chest pad, sweater, mask, catch glove, and finally the blocker. That's not the only possible order. Here's another: T-shirt, socks, chest pad, undershorts, compression shorts, cup, hose, pants, sweater, mask, skates, leg pads, catch glove, blocker.</p>
+<p>Here is an incredibly simple algorithm to topologically sort a dag:</p>
+<ol style="list-style-type: decimal">
+<li>Run DFS on the dag to compute the finishing times for all vertices.</li>
+<li>As each vertex is finished, insert it onto the front of a linked list.</li>
+<li>The linked list contains the topologically sorted vertices, in order.</li>
+</ol>
+<p>This algorithm runs in <span class="math"><em>O</em>(<em>n</em> + <em>m</em>)</span> time. Why? Step 1, DFS, takes <span class="math"><em>O</em>(<em>n</em> + <em>m</em>)</span> time. Step 2, inserting each vertex onto the front of a linked list, takes constant time per vertex, or <span class="math"><em>O</em>(<em>n</em>)</span> time altogether. Step 3 is really just saying that the result of step 2 is the answer. So the entire algorithm takes <span class="math"><em>O</em>(<em>n</em> + <em>m</em>)</span> time.</p>
+<p>I'll go through an example for the goalie-gear dag in class.</p>
+<h2>Other applications of DFS</h2>
+<p>There are may other applications of DFS that you will learn if you take CS 31, our Algorithms course.   The book presents
+a lot of problems that can be solved by DFS - reachability,
+strongly connected components, transitive closure, and topological
+sorting.  Many of these require classifying edges into groups.<p>  
+
+For an undirected graph edges can be broken into two groups: <b>discovery</b> edges and <b>back</b> edges.  Discovery edges are the first edge to find a vertex.  They form a tree, the DFS tree.  Back edges go back up the tree to an ancestor, and indicate
+that a cycle exists in the graph. For directed graphs it becomes a bit more complicated - there 
+are also <b>forward</b> edges that connect a node to a descendent 
+in the DFS tree and <b>cross</b> edges that connect two nodes, 
+neither of which is the ancestor of the other.</p>
+<p>However, the book does not mention the culmination of "everything that 
+can be done with DFS."  That is graph planarity.  Bob Tarjan 
+developed an amazing Θ(<i>n</i> + <i>m</i>) time algorithm for determining
+if a graph is planar (can be drawn on a plane with no crossing edges) using DFS.</p>
+</p></body>
+</html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-21-may-14">Lecture 27, November 14</h1>
+<ul class="outline">
+<li><a href="#concur">Concurrency and threads</a></li>
+<li><a href="#prodCons">Producer/Consumer and Bounded Buffers</a></li>
+<li><a href="#sieve">Sieve of Eratoshtenes</a></li>
+</ul>
+<a name="concur"></a>
+<h2>Concurrency and threads</h2>
+<p>Concurrent programs perform multiple tasks "simultaneously".  How
+is that different from parallel programs?  I like the discussion by
+Simon Peyton Jones in his essay <a href="http://research.microsoft.com/en-us/um/people/simonpj/Papers/marktoberdorf/">Tackling
+the Awkward Squad...</a>:</p>
+<blockquote>
+<p>A parallel ... program uses multiple processors
+to gain performance. For example, it may be faster to evaluate e1 + e2
+by evaluating e1 and e2 in parallel, and then add the
+results. Parallelism has no semantic impact at all: the meaning of a
+program is unchanged whether it is executed sequentially or in
+parallel. Furthermore, the results are deterministic; there is no
+possibility that a parallel program will give one result in one run
+and a different result in a different run.</p>
+<p>In contrast, a concurrent program has concurrency as part of its
+specification. The program must run concurrent threads, each of which
+can independently perform input/output. The program may be run on many
+processors, or on one — that is an implementation choice. The
+behaviour of the program is, necessarily and by design,
+non-deterministic. Hence, unlike parallelism, concurrency has a
+substantial semantic impact.</p>
+</blockquote>
+<p>Java provides concurrent threads.  A process is an independent task
+with its own memory allocation.  So if you computer is running mail, word,
+and a game simultaneously they are running as separated processes.
+Threads are light-weight processes that all
+work on a single task and share the same memory.
+We have already discussed the fact
+that graphics are performed in a different thread than your program.  
+However, up to now we have not created our own threads.  That is what we
+will do today.  
+</p>
+<p>Let's first look at an example of how threads work.  To create 
+a thread you first create an object that extends <code>Thread</code>
+and overrides <code>run</code>.  (It is also possible to implement 
+the interface <code>Runnable</code>, which requires you to implement
+only one method, <code>run</code>.)  Given an object of type <code>Thread</code>
+you call <code>start</code> on it, which causes it to split off a separate
+thread running the method </p></body></html>run.  Consider the example
+<a href="Incrementer.java">Incremeter.java</a>:
+<code>
+public class Incrementer extends Thread {
+  private static int shared;  // A variable shared by all incrementers
+  
+  private String myName;        // The name of the incrementer
+  
+  /**
+   * Create an incrementer with a given name
+   * @name the name of the incrementer
+   */
+  public Incrementer(String name) {
+    myName = name;
+  }
+  
+  /**
+   * Thing to do when started
+   */
+  public void run() {
+    shared = shared + 1;
+    int temp = shared;
+    System.out.println(myName + " incremented shared value " + shared);
+    shared = temp + 1;
+    System.out.println(myName + " incremented shared value again " + shared);
+  }
+  
+  public static void main(String [] args) {
+    Incrementer inc1 = new Incrementer("first");
+    Incrementer inc2 = new Incrementer("second");
+    
+    shared = 0;
+    
+    try {
+      inc1.start();
+      inc2.start();
+      inc1.join();
+      inc2.join();
+    }
+    catch(InterruptedException e){
+      System.err.println("Exception: " + e.getMessage());
+    }
+    
+    System.out.println("shared at end = " + shared);
+  }
+}
+</code>
+<p>An <code>Incrementer</code> thread has a name, and it 
+increments the static variable <code>shared</code> twice,
+printing out the value as it does so.   The main program
+creates two <code>Incrementer</code> objects and calls
+<code>start()</code> on each.  Does this sound familiar?
+The <code>Timer</code> class is a thread, and you can also
+call <code>stop()</code> on a thread, although it is usually a bad idea to do so
+(except for timers).</p>
+<p>These threads run concurrently.  The main method also calls <code>join()</code> 
+on each of them.  This method says that the current thread should wait until the
+thread that <code>join</code> is called on completes.  Show later what happens if this 
+were not done.  </p>
+<p>It looks like the threads should each increment <code>shared</code> twice.  The
+order of the printouts and of the increments could be different, but the final
+answer should be 4, right?  Run the program and show this is not the case.  The
+print statements do interleave and can appear in half a dozen different order.
+However, the final value is usually 3 and can be 2.  Why?  </p>
+<p>One thread can
+increment first and save <code>shared</code> into <code>temp</code> when it equals 1.
+The other thread can then increment twice and print, and then the first thread can
+then save <code>temp + 1</code> into <code>shared</code>.  In fact, even if we just
+had a single <code>shared++</code> statement in each thread it is possible for each thread to get the 
+value of shared, one to increment it and store it back, and then the other to do so,
+so <code>shared</code> could end up with value 1.</p>
+<p>If we have no <code>join</code>
+calls the main program can print "shared at end" before the other two have completed.
+They keep running on their own.  If you want to stop them you call <code>interrupt</code>
+to kill them.  (We will see this later.)</p>
+<a name="prodCons"></a>
+<h2>Producer/Consumer and Bounded Buffers</h2>
+<p>Why might we want concurrent threads?  A classic example is 
+Producer/Consumer.  One or more Producers  
+output items and one or more Consumers input the items that the
+Producers produce.  Each Producer or Consumer runs in its own thread.  
+We need a way for 
+them to communicate, that is to pass the items from Producers to
+Consumers.</p>
+<p>The standard solution to this problem uses a  
+bounded buffer.  A bounded buffer is a circular 
+queue like the ones we saw earlier.  However, it has the property that
+calling <code>put</code> (enqueue) on a full bounded buffer does not
+cause an error.  The thread blocks until there is room.  Similarly
+calling <code>get</code> (dequeue) on an empty buffer blocks until something is
+<code>put</code> into the buffer.</p>
+<p>This is not a toy example.  Bounded buffers are used all of the time.  An example is 
+the "pipe" construct in Unix.  The following is a spell checker.  The whole 
+command should be on one line.</p>
+<code>
+cat /Users/scot/TextFiles/USConstitution.txt | tr 'A-Z' 'a-z' | tr -cs 'a-z' '\n' | 
+sort | uniq | comm -23 - /Users/scot/Documents/Courses/cs10/public_html/lectures/27/biggerSorted.txt
+</code>
+<p>Let's try to break this down.  I don't expect you to understand the commands,
+but rather the overall information flow.</p>
+<p>The <code>cat</code> command is concatenate.  It concatenates all files that
+follow the command and writes the concatenation to the standard output.  
+Here there is only one file, so it reads and outputs it.</p>
+<p>The <code>|</code> is the pipe construct. It says to take the output from the
+command on its left (the <code>cat</code>) and use it as input to the command on
+its right (the <code>tr</code>).</p>
+<p>The <code>tr</code> command is translate.  In this case the letters in A-Z get 
+converted to the letters in a-z.  So this converts the text to lower case.  Note
+that the output of this <code>tr</code> is input to a second <code>tr</code>,
+which translates any character NOT in a-z to a return character (\n).  Thus each word ends up
+on its own line.</p>
+<p>The output of this <code>tr</code> becomes the input to <code>sort</code>,
+which not surprisingly sorts it into alphabetical order and outputs it.  The <code>uniq</code>
+method outputs only unique lines, eliminating duplicates.</p>
+<p>Finally <code>comm</code> compares the two files.  Each line appearing only 
+in the first file (the input from the pipe) goes into one column, each line
+appearing only in the second file appears in a second column, and each line
+appearing in both files appears in a third column.  However, the <code>-23</code>
+says to surpress outputting columns 2 and 3.  The file biggerSorted.txt is a 
+sorted version of the file we used for the spell corrector last class, but
+with duplicates removed.  So what is output from the whole thing is all words
+in USConstitution.txt that are not found in biggerSorted.txt.  These words
+may be misspelled.<p>
+<p>The ability to combine commands this way is one of the reasons that Unix is 
+popular.  Want to guess how I converted bigger.txt to biggerSorted.txt?</p>
+<p>However, why am I bothering to tell you about this in a lecture on concurrent 
+programming?  What do you think is going on inside Unix when it executes this line?
+Each of the commands is run in its own thread.  A pipe becomes a bounded buffer.
+So the <code>cat</code> puts characters into the bounded buffer from which the first
+<code>tr</code> gets them, etc.  Six threads and five bounded buffers are created.
+Each thread runs at its own pace as long as it can get input and write output.  
+When one of these is not possible it waits.</p>
+<p>We now look at an implementation of bounded buffers in Java.  
+
+<h3>A Java implementation of Producer/Consumer using Bounded Buffers</h3>
+<p>We first look at a program that uses producers and consumers.  It is
+<a href="BoundedBufferTest.java">BoundedBufferTest.java</a>:
+
+<code>
+public class BoundedBufferTest {
+  public static void main(String[] args) {
+    BoundedBuffer buffer = new BoundedBuffer(5); // buffer has size 5
+    Producer prod = new Producer(buffer);
+    Consumer cons1 = new Consumer(buffer);
+    Consumer cons2 = new Consumer(buffer);
+    prod.start();
+    cons1.start();
+    cons2.start();
+    try {
+      prod.join();
+      cons1.interrupt();
+      cons2.interrupt();
+    } catch (InterruptedException e) {
+    }
+    System.out.println("End of Program");
+  }
+}
+</code>
+<p>This main method creates a producer and two consumers.  The producer will <code>put</code>
+things into <code>buffer</code> and the consumers will <code>get</code> them and process them.
+This code starts all three and then calls <code>join</code> to wait for the producer's thead
+to finish.  At that point it interrupts the consumers, so that they don't continue running after
+the main program ends.</p>
+<p>The <code>run</code> method of  <a href="Producer.java">Producer</a> is:
+
+<code>
+  public void run() {
+    try {
+      for (int index = 0; index &lt; 100; index ++) {
+        buffer.put(index);
+        sleep(100);
+      }
+    } catch (InterruptedException e) {  }
+  }
+</code>
+<p>So the producer is a for loop that generates the numbers from 0 to 99 and puts them into
+the buffer.  Between each it sleeps for 100 milliseconds.  Calling <code>sleep</code> on a
+thread puts it to sleep for the number of milliseconds that its parameter represents.</p>
+<p>The <code>run</code> method of  <a href="Consumer.java">Consumer</a> is also
+simple:
+
+<code>
+  public void run() {
+    try{
+      while (true) {
+        int n = buffer.get();
+        int waitTime = 100 + generator.nextInt(200);
+        sleep(waitTime);
+        System.out.println(n);
+      }
+    } catch(InterruptedException e){}
+  }
+</code>
+<p>The consumer loops forever, reading from the buffer and printing 
+the value of the <code>get</code>.  It also sleeps, but it does so for
+a random amount of time between 100 and 300 milliseconds.</p>
+<p>We are now ready to look at the implementation of
+<a href="BoundedBuffer.java">BoundedBuffer.java</a>:
+
+<code>
+public class BoundedBuffer {
+   protected int numSlots;              // Size of the bounded buffer (queue)
+   private int[] buffer;                // Hold the circular queue
+   private int takeOut = 0, putIn = 0;  // Mark front and back of queue
+   private int count=0;                 // Number of items in the queue
+   
+  /** Create a new bounded buffer with numSlots slots
+   * 
+   * @param numSlots the size of the bounded buffer to be created
+   */
+   public BoundedBuffer(int numSlots) { 
+      if(numSlots &lt; 0) {
+         throw new IllegalArgumentException(
+                                    "numSlots &lt;= 0");
+      } 
+      this.numSlots = numSlots; 
+      buffer = new int[numSlots];
+   }
+   
+   /**
+    * Add an item to the back of the bounded buffer.
+    * Block if full.
+    * @param value the thing to add
+    * @throws InterruptedException
+    */
+   public synchronized void put(int value) throws InterruptedException {
+      while (count == numSlots) 
+        wait();
+      buffer[putIn] = value;
+      putIn = (putIn + 1) % numSlots;
+      count++;
+      notifyAll();
+   }
+
+   /** 
+    * Remove an item from the front of the bounded buffer.
+    * Block if empty.
+    * @return
+    * @throws InterruptedException
+    */
+   public synchronized int get() throws InterruptedException {
+      while (count == 0) 
+        wait();
+      int value = buffer[takeOut];
+      takeOut = (takeOut + 1) % numSlots;
+      count--;
+      notifyAll();
+      return value;
+   }
+}
+</code>
+<p>The interesting parts are the <code>put</code> and <code>get</code> methods. They are similar
+to what we saw when we looked at storing a queue in an array, but there are a couple of differences:
+
+<ul>
+<li>They keep a count of the number of items.  This way it is possible to distinguish between a
+  full and empty queue when <code>putIn == takeOut</code>.</li>
+<li>They are synchronized.</li>
+</ul>
+<p>The <code>synchronized</code> keywork says that only one thread is allowed to be executing
+any <code>synchronized</code> method of a class at a given time.  Why is this important?  If two threads 
+both tried to </p></p></p></p></p></p></p></p></p>put at the same time it would be possible for both of them to write
+the the slot <code>buffer[putIn]</code> and then both of them to increment <code>putIn</code>,
+losing one of the values and leaving a slot with garbage in it.  Similarly, two threads 
+executing <code>get</code> could both get the same value and the next value could be skipped.
+<p>Would it be safe for one thread to <code>get</code> and another to <code>put</code> simultaneosly?
+At first glance it looks safe because they are changing different parts of the buffer, but a subtle 
+bug could occur if both tried to update <code>counter</code>
+at the same time.  Both could read <code>counter</code>, update it, and write it back.  The second one
+to write would overwrite the first, and <code>counter</code> would change value, when after a 
+<code>put</code> and a <code>get</code> it should be back to its original value.</p>
+<p>One mechanism for dealing with synchronization is called a monitor.  Java provides a version of
+a monitor.  With a monitor there are critical sections of code that only one thread should be allowed
+to execute at a time. If every method in a class is synchronized (except constructors, which cannot
+and do not need to be synchronized) then we would have a standard monitor. Java allows more
+flexibility, in that it allows only some methods in the class to be synchronized.  This increases
+the amount of concurrency allowed, but can cause problems when a programmer fails to realize that
+certain operations cannot be safely performed simultaneously.<p>
+<p>The basic idea of a monitor is that only one thread can be inside of it at a time. If several
+threads make method calls one is allowed to proceed and the others must wait. One of them will be allowed
+to proceed once the first thread leaves the critical region (the synchronized method).  
+Java implements this by providing a lock for each object.  Only one thread can hold the lock at a time,
+and it gives it up when it returns from the synchronized method.  The other threads wait for the 
+lock to come available.</p>
+<p>This provides enough machinery for simple cases like preventing two threads from simultaneously
+updating a counter.  However, we need more machinery to make more general synchronized methods
+like those in the <code>BoundedBuffer</code> work.  Suppose <code>get</code>
+is called on an empty queue. It should wait until the queue is not empty.  One way to do this would
+be to have a statement:
+<code>
+  while(counter == 0) 
+    ;
+</code>
+<p>However, this leads to a problem (beside the one that it wastes a lot of computer time to do this).
+The only way for the thread to proceed is for another thread to call <code>put</code> to add an
+item and increment <code>counter</code>.  But this cannot happen while the first thread is still in
+<code>get</code>!</p>
+<p>To get around this there are three additional thread methods: <code>wait</code>, <code>notify</code>,
+and <code>notifyAll</code>.  The <code>wait</code> method removes the thread from the synchonized method
+and puts it into a list of threads waiting on the <code>BoundedBuffer</code> object.  (It is possible to
+wait on any object, not just <code>this</code>, but for now we will only look at this form.)  Therefore 
+other methods can proceed and eventually some thread will call <code>put</code> and make an item available.</p>
+<p>But if the thread is waiting in a list of waiting threads it is no longer examining <code>counter</code>.
+How is it to discover that it can now proceed?</p>
+<p>The solution is that when an object leaves a synchronized method it calls either <code>notify</code>
+or <code>notifyAll</code>.  The <code>notify</code> method picks an arbitrary method from the list of
+waiting threads and starts it running again from where it called <code>wait</code>.  (Note that the
+waiting list is <b>not</b> a FIFO queue, which will have implications on fairness that we will
+discuss later.)  The <code>notifyAll</code> method reactivates all of the threads currently waiting,
+and the first to respond gets to continue.  The rest wait for the method, but do not need to be 
+notified again.  This is why there is a while loop around the 
+<code>wait</code> rather than an if test.  When the first thread leaves the synchronized region another
+will proceed, and by then the buffer may again be empty.</p>
+<p>Note that there are two ways a thread can end up waiting.  The first is that a method call to a
+synchronized method happens when another thread is in a synchronized method. The Java runtime 
+environment takes care of this.  The other is to explicitly call <code>wait</code>.  Such threads
+continue to wait until they are signaled via <code>notify</code> or </p></p></p></p>notifyAll.
+<a name="sieve"></a>
+<h2>Sieve of Eratosthenes</h2>
+<p>Eratosthenes was a Greek born in the third century BC in what is now Libya.  He was the third 
+Librarian of the great library of Alexandria.  He computed the radius of the earth and the distance 
+to the sun and moon with impressive accuracy.  (There is some dispute on how accurate, because he
+stated his answers in stadia, a distance measure that is approximately the length of a stadium. 
+There were different versions of stadia
+in use, and the Egyptian stadion, about 157.5 meters, gave very accurate answers.)  But our 
+interest in him is due to a method of
+computing prime numbers called the Sieve of Eratosthenes.</p>
+<p>His idea was to write out integers starting at 2.  Two is a prime, and he eliminated all multiples
+of 2 by crossing out every second number starting with 4.  3 is the next number so must be prime, and he
+then crossed out every third number starting with 6.  5 is the next number not yet crossed out, so
+is a prime, etc.</p>
+<p>An obvious way of implementing this uses a boolean array <code>isPrime</code> originally set to 
+all true.  Then <code>isPrime[4]</code>, <code>isPrime[6]</code>, ... are set to false.  Then 
+<code>isPrime[6]</code>, <code>isPrime[9]</code>, ... are set to false and so on.  The entries of
+<code>isPrime</code> that remain true are the primes.</p>
+<p>An alternate way is to use threads and bounded buffers.  The first thread generates integers
+starting with 2.  It passes these on via a bounded buffer to a second thread that prints out 2 as 
+prime and passes on all integers not divisible by 2.  These are fed to a bounded buffer that 
+prints out 3 and passes on the integers the it receives that are not divisible by 3.  To generate
+n primes we create n threads and bounded buffers.  The code in <a href="Sieve.java">Sieve.java</a>
+does this.<p>
+<code>
+public class Sieve extends Thread {
+
+  private BoundedBuffer in, out;
+  private int myprime;
+
+  public Sieve ( BoundedBuffer store ) {
+    in = store;
+  }
+
+  public void run() {
+    int n;
+    try {
+      // First int seen will be a prime, because it passed all previous filters
+      myprime = in.get();  
+
+      if ( myprime &lt; 0 ) {
+        return;    // Done with input (base case)
+      } else {
+        System.out.println(myprime);  // Note each filter prints one prime only!
+
+        out = new BoundedBuffer ( 5 );  
+
+        Sieve s = new Sieve ( out );  // Set up next filter in the chain
+        s.start();
+
+        n = in.get();
+        while ( n &gt;= 0 ) {
+          if ( n % myprime != 0 ) {  // Filter out multiples of myprime
+            out.put(n);
+          }
+          n = in.get();
+        }
+        out.put(n);  // output the negative to signal end
+
+      }
+    } catch (InterruptedException e) {}
+  }  
+
+
+  public static void main ( String[] args ) {
+
+    BoundedBuffer b = new BoundedBuffer(5);
+    try { 
+      Sieve s = new Sieve(b);
+      s.start();
+
+      for ( int i = 2; i &lt;= 100; i++ ) {
+        b.put(i);
+      }
+      b.put(-1);   // Signal that the steam of number is done
+    } catch (InterruptedException e) {} 
+  }
+}
+</code>
+<p>The main method creates a <code>BoundedBuffer b</code> and passes it to a 
+<code>Sieve</code> object.  It then writes the integers from 2 to 100 to the 
+bounded buffer, ending by writing -1 to the bounded buffer as a signal that
+the stream of integers is done.</p>
+<p>The <code>run</code> method of <code>Sieve</code> does what was 
+described above.  It creates a bounded buffer <code>out</code> and
+creates a new <code>Sieve</code> that will use <code>out</code> as its
+input.  It prints the first thing it gets from its input
+buffer and saves it in <code>myPrime</code>.  It then gets each successive thing from the
+bounded buffer and puts it to <code>out</code> if it is not divisible 
+by <code>myPrime</code>.  Thus each <code>Sieve</code> object is both a consumer and a
+producer.  It stops when it sees a negative number, but puts that number
+into the <code>out</code> buffer.</p>
+</p></p>
+

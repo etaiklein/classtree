@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-21-may-14">Lecture 25, November 10</h1>
+<ul class="outline">
+<li><a href="#skip">Skip Lists</a></li>
+<li><a href="#randomizing">Randomizing the Operations</a></li>
+</ul>
+<p>Finish Balanced Binary Search Tree deletion and B-Trees</p>
+<a name="skip"></a>
+<h2>Skip Lists</h2>
+<p>Implementing a map using a sorted array gives a very efficient  
+<code>get</code> operation via binary search (O(log n)). However, insertions and deletions are
+O(n).</p>
+<p>Implementing a map using a doubly linked list is very efficient for insertions 
+and deletions (O(1)). But <code>get</code> is (O(n)).</p>
+<p>We saw a way to solve this problem using binary search trees.  But is there a way that
+we can use a sorted doubly linked list and still get fast lookup?</p>
+<p>One way is to build a special sort of indexing structure of lists.  The bottommost list
+keeps all of the elements in sorted order, with end markers -INF and INF.  Each successive 
+level "skips" every second item,
+with links between items with the same value in successive levels. So we have horizontal
+linked lists of elements and vertical towers of the same element.  Such a structure is shown 
+below.
+<xmp>
+S4   -INF &lt;--------------------------------------------------------------------------&gt; INF
+       |                                                                                |
+S3   -INF &lt;---------------------------------------------------------&gt;  80 &lt;----------&gt; INF
+       |                                                                |               |
+S2   -INF &lt;-----------------------&gt;  15 &lt;---------------------------&gt;  80 &lt;----------&gt; INF
+       |                              |                                 |               |
+S1   -INF &lt;--------&gt;  8 &lt;---------&gt;  15 &lt;----------&gt;  50  &lt;---------&gt;  80 &lt;----------&gt; INF
+       |              |               |                |                |               |
+S0   -INF &lt;-&gt;  4 &lt;-&gt;  8 &lt;-&gt;  10 &lt;-&gt;  15 &lt;-&gt;  20  &lt;-&gt;  50  &lt;-&gt; 61  &lt;-&gt;  80 &lt;-&gt;  100 &lt;-&gt; INF
+</xmp>
+<p>So how can we search in this structure, say to find 61?  Start at the upper left corner.  
+Search through the topmost list until we find something bigger than 61.  That isn't hard;
+INF is the first thing that we see.  So back up, go down a level, and search that list.  
+This time we find 80, back up, and drop to list S<sub>2</sub> at -INF.  We go past 15 and find 80.
+We back up to 15, drop down a level to 15 in S1, and start searching.  We skip over 50 and
+stop at 80.  We back up to 50 and drop to 50 in S0. The next item is 61, which is not bigger
+than 61, so we go to 80, back up to 61, and discover that there is nothing to drop down to.  
+Therefore we have found the biggest item less than or equal to 61, and it is indeed 61.
+(If we were looking for 60 we would stop at 61, back up to 50, realize that is no level to drop down to, and therefore that 60 is not
+in the list.)</p>
+<p>So how long does this take?  Well, there are 1 + log<sub>2</sub> n levels, because log<sub>2</sub> n
+is precisely the number of times that we can divide n by 2 before we get down to a single item.
+How much time do we spend on each level?  We look at 1 item or 2 items.  When we find something
+bigger and back up there was at most one item between the corresponding items at the next level 
+down.  So we look at it and drop down, or skip over it and find the same item that made us drop
+down from the level above. So we compare to at most 2(1 + log<sub>2</sub> n) items.</p>
+<p>But doesn't this take a lot of space?  After all, we have a tower of log<sub>2</sub> n 80's.
+That is true, but it doesn't matter.  We have n things in S0, n/2 things in S1, and in general
+n/2<sup>k</sup> things in Sk.  Summing all of these gives 2n-1.  We also have 2(1 + log<sub>2</sub> n)
+end markers. but the whole thing is Θ(n).</p>
+<p>Great.  But how does this help us?  We can do better with a sorted array and binary search.  How
+about inserting and deleting?  To insert first do a search, and insert after the thing found in S0.
+To delete find the thing and then delete it and its tower (if any) from S0 and all of the lists 
+above where it appears.  So insertion is O(1) after search and deletion is O(log n) after search
+because we can do a deletion on each level and deleting from a doubly linked list is O(1).</p>
+<p>But wait a second.  Inserting or deleting this way will mess up the structure.  After a bunch of
+insertions and deletions we may end up with not much more than S<sub>0</sub> and end markers for higher levels.
+That is no good.</p>
+<a name="randomizing"></a>
+<h2>Randomizing the Operations</h2>
+<p>We don't change our search or deletion algorithms, but we do need to build some new towers when we
+insert.  We do this by flipping a coin.  We always insert in S<sub>0</sub>.  We then flip a coin.  If it is heads
+we insert into S<sub>1</sub> as well and flip another coin.  We continue inserting in the next level up until we
+get a tail, and then stop.  DEMONSTRATE building a structure in class.<p>
+<p>We no longer have the nice structure that we had before, but we are close.  </p>
+<p>Could we end up with a really horrible structure?  Yes.  We could keep flipping heads for an
+arbitrarily long time.  It is very unlikely, but it is possible.  Or we could keep getting tails and
+end up with only S<sub>0</sub>, which would make searching O(n).  But in the expected case we have O(log n)
+insertion, deletion, and searching.  And note that, unlike binary search trees, the run time does
+not depend on the data.  It depends on coin flips.  So there are not good data sets and bad data
+sets.  All data sets are equivalent.  There are good and bad series of coin tosses.  This is an 
+example of a <em>randomized algorithm</em>.</p>
+<p>The book notes that there are optimizations that can be made.  With a bit of care we can make
+do with singly linked lists, because that is all we need for search and with a bit of extra effort
+we can insert and delete on the way down.  Deletion is easy.  When you find the item on some level
+just delete it on that level and on each subsequent level on the way down.  (You need to remember your
+predecessor as well as your current in the list, or use a currentPred that points to the precessor of
+the item that you think of as current, as we did in PS-2.)  Insertion is no harder.  
+When you go to insert first
+do the coin flips to see how high the tower will be, and then when you get to the appropriate level
+begin inserting in each list as you go past it.</p>
+<p>But what happens to the expected height, the expected run time, and the expected size?  It takes
+some probability to see it, but they all end up being the same as in the non-randomized case!  The
+book does these analyses, and has better typesetting capabilities than I am going to use in HTML
+for rough class notes, so look there.  But here is the outline:
+
+<h3>Expected height</h3>
+<p>The height of the structure (number of lists) is expected to be 2 + log<sub>2</sub> n. I do the
+exact analysis in a grad algorithms course in the section on randomized algorithms, but that takes
+a bit more probability than we expect you to have.  But we do note that the probability of a particular
+item appearing in list S<sub>k</sub> is 2<sup>-k</sup>.  That
+is because to appear in list S<sub>k</sub> we need to have k successive heads, each of which has 
+probability 1/2.  The probability that one of n items has height t is certainly no larger than 
+n 2<sup>-k</sup> (by what is called the "union bound", which says that the probability of at least
+one of a set of events occurring is at most the sum of the probabilities of each event occurring).  But 
+in that case the probability that the height is greater than c log<sub>2</sub> n is at most
+n 2<sup>-c log<sub>2</sub> n</sup> = n/n<sup>c</sup> = 1/n<sup>c-1</sup>.  So the probability that
+the height is bigger than 5 log<sub>2</sub> n is no larger than 1/n<sup>4</sup>.<p>
+<p>The book also notes that you can arbitrarily limit the height of the structure to something like 
+max (10, 3 log<sub>2</sub> n) without messing up the analysis too much.  If you get that many heads
+in a row you just stop flipping, so if you like you can
+guarantee that the structure has height Θ(log n).</p>
+<h3>Expected size</h3>
+<p>The size is easier to analyze.  How many items do we expect on level S<sub>k</sub>?  We noted above that 
+a given item appears on level k with probability 2<sup>-k</sup>, because we need to have k successive
+heads to do this.  Let <em>x<sub>i,k</sub></em> be 1 if item i appears on level <em>k</em> and 0 otherwise.  Then the number of items that appear on level <em>k</em> is <em>x<sub>1,k</sub></em> + <em>x<sub>2,k</sub></em> + ... + <em>x<sub>n,k</sub></em>.  So the expected number of items on level <em>k</em> is 
+<p>E(<em>x<sub>1,k</sub></em> + <em>x<sub>2,k</sub></em> + ... + <em>x<sub>n,k</sub></em>),</p> 
+where E denotes the expected value (mean).  By a very powerful theorem called linearity of expectation we
+know that the expectation (mean) of a sum is the sum of the expectations. Therefore 
+
+<p>E(<em>x<sub>1,k</sub></em> + <em>x<sub>2,k</sub></em> + ... + <em>x<sub>n,k</sub></em>) = E(<em>x<sub>1,k</sub></em>) + E(<em>x<sub>2,k</sub></em>) + ... + E(<em>x<sub>n,k</sub></em>)</p>
+<p>But E(<em>x<sub>i,k</sub></em>) = 2<sup>-k</sup>, because with this probability <em>x<sub>n,k</sub></em> is 1 and it is 0 otherwise.  This gives the expected number
+of items in S<sub>k</sub> as n/2<sup>k</sup>, which is exactly the number of items that were in S<sub>k</sub> in the 
+non-probabilistic version.  The sum of this quantitiy over the levels from 0 to infinity is 2n.
+So the skip list is expected to take linear space.</p>
+<p>The argument above will be much clearer after you take CS 30.  A substantial part of that course deals with probability.</p>
+<h3>Expected number of comparisons per level</h3>
+<p>What about the number of comparisons on a given level?  If we go past an item on level S<sub>k</sub> it is 
+because the item was not promoted to S<sub>k+1</sub>.  (If it had been we would have passed it when
+we saw it on that level, and would not be looking at it now.)  Therefore the coin flip when we inserted
+it at this level must have been a tail, and the probability of passing by
+an item without dropping down is 1/2.  The probability of dropping down is also 1/2.  
+So we want to know the expected number of such items that we
+will encounter on a given level.  This is the same as asking the number of times that we flip a coin
+before we get a head, and that is 2, so the expected run time is 2 times the height.  
+(In general the number of times that we expect to repeat an 
+action before we "succeed" when the probability of success is p is 1/p.  So if you roll a die until
+you get a 2 the probability of success is 1/6 and the expected number of rolls is 6. This is another fact covered in CS 30.)</p>
+</p></p></p></p></p></p></p></body>
+</html>

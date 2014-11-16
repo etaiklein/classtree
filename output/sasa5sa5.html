@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="short-assignment-5-due-monday-april-7">Short Assignment 5 <br/>Due: Friday, October 3</h1>
+<p>Your assignment is to modify a Checkerboard applet that we give you so that whichever square you click on flashes between its normal color and yellow, with the change to or from yellow occurring every half second (i.e., every 500 milliseconds).</p>
+<p>You can try to play with my implementation if you like:</p>
+<center>
+<applet code="Checkerboard.class" codebase="JavaClasses" height="240" width="240">
+</applet>
+</center>
+<p>If you don't see a checkerboard above this line, your web browser might not allow you to run this applet, because it's "untrusted." If this happens:</p>
+<ul>
+<li><p>If you're on a Mac, go to System Preferences -&gt; Java. Click on the Security tab. Then click on "Edit Site List" and then click Add. Enter <em>http://www.cs.dartmouth.edu/~scot/</em> and click OK. You'll get a warning saying "Including an HTTP Location on the Exception Site List is considered a security risk." Click Continue and then click OK.</p>
+<p>I believe that applets won't run under Chrome on a Mac no matter what you do.</p></li>
+<li><p>If you're on a Windows machine, go to Settings -&gt; Control Panel -&gt; Java. Under the Security tab, click "Edit Site List" and then click Add. Enter <em>http://www.cs.dartmouth.edu/~scot/</em> and click OK.</p></li>
+</ul>
+<p>Start with the applet <a href="Checkerboard.java">Checkerboard.java</a>, which draws the checkerboard. You should read it carefully to understand how it works.</p>
+<p>Here are some design ideas that you might find useful. You should define constants (i.e., <code>final</code> variables) as appropriate.</p>
+<p>As with the <a href="../../lectures/7/ClickAMac.java"><code>ClickAMac</code></a> applet from lecture, use an instance variable to remember where the mouse was clicked; set this instance variable in the <code>mouseClicked</code> method.</p>
+<p>Before you try to create flashing behavior, it's a good idea to first just turn the appropriate square yellow. In your <code>paintComponent</code> method, draw the entire checkerboard. After you've drawn the checkerboard, if a point has been clicked, go back and draw its containing square in yellow. (Use <code>Color.yellow</code>.) You'll be drawing a yellow square over a square that you already drew in either red or black, but that's OK.</p>
+<p>Given a <code>Point</code>—let's say that it's referenced by <code>clickPoint</code>—how do you determine the row and column numbers of the square containing this point? This is pretty easy. Given that the squares are 30 pixels in each dimension, the row number is <code>clickPoint.y / 30</code> and the column number is <code>clickPoint.x / 30</code>. There are a couple of things to note:</p>
+<ul>
+<li><p>We naturally think of <span class="math">(<em>x</em>, <em>y</em>)</span> and row/column—that is, first <span class="math"><em>x</em></span>, then <span class="math"><em>y</em></span>, and first row, then column. But notice that the row depends on <span class="math"><em>y</em></span>, <em>not</em> on <span class="math"><em>x</em></span>. And the column depends on <span class="math"><em>x</em></span>, <em>not</em> on <span class="math"><em>y</em></span>. So be careful here.</p></li>
+<li><p>I wrote <code>30</code> in the expressions above because that's the square size. You will <em>not</em> write <code>30</code>. You will use a constant.</p></li>
+</ul>
+<p>Once you can turn a square yellow, the next step is to get it to flash. The color should alternate between the square's normal color and yellow, switching every 500 milliseconds. You'll of course need to create a <code>Timer</code> object and have the appropriate <code>actionPerformed</code> method called every 500 milliseconds. In your <code>paintComponent</code> method, draw the entire checkerboard. After you've drawn the checkerboard, if a point has been clicked, and if you should draw the square in yellow where you clicked, do so. There will be a brief moment after the checkboard is drawn and before the yellow square is drawn, but it is so brief that nobody will ever notice. A simple boolean variable is a good way to keep track of whether to draw the yellow square.</p>
+<p>You are free to make inner classes for listeners, to let the applet itself act as a listener, or to let the canvas act as a listener.</p>
+<p>Submit your code via Canvas. Your section leader will run your code to make sure that it works.</p>
+</body>
+</html>

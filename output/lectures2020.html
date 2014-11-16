@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-20-may-9">Lecture 20, October 29</h1>
+<h2>Code discussed in lecture</h2>
+<ul>
+<li><a href="Dijkstra.java">Dijkstra.java</a></li>
+<li><a href="Sequencer.java">Sequencer</a></li>
+<li><a href="SequenceItem.java">SequenceItem</a></li>
+<li><a href="StackSequencer.java">StackSequencer</a></li>
+<li><a href="QueueSequencer.java">QueueSequencer</a></li>
+<li><a href="DistSequencer.java">DistSequencer</a></li>
+<li><a href="PQSequenceItem.java">PQSequenceItem</a></li>
+<li><a href="AStarSequencer.java">AStarSequencer</a></li>
+<li><a href="AStarSequenceItem.java">AStarSequenceItem</a></li>
+<li><a href="MazeSrc.zip"><code>MazeSrc.zip</code></a></li>
+</ul>
+<p>If you want to find paths with the minimum number of edges, then breadth-first search is the way to go. In other words, BFS is great for unweighted graphs.</p>
+<p>What about weighted graphs? Let's remember what a weighted graph is. We assign a numeric <strong>weight</strong> to each edge. The weight can signify any quantity that we want, such as distance, time, cost, or penalty. The <strong>weight of a path</strong> is just the sum of the weights of the edges on the path. We typically want to find paths with minimum weight. We call a path from vertex <span class="math"><em>u</em></span> to vertex <span class="math"><em>v</em></span> whose weight is minimum over all paths from <span class="math"><em>u</em></span> to <span class="math"><em>v</em></span> a <strong>shortest path</strong>, since if weights were distances, a minimum-weight path would indeed be the shortest of all paths <span class="math"><em>u</em></span> to <span class="math"><em>v</em></span>.</p>
+<p>As you can imagine, shortest paths come up frequently in real computer applications. When a GPS finds a driving route, it is finding a shortest path. You can even use shortest paths to identify arbitrage opportunities in finance.</p>
+<p>One key question is whether edge weights are allowed to be negative. The algorithm we'll see today, Dijkstra's algorithm, is guaranteed to find shortest paths only when all edge weights are nonnegative, such as when they represent distance, time, or monetary cost for driving. You might wonder when edge weights are negative. They come up less frequently than situations where all weights are nonnegative, but the algorithm for finding arbitrage opportunities relies on allowing negative edge weights. (We won't see that algorithm in CS 10, however.)</p>
+<p>There is a situation that we have to watch out for when edge weights can be negative. Suppose that there is a cycle whose total weight is negative. Then you can keep going around and around that cycle, decreasing the cost each time, and getting a path weight of <span class="math"> − ∞</span>. Shortest paths are undefined when the graph contains a negative-weight cycle.</p>
+<h2 id="dijkstras-algorithm">Dijkstra's algorithm</h2>
+<p>When edge weights are required to be nonnegative, <strong>Dijkstra's algorithm</strong> is often the algorithm of choice. It's named after its inventor, Edsgar Dijkstra, who published it back in 1959. Yes, this algorithm is 55 years old! It's an oldie but a goodie. Dijkstra's algorithm generalizes BFS, but with weighted edges.</p>
+<p>Dijkstra's algorithm finds a shortest path from a <strong>source vertex</strong> <span class="math"><em>s</em></span> to all other vertices. We'll compute, for each vertex <span class="math"><em>v</em></span>, the weight of a shortest path from the source to <span class="math"><em>v</em></span>, which we'll denote by <code>v.dist</code>. Now, this notation presumes that we have an instance variable <code>dist</code> for each vertex. We don't <em>have</em> to store shortest-path weights as instance variables. For example, we can use a map instead, mapping each vertex to its shortest-path weight. But for the purpose of understanding the algorithm, we'll use <code>v.dist</code>. We will also keep track of the back-pointer on each shortest path. Standard nomenclature for a back-pointer on a shortest path is a <strong>predecessor</strong>, and so we'll denote the predecessor of vertex <span class="math"><em>v</em></span> on a shortest path from the source by <code>v.pred</code>. As with the back-pointers in BFS, the predecessors in shortest paths form a directed tree, with edges pointing on paths toward the source.</p>
+<p>I like to think of Dijkstra's algorithm as a simulation of sending out runners over the graph, starting at the source vertex <span class="math"><em>s</em></span>. Ideally, the simulation works as follows, though we'll see that Dijkstra's algorithm works slightly differently. It starts by sending out runners from the source vertex to all adjacent vertices. The first time a runner arrives at any vertex, runners immediately leave that vertex, headed to all of its adjacent vertices. Look at part (a) of this figure:</p>
+<div class="figure">
+<img src="sp-runners.png"/>
+</div>
+<p>It shows a directed graph with source vertex <span class="math"><em>s</em></span> and weights next to the edges. Think of the weight of an edge as the number of minutes it would take a runner to traverse the edge.</p>
+<p>Part (b) illustrates the start of the simulation, at time <span class="math">0</span>. At that time, shown inside vertex <span class="math"><em>s</em></span>, runners leave <span class="math"><em>s</em></span> and head toward its two adjacent vertices, <span class="math"><em>t</em></span> and <span class="math"><em>y</em></span>. The blackened vertex <span class="math"><em>s</em></span> indicates that we know that <code>s.dist</code> = 0.</p>
+<p>Four minutes later, at time <span class="math">4</span>, the runner to vertex <span class="math"><em>y</em></span> arrives, shown in part (c). Because this runner is the first to arrive at <span class="math"><em>y</em></span>, we know that <code>y.dist</code> = 4, and so <span class="math"><em>y</em></span> is blackened in the figure. The shaded edge <span class="math">(<em>s</em>, <em>y</em>)</span> indicates that the first runner to arrive at vertex <span class="math"><em>y</em></span> came from vertex <span class="math"><em>s</em></span>, so that <code>y.pred</code> <span class="math"> = <em>s</em></span>. At time <span class="math">4</span>, the runner from vertex <span class="math"><em>s</em></span> to vertex <span class="math"><em>t</em></span> is still in transit, and runners leave vertex <span class="math"><em>y</em></span> at time <span class="math">4</span>, headed toward vertices <span class="math"><em>t</em></span>, <span class="math"><em>x</em></span>, and <span class="math"><em>z</em></span>.</p>
+<p>The next event, displayed in part (d), occurs one minute later, at time <span class="math">5</span>, when the runner from vertex <span class="math"><em>y</em></span> arrives at vertex <span class="math"><em>t</em></span>. The runner from <span class="math"><em>s</em></span> to <span class="math"><em>t</em></span> has yet to arrive. Because the first runner to arrive at vertex <span class="math"><em>t</em></span> arrived from vertex <span class="math"><em>y</em></span> at time <span class="math">5</span>, we set <code>t.dist</code> to <span class="math">5</span> and <code>t.pred</code> to <span class="math"><em>y</em></span> (indicated by the shaded edge <span class="math">(<em>y</em>, <em>t</em>)</span>). Runners leave vertex <span class="math"><em>t</em></span>, headed toward vertices <span class="math"><em>x</em></span> and <span class="math"><em>y</em></span> at this time.</p>
+<p>The runner from vertex <span class="math"><em>s</em></span> finally arrives at vertex <span class="math"><em>t</em></span> at time <span class="math">6</span>, but the runner from vertex <span class="math"><em>y</em></span> had already arrived there a minute earlier, and so the effort of the runner from <span class="math"><em>s</em></span> to <span class="math"><em>t</em></span> went for naught.</p>
+<p>At time <span class="math">7</span>, depicted in part (e), two runners arrive at their destinations. The runner from vertex <span class="math"><em>t</em></span> to vertex <span class="math"><em>y</em></span> arrives, but the runner from <span class="math"><em>s</em></span> to <span class="math"><em>y</em></span> had already arrived at time <span class="math">4</span>, and so the simulation forgets about the runner from <span class="math"><em>t</em></span> to <span class="math"><em>y</em></span>. At the same time, the runner from <span class="math"><em>y</em></span> arrives at vertex <span class="math"><em>z</em></span>. We set <code>z.dist</code> to <span class="math">7</span> and <code>z.pred</code> to <span class="math"><em>y</em></span>, and runners leave vertex <span class="math"><em>z</em></span>, headed toward vertices <span class="math"><em>s</em></span> and <span class="math"><em>x</em></span>.</p>
+<p>The next event occurs at time <span class="math">8</span>, as shown in part (f), when the runner from vertex <span class="math"><em>t</em></span> arrives at vertex <span class="math"><em>x</em></span>. We set <code>x.dist</code> to <span class="math">8</span> and <code>x.pred</code> to <span class="math"><em>t</em></span>, and a runner leaves vertex <span class="math"><em>x</em></span>, heading to vertex <span class="math"><em>z</em></span>.</p>
+<p>At this point, every vertex has had a runner arrive, and the simulation can stop. All runners still in transit will arrive at their destination vertices after some other runner had already arrived. Once every vertex has had a runner arrive, the <code>dist</code>value for each vertex equals the weight of the shortest path from vertex <span class="math"><em>s</em></span> and the <code>pred</code> value for each vertex is the predecessor on a shortest path from <span class="math"><em>s</em></span>.</p>
+<p>That was how the simulation proceeds ideally. It relied on the time for a runner to traverse an edge equaling the weight of the edge. Dijkstra's algorithm works slightly differently. It treats all edges the same, so that when it considers the edges leaving a vertex, it processes the adjacent vertices together, and in no particular order. For example, when Dijkstra's algorithm processes the edges leaving vertex <span class="math"><em>s</em></span>, it declares that <code>y.dist</code> <span class="math"> = 4</span>, <code>t.dist</code> <span class="math"> = 6</span>, and <code>y.pred</code> and <code>t.pred</code> are both <span class="math"><em>s</em></span>—<em>so far</em>. When Dijkstra's algorithm later considers the edge <span class="math">(<em>y</em>, <em>t</em>)</span>, it decreases the weight of the shortest path to vertex <span class="math"><em>t</em></span> that it has found so far, so that <code>t.dist</code> goes from <span class="math">6</span> to <span class="math">5</span> and <code>t.pred</code> switches from <span class="math"><em>s</em></span> to <span class="math"><em>y</em></span>.</p>
+<h3 id="implementing-dijkstras-algorithm">Implementing Dijkstra's algorithm</h3>
+<p>Dijkstra's algorithm maintains a min-priority queue of vertices, with their <code>dist</code> values as the keys. It repeatedly extracts from the min-priority queue the vertex <span class="math"><em>u</em></span> with the minimum <code>dist</code> value of all those in the queue, and then it examines all edges leaving <span class="math"><em>u</em></span>. If <span class="math"><em>v</em></span> is adjacent to <span class="math"><em>u</em></span> and taking the edge <span class="math">(<em>u</em>, <em>v</em>)</span> can decrease <span class="math"><em>v</em></span>'s <code>dist</code> value, then we put edge <span class="math">(<em>u</em>, <em>v</em>)</span> into the shortest-path tree (for now, at least), and adjust <code>v.dist</code> and <code>v.pred</code>. Let's denote the weight of edge <span class="math">(<em>u</em>, <em>v</em>)</span> by <code>w(u,v)</code>. We can encapsulate what we do for each edge in a <strong>relaxation step</strong>, with the following pseudocode:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="dt">void</span> <span class="fu">relax</span>(u, v) {
+  <span class="kw">if</span> (u.<span class="fu">dist</span> + <span class="fu">w</span>(u,v) &lt; v.<span class="fu">dist</span>) {
+    v.<span class="fu">dist</span> = u.<span class="fu">dist</span> + <span class="fu">w</span>(u,v);
+    v.<span class="fu">pred</span> = u;
+  }
+}</code></pre>
+<p>Whenever a vertex's <code>dist</code> value decreases, the min-priority queue must be adjusted accordingly.</p>
+<p>Here is pseudocode for Dijkstra's algorithm, assuming that the source vertex is <span class="math"><em>s</em></span>:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="dt">void</span> <span class="fu">dijkstra</span>(s) {
+  queue = <span class="kw">new</span> PriorityQueue&lt;Vertex&gt;();
+  <span class="kw">for</span> (each vertex v) {
+    v.<span class="fu">dist</span> = infinity;  <span class="co">// can use Integer.MAX_VALUE or Double.POSITIVE_INFINITY</span>
+    queue.<span class="fu">enqueue</span>(v);
+    v.<span class="fu">pred</span> = <span class="kw">null</span>;
+  }   
+  s.<span class="fu">dist</span> = <span class="dv">0</span>;
+
+  <span class="kw">while</span> (!queue.<span class="fu">isEmpty</span>()) {
+    u = queue.<span class="fu">extractMin</span>();
+    <span class="kw">for</span> (each vertex v adjacent to u)
+      <span class="fu">relax</span>(u, v);
+  }
+}</code></pre>
+<p>In the following figure, each part shows the <code>dist</code> value (appearing within each vertex), the <code>pred</code> value (indicated by shaded edges), and the vertices in the min-priority queue (the vertices that are shaded, not blackened) just before each iteration of the while-loop:</p>
+<div class="figure">
+<img src="dijkstra.png"/>
+</div>
+<p>The vertex that is newly blackened in each part of the figure is the vertex chosen as vertex <span class="math"><em>u</em></span> in in each iteration of the while-loop. In the simulation with runners, once a vertex receives <code>dist</code> and <code>pred</code> values, they cannot change, but here a vertex could receive <code>dist</code> and <code>pred</code> values in one iteration of the while-loop, and a later iteration of the while-loop for some other vertex <span class="math"><em>u</em></span> could change these values. For example, after edge <span class="math">(<em>y</em>, <em>x</em>)</span> is relaxed in part (c) of the figure, the value of <code>x.dist</code> decreases from <span class="math">∞</span> to <span class="math">13</span>, and <code>x.pred</code> becomes <span class="math"><em>y</em></span>. The next iteration of the while-loop in (part (d)) relaxes edge <span class="math">(<em>t</em>, <em>x</em>)</span>, and <code>x.dist</code> decreases further, to <span class="math">8</span>, and <code>x.pred</code> becomes <span class="math"><em>t</em></span>. In the next iteration (part (e)), edge <span class="math">(<em>z</em>, <em>x</em>)</span> is relaxed, but this time <code>x.dist</code> does not change, because its value, <span class="math">8</span>, is less than <code>z.dist + w(z,x)</code>, which equals <span class="math">12</span>.</p>
+<p>When implementing Dijkstra's algorithm, you must take care that the min-priority queue is updated whenever a <code>dist</code> value decreases. For example, the implementation in the textbook uses a <code>HeapAdaptablePriorityQueue</code>, which has a method <code>replaceKey</code>. This method updates the min-priority queue's internal state to reflect the change in a vertex's key. The textbook also relies on a map from <code>Vertex</code> objects to <code>Entry</code> objects, which locate the vertex in the min-priority queue. It's a bit complicated.</p>
+<p>You might wonder, since the min-priority queue is going to be implemented by a min-heap, why not just have the Dijkstra's algorithm code keep track of the index of each vertex's index in the array that implements the heap? The problem is that the premise violates our goal of abstraction. Who is to say that a min-heap implements the min-priority queue? In fact, we could just use an unsorted array. Or <em>any</em> other implementation of a min-priority queue. The Dijkstra's algorithm code should know only that it's using a min-priority queue, and not how the min-priority queue is implemented.</p>
+<h3 id="correctness-of-dijkstras-algorithm">Correctness of Dijkstra's algorithm</h3>
+<p>How do we know that, at termination (when the min-priority queue is empty because every vertex has been dequeued), <code>v.dist</code> is in fact the shortest-path weight for every vertex <span class="math"><em>v</em></span>? We rely on a <strong>loop invariant</strong> argument. We state a property that pertains to a loop, which we call the loop invariant, and we have to show three things about it:</p>
+<ol style="list-style-type: decimal">
+<li>The loop invariant is true before we enter the loop.</li>
+<li>If the loop invariant is true upon starting an iteration of the loop, it remains true upon starting the next iteration.</li>
+<li>The loop invariant, combined with the reason that we exit the loop, yields the property that we want to show.</li>
+</ol>
+<p>To make our loop invariant a little simpler, let's adopt a notation for all vertices <em>not</em> in the min-priority queue at a given time; we'll call these vertices set <span class="math"><em>S</em></span>. (This set is sometimes called the "closed set," and vertices still in the queue are called the "open set.")  Then here is the loop invariant:</p>
+<blockquote>
+<p>At the start of each iteration of the while-loop, <code>v.dist</code> is the correct shortest-path weight for each vertex <span class="math"><em>v</em></span> in <span class="math"><em>S</em></span>.</p>
+</blockquote>
+<p>It's easy to see that the loop invariant holds before the first iteration. At that time, all vertices are in the min-priority queue, and so set <span class="math"><em>S</em></span> is empty. Therefore, the loop invariant holds vacuously.</p>
+<p>Next, let's see how the third part helps. When we exit the loop, the min-priority queue is empty, and so the set <span class="math"><em>S</em></span> consists of all the vertices. Therefore, every vertex has its correct shortest-path weight.</p>
+<p>The hardest part is the second part, where we have to show that each iteration maintains the truth of the loop invariant. We'll give a simplified version of the reasoning. (A formal proof is a bit more involved.) Assume that as we enter an iteration of this loop, all vertices in set <span class="math"><em>S</em></span> have their correct shortest-path weights in their <code>dist</code> values. Then every edge leaving these vertices has been examined in some relaxation step. Consider the vertex <span class="math"><em>u</em></span> in the min-priority queue with the lowest <code>dist</code> value. Its <code>dist</code> value can never again decrease. Why not? Because the only edges remaining to be relaxed are edges leaving vertices in the min-priority queue and every vertex in the min-priority queue has a <code>dist</code> value at least as large as <code>u.dist</code>. Since all edge weights are nonnegative, we must have <code>u.dist</code> <span class="math"> ≤ </span> <code>v.dist + w(v,u)</code> for every vertex <span class="math"><em>v</em></span> in the min-priority queue, and so no future relaxation will decrease <code>u.dist</code>. Therefore, <code>u.dist</code> is as low as it can go, and we can extract vertex <span class="math"><em>u</em></span> from the min-priority queue and relax all edges leaving <span class="math"><em>u</em></span>. That is, <code>u.dist</code> has its correct shortest-path weight and it is now in set <span class="math"><em>S</em></span>.</p>
+<h3 id="running-time-of-dijkstras-algorithm">Running time of Dijkstra's algorithm</h3>
+<p>To analyze Dijkstra's algorithm, we'll let <span class="math"><em>n</em></span> denote the number of vertices and <span class="math"><em>m</em></span> denote the number of directed edges in the graph (as usual). Each vertex is enqueued once, at the start of the algorithm, and it is never enqueued again, and so there are <span class="math"><em>n</em></span> enqueue operations. Similarly, each vertex is dequeued once, in some iteration of the while-loop, and because it is never enqueued again, that one time is the only time a vertex is ever dequeued. Hence, there are <span class="math"><em>n</em></span> dequeue operations. Every edge is relaxed one time, and so there are <span class="math"><em>m</em></span> relaxation steps and, hence, at most <span class="math"><em>m</em></span> times that we need to update the min-priority queue because a key has changed. Let's use the generic term <code>decreaseKey</code> for updating the min-priority queue (what the textbook calls <code>replaceKey</code>; I like <code>decreaseKey</code> better, since it's for a min-priority queue). These are the relevant costs: <span class="math"><em>n</em></span> <code>insert</code> operations, <span class="math"><em>n</em></span> <code>extractMin</code> operations, and at most <span class="math"><em>m</em></span> <code>decreaseKey</code> operations. The running time of Dijkstra's algorithm depends on how these operations are implemented.</p>
+<p>We can use an unsorted array for the min-priority queue. Each <code>insert</code> and <code>decreaseKey</code> operation takes <span class="math">Θ(1)</span> time. Each <code>extractMin</code> operation takes time <span class="math"><em>O</em>(<em>q</em>)</span>, where <span class="math"><em>q</em></span> is the number of vertices in the min-priority queue at the time. We know that <span class="math"><em>q</em> ≤ <em>n</em></span> always, and so we can say that each <code>extractMin</code> operation takes <span class="math"><em>O</em>(<em>n</em>)</span> time. But wait—what about when <span class="math"><em>q</em></span> is small? The way to think about it is to look at the time for all <span class="math"><em>n</em></span> <code>extractMin</code> operations altogether. You can do the analysis that results in an arithmetic series in <span class="math"><em>n</em></span>, or you can do it in a simpler way. We have <span class="math"><em>n</em></span> operations, each taking <span class="math"><em>O</em>(<em>n</em>)</span> time, and so the total time for all <code>extractMin</code> operations is <span class="math"><em>O</em>(<em>n</em><sup>2</sup>)</span>. If we look at just the first <span class="math"><em>n</em>/2</span> <code>extractMin</code> operations, each of them has to examine at least <span class="math"><em>n</em>/2</span> vertices to find the one with the smallest <code>dist</code> value, and so just the first half of the <code>extractMin</code> operations take <span class="math">Ω(<em>n</em><sup>2</sup>)</span> time. Hence the total time for the <span class="math"><em>n</em></span> <code>extractMin</code> operations is <span class="math">Θ(<em>n</em><sup>2</sup>)</span>, as is the total time for Dijkstra's algorithm.</p>
+<p>What if we use a min-heap for the min-priority queue? Now each <code>insert</code>, <code>extractMin</code>, and <code>decreaseKey</code> operation takes <span class="math"><em>O</em>(lg <em>n</em>)</span> time, and so the totel time for Dijkstra's algorithm is <span class="math"><em>O</em>((<em>n</em> + <em>m</em>) lg <em>n</em>)</span>. If we make the reasonable assumption that <span class="math"><em>m</em> ≥ <em>n</em> − 1</span> (otherwise, we don't even have a connected graph), then that running time is <span class="math"><em>O</em>(<em>m</em> lg <em>n</em>)</span>. That's always better than using an unsorted array, right? No. We say that a graph is <strong>dense</strong> if <span class="math"><em>m</em> = Θ(<em>n</em><sup>2</sup>)</span>, that is if on average every vertex has <span class="math">Θ(<em>n</em>)</span> neighbors. In a dense graph, Dijkstra's algorithm runs in time <span class="math"><em>O</em>(<em>n</em><sup>2</sup> lg <em>n</em>)</span>, which is <em>worse</em> than using an unsorted array.  It is somewhat embarrassing that the "clever" heap is beaten by the "naive" unsorted array.</p>
+<p>This embarrassment lasted for decades, until the invention of a data structure called a <strong>Fibonacci heap</strong> that implements <code>extractMin</code> in <span class="math"><em>O</em>(lg <em>n</em>)</span> <em>amortized</em> time (amortized over all the operations) and <code>insert</code> and <code>decreaseKey</code> in <span class="math">Θ(1)</span> <em>amortized</em> time. With a Fibonacci heap, Dijkstra's algorithm runs in time <span class="math"><em>O</em>(<em>n</em> lg <em>n</em> + <em>m</em>)</span>, which is at least as good as using either an unsorted array or a min-heap. Fibonacci heaps are a little tricky to implement, and their hidden constant factors are a little worse than those for binary heaps, but they're not as hard to implement as some people seem to think.</p>
+<a name="astar"></a>
+<h2>Search on Implicit Graphs and A*</h2>
+<p>If we are trying to go from Hanover to Boston does it make sense to calculate distances to Montpelier and Burlington?.  Of course not.  You are going in the "wrong direction."  But Dijkstra's algorithm would calculate these distances, because they are closer to Hanover than Boston. How could Dijkstra's algorithm know that looking at Montpelier and Burlington is a waste of time?</p>
+<p>If we are looking for the shortest path to a known goal we can use a generalization of Dijkstra's 
+algorithm called A* search to find the shortest path without taking as much time as normal Dijkstra's.  
+The idea is to use an estimate the distance remaining, and to add it to the distance traveled so far
+to get the key for the city in the PQ.  
+For this case the normal Euclidean distance between Montpelier and Boston would be something like
+130 miles.  (Figure this Euclidean distance from GPS coordinates of longitude and latitude.)
+Adding this to the 45 miles from Hanover to Monpelier would give 175 miles.  Therefore
+Boston (whose distance will be 120 miles or so) would come out of the PQ before Montpelier.</p>
+</body></html>Just as in Dijkstra's algorithm, in A*
+we have a PQ and "closed set" of vertices 
+where we know the best path, so if we discover them again while searching we don't need to deal
+with them.  The second group is the "open set" corresponding to vertices in the PQ.  Just as in 
+Dijkstra's when we deleteMin from the PQ we move the corresponding vertex to the closed set and remove it from the PQ and the open set.  We then find incident edges and relax them (update an adjacent vertex's current distance if we have 
+found a shorter path). But the key in the PQ is always distance so far plus the estimate of the remaining distance.
+<p>For this to find the shortest path we need two things.  First, the estimate of distance remaining must be 
+<em>admissible</em>.  This means that we always underestimate the true remaining distance or get
+it exactly.  Because of the triangle inequality the Euclidean distance is an underestimate of the
+true travel distance.  In fact, the ultimate underestimate of the remaining distance is 0.  This
+leads to normal Dijkstra, because then we take the shortest distance traveled next.</p>
+<p>The second requirement is that the cost estimate is monotone.  That means that if we extend the 
+path (thus increasing the distance travelled so far), the total estimate is never less that the
+estimate before we extended the path.  This is the generalization of "no negative edges." 
+Our Euclidean distance plus distance so far estimate satisfies this, because
+if moving to an adjacent vertex increases the distance so far by d it cannot reduce the Euclidean distance
+by more than d. (It would reduce by exactly d if you were moving directly toward the goal.) Thus the
+sum will not go down.  Using just Euclidean distance (without distance so far) would fail to be 
+monotone, so would not be not guaranteed to give shortest paths.</p>
+<p>We often deal with problems where the graph is implicit.  Consider a maze. There is an underlying
+graph - the squares in the maze are the vertices and the edges connect adjacent squares.  However,
+to convert the maze to a graph is more effort than to find the shortest path, because we end up 
+converting parts of the maze that we would never visit.  What is worse is a puzzle like the 15-puzzle
+(15 numbered tiles and a blank in a 4x4 frame, with the tiles able to slide into the blank's position)
+or Rubic's Cube.  Here the size of the implicit graph is potentially enormous.  Therefore we create
+vertex objects as we need them and find adjacencies on the fly.  (For the 15-puzzle two configurations
+are adjacent if they differ by sliding one tile into the blank position and for Rubic's cube two 
+configurations are adjacent if they differ by a twist.)</p>
+<p>Suppose we want to find
+paths in a maze.  We can used DFS, but this can lead to very long paths.  (Demo maze5 in the Maze program.)
+BFS will guarantee finding the shortest path, but this can be very slow.  We can improve on DFS by
+using a heuristic, e.g. the L1 (Manhattan) distance from where we are to the target square.  (This means adding the
+x difference to the y difference between the two squares.)  If we use a PQ based on this distance we
+will tend to "zoom in" on the target.  However, this will not guarantee a shortest path. (Again demo
+the maze program.) Can we do better?  Yes.  Using A* search we can find the 
+shortest path without taking as much time as BFS.  The idea is to add a heuristic like the 
+L1 distance to estimate the distance remaining.  For our
+maze the L1 distance is an admissible estimate - we move either horizontally or vertically in each 
+step, so the number of steps needed is  at least
+the L1 distance.  Note we could also have used the Euclidean distance.  That would be
+a bigger underestimate, because we the Euclidean distance will usually be smaller than the L1 distance
+and will never be larger.  Demo on maze5, showing that the square 
+where the paths meet will be discovered
+from the right first, but will be eventually included in the path from the left.</p>
+<p>Note that using a remaining distance estimate of 0 gives BFS on the implicit maze graph, because
+the shortest path is always expanded next.</p>
+<p>Look at how the maze program implements this via <a href="Sequencer.java">Sequencers</a>
+(generalized priority queues) and <a href="SequenceItem.java">SequenceItems</a> (to keep track of 
+squares in the matrix and the path so far).  The <a href="StackSequencer.java">StackSequencer</a>
+and <a href="QueueSequencer.java">QueueSequencer</a> use a stack and queue respectively to 
+add and get next items.  The <a href="DistSequencer.java">DistSequencer</a> uses a priority 
+queue, where the priority is the L1 distance to the target.  This distance gets saved in the key field
+in the <a href="PQSequenceItem.java">PQSequenceItem</a>  and is used when comparing 
+PQSequenceItems in the priority queue.</p>
+<p>The <a href="AStarSequencer.java">AStarSequencer</a> keeps track of the open set via a 
+map from SequenceItems to Entries in the PQ, so that when we find a shorter distance we can find
+and update the approprite PQ Entry.  It also has an AdaptablePriorityQueue to allow the value of 
+an entry's key to be changed when relaxation finds a better path.  
+The <a href="AStarSequenceItem.java">AStarSequenceItem</a>
+has an instance variable to hold the path length and a method get it, because that is part of the 
+estimate.  Note that <a href="SequenceItem.java">SequenceItems</a> are equal if the row and column positions
+are equal.  Note that we overrode hashCode to make the hashCodes of equal items equal.</p>
+<p>The code for the Maze solver is in:
+<a href="MazeSrc.zip"><code>MazeSrc.zip</code></a>.</p>
+
+

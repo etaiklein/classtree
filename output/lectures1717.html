@@ -1,0 +1,363 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-16-april-28">Lecture 17, October 22</h1>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="BST.java">BST.java</a></li>
+<li><a href="BSTTest.java">BSTTest.java</a></li>
+</ul>
+<h2>Ordered Maps</h2>
+<p>Hash tables are fast (on average) and quite useful, but they have no
+concept of order.  If you iterate through a <code>HashSet</code> you get
+items in the order that they appeared in the hash table, which is fairly
+random.  However, a <code>TreeSet</code> will return the elements in the 
+set in increasing order by <code>compareTo</code>.  There are cases where
+it is very useful to be able to do some other operations on a map that 
+depend on the ordering in the set.  Such a map is called an <em>ordered map</em>.
+The book suggests the following additional operations. </p>
+<ul>
+<li>firstEntry(): return the entry with the smallest key value.</li>
+<li>lastEntry(): return the entry with the largest key value.</li>
+<li>ceilingEntry(k): return the entry with the least key greater than or equal to k.</li>
+<li>floorEntry(k): return the entry with the greatest key less than or equal to k.</li>
+<li>lowerEntry(k): return the entry with the greatest key less than k.</li>
+<li>higherEntry(k): return the entry with the least key greater than or equal to k.</li>
+<li>subMap(k<sub>1</sub>, k<sub>2</sub>): return an iteration of all entries with
+      key greater than or equal to k<sub>1</sub>, but strictly less than k<sub>2</sub>.
+</li></ul>
+<p>In any case above if no such entry exists the method returns null.</p>
+<p>Note that this gives a way to interate through the map in order.  Start
+with firstEntry().  Take the key k out of the entry and call higherEntry(k). Repeat.
+To iterate in reverse order use lastEntry and lowerEntry.
+</p>
+<p>How do we represent an ordered map?  Two obvious choices are a sorted array (or arraylist)
+and a sorted doubly linked list.  Either will implement the operations above in time Θ(1).
+With the sorted array you have a fast <code>get</code> via binary search.  
+(If you have not seen binary search let me know!)  Unfortunately, <code>put</code> and 
+<code>remove</code> are O(n) time, because you need to move elements after the desired position
+to make room or close a hole.  A doubly linked list has Θ(1) <code>put</code> and 
+<code>remove</code> (if you know where), but O(n) <code>get</code>.  Actually, finding the place
+to insert of delete in general will take O(n) time, also.</p>
+<p>An obvious question is whether there is a way to combine the advantages of both data structures.
+The book gives two ways to do this.  The first is skip lists, which we will come back to later
+in the term.  The other is binary search trees, which we will cover next.<p>
+<h2 id="binary-search-trees">Binary search trees</h2>
+<p>A binary search tree (BST) is a data structure combines the best features of a sorted array 
+and a linked list.  If we have our whole list, we can construct
+a tree that branches the same way that binary search does.  Start with the middle element.  
+Put it at the root of the tree.  Pick the middle element of the left half and make it the left child
+of the root.  Similarly the middle element of the right half is the right child of the root.
+(Write a list, demonstrate.)</p>
+<p>We can now do binary search by following references.  Compare the key that we are looking for
+with the root element.  If they are equal we are done. If the key is less than the root recursively
+search the left subtree.  (We don't have to do this recursively - we could just keep a pointer
+to which element we were at and change it to reference the left
+subtree.)  If it is greater search in the right subtree.  We will find it or reach an external node.
+&lt;\p&gt;
+
+<p>A binary search tree is organized, as the name suggests, in a binary tree, as shown here:</p>
+<div class="figure">
+<img src="bst-example.png"/>
+</div>
+<p>Here are two binary search trees with the same set of keys, shown inside the nodes, but with different structures. A binary search tree obeys the <strong>binary-search-tree property</strong>:</p>
+<blockquote>
+<p>Let <span class="math"><em>x</em></span> be a node in a binary search tree. If <span class="math"><em>y</em></span> is a node in the left subtree of <span class="math"><em>x</em></span>, then the key in <span class="math"><em>y</em></span> is less than or equal to the key in <span class="math"><em>x</em></span>. If <span class="math"><em>y</em></span> is a node in the right subtree of <span class="math"><em>x</em></span>, then the key in <span class="math"><em>y</em></span> is greater than or equal to the key in <span class="math"><em>x</em></span>.</p>
+</blockquote>
+<p>In the left tree above, the key of the root is 6, the keys 2, 5, and 5 in its left subtree are no larger than 6, and the keys 7 and 8 in its right subtree are no smaller than 6. The same property holds for every node in the tree. For example, the key 5 in the root's left child is no smaller than the key 2 in that node's left subtree and no larger than the key 5 in the right subtree.</p>
+<p>The file <a href="BST.java">BST.java</a> shows how we work with a binary search tree. Unlike the <code>BinaryTree</code> class in <a href="../12/BinaryTree.java">BinaryTree.java</a>, in our <code>BST</code> class, we separate the notion of the binary search tree from the nodes in the tree. We will see that we had to do so because, unlike in the <code>BinaryTree</code> class, the <code>BST</code> class will allow nodes to be removed, which means that we need a way to get to the entire binary search tree. (Why? Because if we have a reference to the root of the tree and then remove the root, how do we get to the remaining part of the tree? We need a class other than the class for nodes to maintain this information for us.)</p>
+<p>Because we need to access both the binary search tree as a whole and individual nodes within it, we have an outer class <code>BST&lt;K,V&gt;</code>, with generic types <code>K</code> for keys within the nodes and <code>V</code> for the associated values, and a <em>public</em> inner class <code>Node</code>. As we'll see, from outside the <a href="BST.java">BST.java</a> file, we denote this inner class by <code>BST&lt;K,V&gt;.Node</code>, where <code>K</code> and <code>V</code> are the actual types used for the keys and values, e.g., <code>BST&lt;String,Integer&gt;.Node</code>.</p>
+<p>Each <code>Node</code> object has the following instance variables:</p>
+<ul>
+<li><code>left</code>: a reference to its left child</li>
+<li><code>right</code>: a reference to its right child</li>
+<li><code>parent</code>: a reference to its parent</li>
+<li><code>key</code>: the key stored in the node</li>
+<li><code>value</code>: the value associated with the key</li>
+</ul>
+<p>The <code>BST</code> object has just two instance variables:</p>
+<ul>
+<li><code>root</code>: a reference to the <code>Node</code> object at the root</li>
+<li><code>sentinel</code>: a special <code>Node</code> object used to indicate an absent child or parent node. For example, the root's parent is the sentinel, and a leaf's children are both the sentinel. If the binary search tree is empty, then the root is the sentinel.  Just as we did for SentinelDLL the sentinel will give us a way to do the
+search loop with a single test rather than two tests.</li>
+</ul>
+<p>You might wonder why we bother with the <code>sentinel</code> node when we could just use <code>null</code> instead. Indeed we could (although we then could not do the trick
+to speed up the search loop). But you'll also notice that many of the instance variables are protected, rather than private. That's because it can be convenient to define subclasses of <code>BST</code> for "balanced" binary search trees: binary search trees whose nodes all obey the property that the heights of their left and right subtrees are "close." Balanced binary search trees with <span class="math"><em>n</em></span> nodes typically have height <span class="math">Θ(lg <em>n</em>)</span>, which leads to fast operations on them. But we're getting ahead of ourselves. Let's just leave it for now that the <code>sentinel</code> node represents an absent child or parent.</p>
+<p>As you can see, the <code>BST</code> constructor just makes one <code>Node</code>, the <code>sentinel</code>, and sets <code>root</code> to the <code>sentinel</code>. That's an empty binary search tree.</p>
+<h2 id="querying-a-binary-search-tree">Querying a binary search tree</h2>
+<p>We often need to search for a key stored in a binary search tree. Besides the <code>search</code> operation (similar to the <code>contains</code> operation we saw for linked lists), binary search trees can support such queries as <code>minimum</code>, <code>maximum</code>, <code>successor</code>, and <code>predecessor</code>. We can implement each one in time <span class="math"><em>O</em>(<em>h</em>)</span> on any binary search tree of height <span class="math"><em>h</em></span>.</p>
+<h3 id="searching">Searching</h3>
+<p>We use the <code>search</code> method to search for a node with a given key in a binary search tree. It either returns a reference to a <code>Node</code> object with the key, or it returns <code>null</code> if no node in the binary search tree contains the key.</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">public</span> Node <span class="fu">search</span>(K key) {
+    Node x = root;
+    sentinel.key = key;  <span class="co">// So will find the item even if not in tree</span>
+    
+    <span class="co">// Go down the left or right subtree until either we hit the sentinel or</span>
+    <span class="co">// find the key.</span>
+    <span class="kw">while</span> (key.<span class="fu">compareTo</span>(x.<span class="fu">key</span>) != <span class="dv">0</span>) {
+      <span class="kw">if</span> (key.<span class="fu">compareTo</span>(x.<span class="fu">key</span>) &lt; <span class="dv">0</span>)
+        x = x.<span class="fu">left</span>;
+      <span class="kw">else</span>
+        x = x.<span class="fu">right</span>;
+    }
+
+    sentinel.key = null;  <span class="co">// Restore sentinel key value</span>
+    
+    <span class="co">// If we got to the sentinel, the key was not in the BST.</span>
+    <span class="kw">if</span> (x == sentinel)
+      <span class="kw">return</span> <span class="kw">null</span>;
+    <span class="kw">else</span>
+      <span class="kw">return</span> x;
+  }</code></pre>
+<p>The search starts at the root and traces a simple path downward in the tree. For each node <code>x</code> it encounters, it compares the parameter <code>key</code> with <code>x.key</code>. If the two keys are equal, the search terminates. If the parameter <code>key</code> is smaller than <code>x.key</code>, the search continues in the left subtree of <code>x</code>, since the binary-search-tree property implies that <code>key</code> could not be stored in the right subtree. Symmetrically, if <code>key</code> is larger than <code>x.key</code>, the search continues in the right subtree. The nodes visited form a simple path downward from the root of the tree, and thus the running time of <code>search</code> is <span class="math"><em>O</em>(<em>h</em>)</span>, where <span class="math"><em>h</em></span> is the height of the tree.</p>
+<p>To see how the <code>search</code> method works on a binary search tree, consider this tree:</p>
+<div class="figure">
+<img src="search-tree-queries.png"/>
+</div>
+<p>To search for the key 13 in the tree, we follow the path 15 <span class="math"> → </span> 6 <span class="math"> → </span> 7 <span class="math"> → </span> 13 from the root.</p>
+<h3 id="minimum-and-maximum">Minimum and maximum</h3>
+<p>We can always find a node in a binary search tree whose key is a minimum by following <code>left</code> children from the root until we encounter the <code>sentinel</code>. The <code>minimum</code> method returns a reference to the node containing the minimum key in the subtree rooted at a given node <code>x</code>:</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">public</span> Node <span class="fu">minimum</span>(Node x) {
+    <span class="co">// Keep going to the left until finding a node with no left child. That node</span>
+    <span class="co">// is the minimum node in x's subtree.</span>
+    <span class="kw">while</span> (x.<span class="fu">left</span> != sentinel)
+      x = x.<span class="fu">left</span>;
+
+    <span class="kw">return</span> x;
+  }</code></pre>
+<p>The binary-search-tree property guarantees that <code>minimum</code> is correct. If a node <code>x</code> has no left subtree, then since every key in the right subtree of <code>x</code> is at least as large as <code>x.key</code>, the minimum key in the subtree rooted at <code>x</code> is <code>x.key</code>. If node <code>x</code> has a left subtree, then since no key in the right subtree is smaller than <code>x.key</code> and every key in the left subtree is not larger than <code>x.key</code>, the minimum key in the subtree rooted at <code>x</code> resides in the subtree rooted at <code>x.left</code>.</p>
+<p>The code for the <code>maximum</code> method is symmetric:</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">public</span> Node <span class="fu">maximum</span>(Node x) {
+    <span class="co">// Keep going to the left until finding a node with no right child. That node</span>
+    <span class="co">// is the maximum node in x's subtree.</span>
+    <span class="kw">while</span> (x.<span class="fu">right</span> != sentinel)
+      x = x.<span class="fu">right</span>;
+
+    <span class="kw">return</span> x;
+  }</code></pre>
+<p>In the binary search tree above, the minimum key in the tree is 2, which is found by following children from the root. The maximum key 20 is found by following right children from the root.</p>
+<p>Both of these methods run in <span class="math"><em>O</em>(<em>h</em>)</span> time on a tree of height <span class="math"><em>h</em></span> since, as in <code>search</code>, the sequence of nodes encountered forms a simple path downward from the root.</p>
+<h3 id="successor-and-predecessor">Successor and predecessor</h3>
+<p>Given a node in a binary search tree, sometimes we need to find its <strong>successor</strong>—the node with the next highest key— or its <strong>predecessor</strong>— the node with the next lowest key. In the case of equal keys, we'll see that we can think of the predecessor and successor in terms of an "inorder walk" of the tree. The structure of a binary search tree allows us to determine the successor of a node without ever comparing keys. The <code>successor</code> method returns the successor of a node <code>x</code> in a binary search tree if it exists, and <code>null</code> if <code>x</code> has the largest key in the tree:</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">public</span> Node <span class="fu">successor</span>(Node x) {
+    <span class="kw">if</span> (x.<span class="fu">right</span> != sentinel)
+      <span class="co">// If x has a right subtree, the successor is the node in the right</span>
+      <span class="co">// subtree with the minimum key.</span>
+      <span class="kw">return</span> <span class="fu">minimum</span>(x.<span class="fu">right</span>);
+    <span class="kw">else</span> {
+      <span class="co">// Otherwise, the successor is the lowest ancestor of x whose left child</span>
+      <span class="co">// is also an ancestor of x.</span>
+      Node y = x.<span class="fu">parent</span>;
+
+      <span class="co">// Go up from x's parent toward the root until finding a left child or the</span>
+      <span class="co">// root. x's successor is the parent of that first left child.</span>
+      <span class="kw">while</span> (y != sentinel &amp;&amp; x == y.<span class="fu">right</span>) {
+        x = y;
+        y = y.<span class="fu">parent</span>;
+      }
+
+      <span class="co">// Node y is the parent of the first left child on the path from x's</span>
+      <span class="co">// parent to the root, or the root if we hit it.  Return node y.</span>
+      <span class="kw">if</span> (y == sentinel)
+        <span class="kw">return</span> <span class="kw">null</span>;
+      <span class="kw">else</span>
+        <span class="kw">return</span> y;
+    }
+  }</code></pre>
+<p>We break the code for <code>successor</code> into two cases. If the right subtree of node <code>x</code> is nonempty, then the successor of <code>x</code> is just the leftmost node in <code>x</code>'s right subtree, which we find by calling <code>minimum(x.right)</code>. For example, the successor of the node with key 15 in the above figure is the node with key 17.</p>
+<p>On the other hand, if the right subtree of node <code>x</code> is empty and <code>x</code> has a successor <code>y</code>, then <code>y</code> is the lowest ancestor of <code>x</code> whose left child is also an ancestor of <code>x</code>. In the above figure, the successor of the node with key 13 is the node with key 15. To find <code>y</code>, we simply go up the tree from <code>x</code> until we encounter a node that is the left child of its parent. The while-loop handles this case.</p>
+<p>The running time of <code>successor</code> on a tree of height <span class="math"><em>h</em></span> is <span class="math"><em>O</em>(<em>h</em>)</span>, since we either follow a simple path up the tree or follow a simple path down the tree. The <code>predecessor</code> method, which is symmetric to <code>successor</code>, also runs in time <span class="math"><em>O</em>(<em>h</em>)</span>.</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">public</span> Node <span class="fu">predecessor</span>(Node x) {
+    <span class="co">// If x has a left subtree, the predecessor is the node in the left</span>
+    <span class="co">// subtree with the maximum key.</span>
+    <span class="kw">if</span> (x.<span class="fu">left</span> != sentinel)
+      <span class="kw">return</span> <span class="fu">maximum</span>(x.<span class="fu">left</span>);
+    <span class="kw">else</span> {
+      <span class="co">// Otherwise, the predecessor is the lowest ancestor of x whose right child</span>
+      <span class="co">// is also an ancestor of x.</span>
+      Node y = x.<span class="fu">parent</span>;
+
+      <span class="co">// Go up from x's parent toward the root until finding a right child or the</span>
+      <span class="co">// root. x's successor is the parent of that first right child.</span>
+      <span class="kw">while</span> (y != sentinel &amp;&amp; x == y.<span class="fu">left</span>) {
+        x = y;
+        y = y.<span class="fu">parent</span>;
+      }
+
+      <span class="co">// Node y is the parent of the first right child on the path from x's</span>
+      <span class="co">// parent to the root, or the root if we hit it.  Return node y.</span>
+      <span class="kw">if</span> (y == sentinel)
+        <span class="kw">return</span> <span class="kw">null</span>;
+      <span class="kw">else</span>
+        <span class="kw">return</span> y;
+    }
+  }</code></pre>
+<h2 id="inserting-into-a-binary-search-tree">Inserting into a binary search tree</h2>
+<p>To insert a new node into a binary search tree, we use the <code>insert</code> method. It takes a key and a value, creates a new <code>Node</code> object <code>z</code> with this key and value, and inserts <code>z</code> into the <code>BST</code> object. It modifies the <code>BST</code> and some of <code>z</code>'s instance variables in such a way that it inserts <span class="math"><em>z</em></span> into an appropriate position in the tree. The method returns a reference to the newly inserted <code>Node</code>.</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">public</span> Node <span class="fu">insert</span>(K key, V value) {
+    Node z = <span class="kw">new</span> Node(key, value);  <span class="co">// create the new Node</span>
+    Node x = root;                  <span class="co">// Node whose key is compared with z's</span>
+    Node xParent = sentinel;        <span class="co">// x's parent</span>
+
+    <span class="co">// Go down the BST from the root, heading left or right depending on</span>
+    <span class="co">// how the new key compares with x's key, until we find a missing node,</span>
+    <span class="co">// indicated by the sentinel.</span>
+    <span class="kw">while</span> (x != sentinel) {
+      xParent = x;
+      <span class="kw">if</span> (key.<span class="fu">compareTo</span>(x.<span class="fu">key</span>) &lt; <span class="dv">0</span>)
+        x = x.<span class="fu">left</span>;
+      <span class="kw">else</span>
+        x = x.<span class="fu">right</span>;
+    }
+
+    <span class="co">// At this point, we got down to the sentinel. Make the last non-sentinel</span>
+    <span class="co">// node be x's parent and x the appropriate child.</span>
+    z.<span class="fu">parent</span> = xParent;
+
+    <span class="kw">if</span> (xParent == sentinel)  <span class="co">// empty BST?</span>
+      root = z;               <span class="co">// then just the one node</span>
+    <span class="kw">else</span> {                    <span class="co">// link z as the appropriate child of x's parent</span>
+      <span class="kw">if</span> (key.<span class="fu">compareTo</span>(xParent.<span class="fu">key</span>) &lt; <span class="dv">0</span>)
+        xParent.<span class="fu">left</span> = z;
+      <span class="kw">else</span>
+        xParent.<span class="fu">right</span> = z;
+    }
+
+    <span class="kw">return</span> z;
+  }</code></pre>
+<p>This figure shows how <code>insert</code> works:</p>
+<div class="figure">
+<img src="tree-insert.png"/>
+</div>
+<p>Just like the <code>search</code> method, <code>insert</code> begins at the root of the tree and <code>x</code> traces a simple path downward looking for a sentinel to replace with the new <code>Node</code> object <code>z</code>. Lightly shaded nodes indicate the simple path from the root down to the position where the new node is inserted. The dashed line indicates the link in the tree that is added to insert the node. The method maintains a <code>Node</code> reference <code>y</code> as the parent of <code>x</code>. After initialization, the while-loop causes these two references to move down the tree, going left or right depending on the comparison of <code>z.key</code> with <code>x.key</code>, until <code>x</code> equals the <code>sentinel</code>. The sentinel occupies the child position of <code>y</code> where we wish to place <code>z</code>. We need the trailing pointer <code>y</code>, because by the time we find the position where <code>z</code> belongs, the search has proceeded one step beyond the node that needs to be changed. The last few lines set the instance variables that cause <code>z</code> to be inserted and then return <code>z</code>.</p>
+<p>Like the querying operations on binary search trees, the <code>insert</code> method runs in <span class="math"><em>O</em>(<em>h</em>)</span> time on a tree of height <span class="math"><em>h</em></span>.</p>
+<h2 id="removing-a-node-from-a-binary-search-tree">Removing a node from a binary search tree</h2>
+<p>The overall strategy for removing a node <code>z</code> from a binary search tree has three basic cases but, as we shall see, one of the cases is a bit tricky.</p>
+<ul>
+<li>If <code>z</code> has no children, then we simply remove it by modifying its parent to replace <code>z</code> with the <code>sentinel</code> as its child.</li>
+<li>If <code>z</code> has just one child, then we elevate that child to take <code>z</code>'s position in the tree by modifying <code>z</code>'s parent to replace <code>z</code> by <code>z</code>'s child.</li>
+<li>If <code>z</code> has two children, then we find <code>z</code>'s successor <code>y</code>—which must be in <code>z</code>'s right subtree—and have <code>y</code> take <code>z</code>'s position in the tree. The rest of <code>z</code>'s original right subtree becomes <code>y</code>'s new right subtree, and <code>z</code>'s left subtree becomes <code>y</code>'s new left subtree. This case is the tricky one because, as we shall see, it matters whether <code>y</code> is <code>z</code>'s right child.</li>
+</ul>
+<p>A word about the case in which <code>z</code> has two children. Many books, including our textbook and the first two editions of <em>Introduction to Algorithms</em>, treated this case differently and, at first blush, more simply. Instead of moving <code>z</code>'s successor into <code>z</code>'s position in the binary search tree, they took the information in <code>z</code>'s successor (here, the <code>key</code> and <code>value</code> instance variables), <em>copied</em> them into <code>z</code>, and then removed this successor. Because <code>z</code>'s successor cannot have two children (think about why), removing it will fall into one of the first two cases.</p>
+<p>That approach turns out to be quite a bit simpler than what we're going to do. So why are we adding all the extra complexity? Because the code that uses the binary search tree might keep references to nodes within the tree. If the code to remove a node changes what's in a node, and if it removes a different node than the one requested, all heck can break loose in the rest of the program. So, instead, we will guarantee that if you ask to remove node <code>z</code>, then it is node <code>z</code> and only node <code>z</code> that is actually removed, and all references to all other nodes remain valid.</p>
+<p>The code for removing a given node <code>z</code> from a binary search tree organizes its cases a bit differently from the three cases outlined previously by considering the four cases shown here:</p>
+<div class="figure">
+<img src="tree-delete.png"/>
+</div>
+<ul>
+<li><p>If <code>z</code> has no left child (part (a) of the figure), then we replace <code>z</code> by its right child <code>r</code>, which may or may not be the <code>sentinel</code>. When <code>z</code>'s right child is the <code>sentinel</code>, this case deals with the situation in which <code>z</code> has no children. When <code>z</code>'s right child is not the <code>sentinel</code>, this case handles the situation in which <code>z</code> has just one child, which is its right child.</p></li>
+<li><p>If <code>z</code> has just one child, which is its left child <code>l</code> (part (b) of the figure), then we replace <code>z</code> by its left child.</p></li>
+<li><p>Otherwise, <code>z</code> has both a left child <code>l</code> and a right child <code>r</code>. We find <code>z</code>'s successor <code>y</code>, which lies in <code>z</code>'s right subtree and has no left child but could have a right child <code>x</code>. We want to splice <code>y</code> out of its current location and have it replace <code>z</code> in the tree.</p>
+<ul>
+<li><p>If <code>y</code> is <code>z</code>'s right child (part (c)), then we replace <code>z</code> by <code>y</code>, leaving <code>y</code>'s right child <code>x</code> alone.</p></li>
+<li><p>Otherwise, <code>y</code> lies within <code>z</code>'s right subtree but is not <code>z</code>'s right child (part (d)). In this case, we first replace <code>y</code> by its own right child <code>x</code>, and then we replace <code>z</code> by <code>y</code>.</p></li>
+</ul></li>
+</ul>
+<p>In order to move subtrees around within the binary search tree, we use a helper method, <code>transplant</code>, which replaces one subtree as a child of its parent with another subtree. When <code>transplant</code> replaces the subtree rooted at node <code>u</code> with the subtree rooted at node <code>v</code>, node <code>u</code>'s parent becomes node <code>v</code>'s parent, and <code>u</code>'s parent ends up having <code>v</code> as its appropriate child.</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">protected</span> <span class="dt">void</span> <span class="fu">transplant</span>(Node u, Node v) {
+    <span class="kw">if</span> (u.<span class="fu">parent</span> == sentinel)     <span class="co">// was u the root?</span>
+      root = v;                   <span class="co">// if so, now v is the root</span>
+    <span class="kw">else</span> <span class="kw">if</span> (u == u.<span class="fu">parent</span>.<span class="fu">left</span>)  <span class="co">// otherwise adjust the child of u's parent</span>
+      u.<span class="fu">parent</span>.<span class="fu">left</span> = v;
+    <span class="kw">else</span>
+      u.<span class="fu">parent</span>.<span class="fu">right</span> = v;
+
+    <span class="kw">if</span> (v != sentinel)      <span class="co">// if v wasn't the sentinel ...</span>
+      v.<span class="fu">parent</span> = u.<span class="fu">parent</span>;  <span class="co">// ... update its parent</span>
+  }</code></pre>
+<p>This method is protected because subclasses might need to call it, but code using the <code>BST</code> class should not need to know about it.</p>
+<p>The first two lines handle the case in which <code>u</code> is the root. Otherwise, <code>u</code> is either a left child or a right child of its parent. The last two cases of the if-ladder take care of updating <code>u.parent.left</code> if <code>u</code> is a left child or <code>u.parent.right</code> if <code>u</code> is a right child. We allow <code>v</code> to be the <code>sentinel</code>, and the last two lines update <code>v.parent</code> if <code>v</code> is not the <code>sentinel</code>. Note that <code>transplant</code> does not attempt to update <code>v.left</code> and <code>v.right</code>; doing so, or not doing so, is the responsibility of <code>transplant</code>'s caller.</p>
+<p>With the <code>transplant</code> method in hand, here is the method that removes node <code>z</code> from a binary search tree:</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">remove</span>(Node z) {
+    <span class="kw">if</span> (z.<span class="fu">left</span> == sentinel)       <span class="co">// no left child?</span>
+      <span class="fu">transplant</span>(z, z.<span class="fu">right</span>);     <span class="co">// then just replace z by its right child</span>
+    <span class="kw">else</span> <span class="kw">if</span> (z.<span class="fu">right</span> == sentinel) <span class="co">// no right child?</span>
+      <span class="fu">transplant</span>(z, z.<span class="fu">left</span>);      <span class="co">// then just replace z by its left child</span>
+    <span class="kw">else</span> {
+      <span class="co">// Node z has two children.</span>
+      Node y = <span class="fu">minimum</span>(z.<span class="fu">right</span>);  <span class="co">// y is in z's right subtree, and y has no left</span>
+                                  <span class="co">// child</span>
+
+      <span class="co">// Splice y out of its current location, and have it replace z in the BST.</span>
+      <span class="kw">if</span> (y.<span class="fu">parent</span> != z) {
+        <span class="co">// If y is not z's right child, replace y as a child of its parent by</span>
+        <span class="co">// y's right child and turn z's right child into y's right child.</span>
+        <span class="fu">transplant</span>(y, y.<span class="fu">right</span>);
+        y.<span class="fu">right</span> = z.<span class="fu">right</span>;
+        y.<span class="fu">right</span>.<span class="fu">parent</span> = y;
+      }
+
+      <span class="co">// Regardless of whether we found that y was z's right child, replace z as</span>
+      <span class="co">// a child of its parent by y and replace y's left child by z's left</span>
+      <span class="co">// child.</span>
+      <span class="fu">transplant</span>(z, y);
+      y.<span class="fu">left</span> = z.<span class="fu">left</span>;
+      y.<span class="fu">left</span>.<span class="fu">parent</span> = y;
+    }
+  }</code></pre>
+<p>The <code>remove</code> method executes the four cases as follows. The first two lines handle the case in which node <code>z</code> has no left child, and the next two handle the case in which <code>z</code> has a left child but no right child.</p>
+<p>The remainder of the method deals with the remaining two cases, in which <code>z</code> has two children. We first find node <code>y</code>, which is the successor of <code>z</code>. Because <code>z</code> has a nonempty right subtree, its successor must be the node in that subtree with the smallest key; hence the call to <code>minimum(z.right)</code>. As we noted before, <code>y</code> has no left child. We want to splice <code>y</code> out of its current location, and it should replace <code>z</code> in the tree. If <code>y</code> is <code>z</code>'s right child, then the last three lines replace <code>z</code> as a child of its parent by <code>y</code> and replace <code>y</code>'s left child by <code>z</code>'s left child. If <code>y</code> is not <code>z</code>'s right child, the lines</p>
+<pre class="sourceCode java"><code class="sourceCode java">      <span class="co">// Splice y out of its current location, and have it replace z in the BST.</span>
+      <span class="kw">if</span> (y.<span class="fu">parent</span> != z) {
+        <span class="co">// If y is not z's right child, replace y as a child of its parent by</span>
+        <span class="co">// y's right child and turn z's right child into y's right child.</span>
+        <span class="fu">transplant</span>(y, y.<span class="fu">right</span>);
+        y.<span class="fu">right</span> = z.<span class="fu">right</span>;
+        y.<span class="fu">right</span>.<span class="fu">parent</span> = y;
+      }</code></pre>
+<p>replace <code>y</code> as a child of its parent by <code>y</code>'s right child and turn <code>z</code>'s right child <code>r</code> into <code>y</code>'s right child, and then the last three replace <code>z</code> as a child of its parent by <code>y</code> and replace <code>y</code>'s left child by <code>z</code>'s left child.</p>
+<p>Each line of <code>remove</code>, including the calls to <code>transplant</code>, takes constant time, except for the call to <code>minimum</code>. Thus, <code>remove</code> runs in <span class="math"><em>O</em>(<em>h</em>)</span> time on a tree of height <span class="math"><em>h</em></span>.</p>
+<h2 id="testing-the-bst-class">Testing the <code>BST</code> class</h2>
+<p>The code in <a href="BSTTest.java">BSTTest.java</a> tests the <code>BST</code> class. We have not discussed the <code>toString</code> method, but it is similar enough to how the <code>toString</code> method in <a href="../0421/BinaryTree.java">BinaryTree.java</a> operates that you should be able to figure out how it works.</p>
+</p></p></p></body>
+</html>

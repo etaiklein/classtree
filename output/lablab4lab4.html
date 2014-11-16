@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lab-assignment-4-huffman-coding-due-wednesday-october-29">Lab Assignment 4: Huffman Coding<br/>Due: Wednesday, October 29</h1>
+<p>In this assignment, you will use Huffman encoding to compress and decompress files. You will get practice with binary trees, priority queues, maps, and file input and output.</p>
+<h2 id="organizational-notes">Organizational notes</h2>
+<p>Note because of the midterm next Thursday you have an extra week for this assignment.</p>
+<p><strong>As in Lab Assignment 3, you are permitted to work with one other student currently in the class.</strong> You do not have to work with someone else, but you have the option of doing so. Your partner for this assignment does not have to be the same partner you worked with for Lab Assignment 3. If you choose to work with a partner, you will both get the same grade on the assignment. If you would like to work with a partner and cannot find one, let me know and I'll try to match you up with someone else who is seeking a partner.</p>
+<p>There will be no penalty, in terms of points, for working together on this assignment. Please make sure that <strong>both of you submit the code via Canvas</strong>. If you have a partner, state your partner's name in the comments section of Canvas.</p>
+<p>You should weigh whether you will get more out of this assignment working alone or with someone else. The choice is up to you.</p>
+<p>If you choose to work with someone else, pick your partner carefully. Make sure that there are times that you are both available to work together. If you frequent the lab and you notice someone else who often is there when you are, that person might be a good choice as your partner.</p>
+<h2 id="huffman-coding">Huffman coding</h2>
+<p>Early in the development of computing technology, computer memory was very expensive. Therefore, storing large files was discouraged, and being able to compress files to half or 60% of their original size was important. Memory is much cheaper now, but smaller hand-held computers for use in cellphones and other devices are commonplace. On these small devices, we once again encounter storage bottlenecks. We also communicate over low-bandwidth channels, such as dialup, DSL, and wireless, where smaller files mean shorter download times. The proliferation of .zip files shows that file compression is still important today.</p>
+<p>One of the earliest schemes for file compression was invented by David Huffman, who founded the Computer Science department at the University of California at Santa Cruz. Instead of using seven bits to encode each character, as ASCII does, it uses a variable-length encoding of characters. Frequently occurring characters get shorter codewords than infrequently occurring ones. A <strong>codeword</strong> is the sequence of 0s and 1s used to encode the character.</p>
+<p>Huffman encoding gives the smallest possible fixed encoding of a file. A <strong>fixed encoding</strong> means that a given letter is represented by the same codeword wherever it appears in the file. Some more recent schemes that do better than Huffman's are <strong>adaptive</strong>, which means that how a letter is encoded changes as the file is processed.</p>
+<p>Section 13.4 of the textbook contain a description of how Huffman encoding works and even gives you pseudocode for how to build the Huffman code tree. Read this section.</p>
+<p>A problem with variable-length encodings is figuring out where a codeword ends. For example, if we used 1 for <em>E</em>, 10 for <em>F</em>, 00 for <em>X</em>, and 01 for <em>Y</em>, we would be in trouble. When decoding 1001, we would be unsure whether it represents <em>EXE</em> or <em>FY</em>. Huffman encoding removes this ambiguity by producing <strong>prefix-free</strong> codes. (The textbook calls them "prefix codes," but "prefix-free" is more apt.) In a prefix-free code, for any given codeword, adding bits to the end cannot produce another codeword. Hence, no codeword is a prefix of another. When we see a series of bits that corresponds to a codeword, we know that it cannot be part of a larger codeword, and so we can safely interpret these bits as the corresponding character.</p>
+<p>So how do we implement Huffman codes? We need to generate a set of prefix-free codes whose lengths are inversely correlated with the frequency of the encoded character. There are two parts to the algorithm. First, we need to construct a binary tree using a priority queue. Then, we use the binary tree to generate the codewords. Each character in the binary tree is a leaf, and the path from the root to that character gives that character's codeword. Specifically, we label each edge with a 0 or 1, and edges going to a left child append a 0 to the codeword, with edges going to a right child appending a 1. For example, in this tree, the codeword for <em>e</em> is 1101:</p>
+<div class="figure">
+<img src="Huff-tree.png"/>
+</div>
+<p>The number to the right of a colon in a leaf of this figure gives the frequency of the character. The number in an internal node gives the sum of the frequencies of the leaves in its subtree. We'll soon see why we need this information.</p>
+<h3 id="generate-a-frequency-table">Generate a frequency table</h3>
+<p>The first step in creating the code for a given file is to determine the character frequencies. This procedure is fairly simple. First, we create a map where characters are keys and character frequencies are values. Then, we read the file one character at a time. If the character is not in the map, we add it with a frequency of 1. If the character is already in the map, we increment its frequency. When we're done reading the file, we will have a map that maps each character to the number of times that it appears in the file. (Remember that in Java, you have to use appropriate wrapper classes to store the character and the frequency, because you cannot store primitive types in a <code>Map</code>.)</p>
+<h3 id="create-singleton-trees">Create singleton trees</h3>
+<p>Next, create a tree for each character consisting of just one node; that is, create a <strong>singleton</strong> tree for each character. The root of each tree singleton tree stores two values: a character and its frequency. Then, insert all these singleton trees into a min-priority queue, with the frequencies as keys.</p>
+<p>Use the binary tree code we saw in class (<a href="provided/BinaryTree.java">BinaryTree.java</a>) to implement the binary trees. Because you need to store two values and a tree node has only one <code>data</code> value, you will have to create a class that stores a character and its frequency. This new class will be the data type for the tree. You should provide accessor methods as needed.</p>
+<p>You can use whatever priority-queue implementation you like. I found it easiest to use Java's <code>PriorityQueue</code> class, which implements a heap-based priority queue. Note that the things that you are comparing are the frequency counts in the root nodes of two trees. It is simplest to write a separate <code>TreeComparator</code> class that implements the <code>Comparator</code> interface. The only method that you need to implement is <code>compare</code>, which takes two tree nodes and returns -1, 0, or 1 depending on whether the first has a smaller frequency count, the counts are equal, or the second has the smaller frequency count. You pass a <code>TreeComparator</code> object as the second parameter of the <code>PriorityQueue</code> constructor. The first parameter is the initial size for the queue. Look up <code>PriorityQueue</code> in the <a href="http://docs.oracle.com/javase/7/docs/api/">Java documentation</a>.</p>
+<h3 id="creating-a-single-tree">Creating a single tree</h3>
+<p>Our goal is to create a single tree in which the lowest-frequency characters are deepest in the tree, and hence have the longest codewords, and the highest-frequency characters are near the top of the tree and have short codewords. Use the priority queue to achieve this goal, as follows:</p>
+<ol style="list-style-type: decimal">
+<li>Extract the two lowest-frequency trees <span class="math"><em>T</em><sub>1</sub></span> and <span class="math"><em>T</em><sub>2</sub></span> from the priority queue.</li>
+<li>Create a new tree <span class="math"><em>T</em></span> by creating a new root node <span class="math"><em>r</em></span>, attaching <span class="math"><em>T</em><sub>1</sub></span> as <span class="math"><em>r</em></span>'s left subtree, and attaching <span class="math"><em>T</em><sub>2</sub></span> as <span class="math"><em>r</em></span>'s right subtree. (Which of <span class="math"><em>T</em><sub>1</sub></span> and <span class="math"><em>T</em><sub>2</sub></span> is the left or right subtree does not matter.)</li>
+<li>Assign to the new tree <span class="math"><em>T</em></span> a frequency that equals the sum of the frequencies of <span class="math"><em>T</em><sub>1</sub></span> and <span class="math"><em>T</em><sub>2</sub></span>.</li>
+<li>Insert the new tree <span class="math"><em>T</em></span> into the priority queue, with its frequency as its key.</li>
+</ol>
+<p>Each time steps 1–4 execute, the number of trees in the priority queue reduces by one. We keep repeating the above four steps until only one tree remains in the priority queue. This tree is our Huffman code tree.</p>
+<p>Here is an example that shows the steps. In each part, the tree roots appear in order of increasing frequency. Part (a) shows the singleton trees for the first six characters of the alphabet. Parts (b)–(f) show the result of executing steps 1–4 above, with part (f) showing the final Huffman code tree.</p>
+<div class="figure">
+<img src="Huff-movie.png"/>
+</div>
+<p>We won't prove why this tree gives the most efficient codes for the characters, but this proof can be found online or in most algorithms textbooks. However, it should be intuitive that since we built up from the lowest frequency nodes, the lower a character's frequency, the deeper its leaf node will be in the tree.</p>
+<h3 id="retrieving-the-codes">Retrieving the codes</h3>
+<p>The Huffman code tree encodes all of the information about the code for each character. But given a character, it is a bother to search through the tree to find it in a leaf and trace its path from the root. To make encoding fast we want a <code>Map</code> that pairs characters with their codewords. That is, we want to pair each character with a string of 0s and 1s that describes the path from the root to that character.</p>
+<p>You can construct the entire map during a single traversal of the tree. You just have to keep track of a "path so far" parameter as you do the traversal. I will let you work out the details. There are less efficient ways to solve the problem, but for full credit you need to produce the code map during a single traversal of the code tree.</p>
+<h3 id="compressing-the-file">Compressing the file</h3>
+<p>To compress the input text file, repeatedly read the next character in the file, look up its codeword in the code map, and then write the sequence of 0s and 1s in that codeword as bits to an output file. Reading and writing files is not hard, but it is a bit detailed. We describe below how to do so.</p>
+<h3 id="decompressing-the-compressed-file">Decompressing the compressed file</h3>
+<p>Decompressing the compressed file is similar to compression, in that you read from one file and write to another. To decode, process the compressed file bit by bit. Start at the root, and read the first bit from the compressed file. If it is a 0, go left, and if it is a 1, go right. Repeatedly read a bit and go left or right until you reach a leaf. You have now decoded your first character. Get the character out of the data value of that leaf and write it to the output file. Then go back to the root and repeat the process, starting at the next bit of the compressed file. Decompression is completed once there are no more bits to read. You can compare your input file and decompressed file to verify that they are identical.</p>
+<p>You may have noticed that we have cheated a bit: we kept the Huffman code tree that we used for compression around and later used it to decompress. A practical compression application, such as zip, has one compress method and an independent decompress method. The code tree has to be somehow included in the file during compression so that it can be read and used for decompression. You may do so for extra credit (see below).</p>
+<h2 id="reading-and-writing-files">Reading and writing files</h2>
+<p>For compression, you need to read characters from a file and then write bits to a different file. For decompression, you read bits from a file and write characters to a different file. Fortunately, the Java library has classes that make it easy to read characters from a file and write characters to a file. Unfortunately, the Java library does not have classes to read and write bits. To remedy this situation, I have written classes to read and write bits and provided them to you. You don't have to read the code, although you might find it interesting to do so. The tricky part is that we can read and write only bytes, and not individual bits, to files, so that if we have a number of bits that is not a multiple of 8 the last byte will be only partially full. How can we tell how many of those bits are useful and how many are garbage?</p>
+<h3 id="reading-and-writing-characters">Reading and writing characters</h3>
+<p>To read from a file, I recommend that you use a <code>BufferedReader</code>. "Buffered" says that it reads a bunch of characters to a buffer and then doles them out one at a time as you ask for them, rather than going to the disk each time that you ask for a character. Disks always transfer a whole block of bytes every time they read or write, and buffered I/O speeds things up considerably. (Accessing a disk is 100,000 to 1,000,000 times slower than accessing main memory.)</p>
+<p>To read a file, start with this declaration and assignment:</p>
+<pre class="sourceCode java"><code class="sourceCode java">BufferedReader inputFile =  <span class="kw">new</span> BufferedReader(<span class="kw">new</span> FileReader(pathName));</code></pre>
+<p>where <code>pathName</code> is the full name of the file on your computer. (More on path names later.) This line will open a file and save a buffer and information about the current position in the file within a <code>BufferedReader</code> object referenced by <code>inputFile</code>. To read a character, call <code>inputFile.read()</code>. The <code>read</code> method returns an <code>int</code> that holds the Unicode encoding of the character. You just have to cast it to be a <code>char</code>. When the file is empty, <code>read</code> returns the value <span class="math"> − 1</span>, which is not a valid Unicode for any character.</p>
+<p>To write to a file, start with this declaration and assignment:</p>
+<pre class="sourceCode java"><code class="sourceCode java">BufferedWriter outputFile =  <span class="kw">new</span> BufferedWriter(<span class="kw">new</span> FileWriter(decompressedPathName));</code></pre>
+<p>where <code>decompressedPathName</code> is the name of the output file that you want to create. To write a character <code>c</code>, call <code>outputFile.write(c)</code>.</p>
+<p>When you have finished reading or writing a file, you must close it by calling <code>close()</code>. That is, call <code>inputFile.close()</code> or <code>outputFile.close()</code>. Closing a file frees up resources and cleans things up. If you don't close the output file, then the last buffer might not even get written out to the disk and the file can be left in an inconsistent state. So <em>always</em> close files—both input and output— when you are done with them.</p>
+<h3 id="reading-and-writing-bits">Reading and writing bits</h3>
+<p>I have supplied the classes <a href="provided/BufferedBitReader.java">BufferedBitReader.java</a> and <a href="provided/BufferedBitWriter.java">BufferedBitWriter.java</a>. You use them in a manner very similar to the classes above. The way to open a reader and a writer is like so:</p>
+<pre class="sourceCode java"><code class="sourceCode java">BufferedBitReader bitInputFile = <span class="kw">new</span> <span class="fu">BufferedBitReader</span>(compressedPathName);
+BufferedBitWriter bitOutputFile = <span class="kw">new</span> <span class="fu">BufferedBitWriter</span>(compressedPathName);</code></pre>
+<p>To read, call <code>bitInputFile.readBit()</code> which return an <code>int</code> that equals 0 or 1 (or <span class="math"> − 1</span> when there are no more bits to read). To write, call <code>bitOutputFile.writeBit(bit)</code>, where <code>bit</code> is an <code>int</code> that had better be equal to 0 or 1.</p>
+<p>There is also a <code>close</code> method for each of these classes. Call it when you are done reading or writing the file. If you do not close the output file, I can guarantee that you will not be able to correctly read it later.</p>
+<h3 id="handling-exceptions">Handling exceptions</h3>
+<p>All of the file-access methods above may potentially throw an <code>IOException</code>. Because <code>IOException</code> is a checked exception, you need to include <code>try</code> and <code>catch</code> blocks. Think carefully about where you want to catch errors. It may be easier to handle them in the <code>main</code> method than in a method that it calls.</p>
+<p>You should also include <code>finally</code> blocks to close files. For example, here is how you might read characters from the input file to compute frequencies:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="co">// Holds the text inputFile file reader.</span>
+BufferedReader inputFile = <span class="kw">new</span> BufferedReader(<span class="kw">new</span> FileReader(pathName));   
+
+<span class="kw">try</span> {
+  <span class="dt">int</span> cInt = inputFile.<span class="fu">read</span>();   <span class="co">// read the next character's integer representation</span>
+  <span class="kw">while</span> (cInt != -<span class="dv">1</span>) {
+    <span class="co">// Code to process the character whose Unicode value is cInt goes here.</span>
+
+    cInt = inputFile.<span class="fu">read</span>();    <span class="co">// read the next character's integer representation</span>
+  }
+<span class="co">// return-statement for the frequency map goes here.</span>
+}
+<span class="kw">finally</span> {
+  inputFile.<span class="fu">close</span>();
+}</code></pre>
+<h3 id="getting-a-files-path-name">Getting a file's path name</h3>
+<p>To get the complete path name of a file, it is easiest to use a file chooser. The following method will return the path name of the file you choose from a standard file-chooser window. The search starts in your home directory (that would be /Users/scot for me). That might be a good place to put your directory of test files.</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">import java.io.*;</span>
+<span class="kw">import javax.swing.JFileChooser;</span>
+
+ <span class="co">/**</span>
+<span class="co">   * Puts up a fileChooser and gets the path name for the file to be opened.</span>
+<span class="co">   * Returns an empty string if the user clicks Cancel.</span>
+<span class="co">   * </span><span class="kw">@return </span><span class="co">path name of the file chosen</span>
+<span class="co">   */</span>
+ <span class="kw">public</span> <span class="dt">static</span> String <span class="fu">getFilePath</span>() {
+   <span class="co">// Create a file chooser.</span>
+   JFileChooser fc = <span class="kw">new</span> JFileChooser();
+    
+   <span class="dt">int</span> returnVal = fc.<span class="fu">showOpenDialog</span>(<span class="kw">null</span>);
+   <span class="kw">if</span> (returnVal == JFileChooser.<span class="fu">APPROVE_OPTION</span>) {
+     File file = fc.<span class="fu">getSelectedFile</span>();
+     String pathName = file.<span class="fu">getAbsolutePath</span>();
+     <span class="kw">return</span> pathName;
+   }
+   <span class="kw">else</span>
+     <span class="kw">return</span> <span class="st">""</span>;
+  }</code></pre>
+<p>You will be dealing with three files: the original text file, the compressed text file, and the decompressed text file. I suggest that you get the original file path name from the chooser above and then generate the names of the other two by putting <em>compressed and </em>decompressed after the file name but before the .txt extension. So if your original file is WarAndPeace.txt, then the compressed file would be WarAndPeace_compressed.txt and the decompressed file would be WarAndPeace_decompressed.txt. This naming convention makes it easier to keep track of the relationships between your various test files. I suggest that you use the <code>String</code> class's <code>substring</code> method to construct the new file names.</p>
+<h2 id="testing">Testing</h2>
+<p>Create a small test file to help you debug your program. When you have your program working, test it on three text files that I provide, <a href="provided/MobyDick.txt">MobyDick.txt</a>, <a href="provided/USConstitution.txt">USConstitution.txt</a>, and <a href="provided/WarAndPeace.txt">WarAndPeace.txt</a>. To give you an idea of the file sizes, here is a table of the original and compressed file sizes, in bytes, for the three files using my code:</p>
+<table width="400px">
+<tr>
+<th align="left">
+File
+</th>
+<th align="right">
+Original size
+</th>
+<th align="right">
+Compressed size
+</th>
+</tr>
+<tr>
+<td>
+MobyDick.txt
+</td>
+<td align="right">
+1193826
+</td>
+<td align="right">
+673580
+</td>
+</tr>
+<tr>
+<td>
+USConstitution.txt
+</td>
+<td align="right">
+45119
+</td>
+<td align="right">
+25337
+</td>
+</tr>
+<tr>
+<td>
+WarAndPeace.txt
+</td>
+<td align="right">
+3223372
+</td>
+<td align="right">
+1811745
+</td>
+</tr>
+</table>
+<p>Because Huffman Coding is deterministic your compressed file sizes should be the same as mine.</p>
+<p>Also create test files that will test boundary cases for your program. Boundary cases are cases that somehow are "at the edge" of valid input that your program might have to handle differently than a general file. You should figure out what sorts of files might qualify. One case is an empty file. You should be able to compress and decompress such files successfully.</p>
+<p>Neither I nor the course staff is going to make a list of these cases for you or confirm that you have found them all. Figuring out what cases need to be tested is one of the things that we hope that you will learn during this course. When you write programs outside of course work, you won't always have someone telling you what special cases you need to test.</p>
+<p>For your convenience, I have included the three text files, BufferedBitReader.java, BufferedBitWriter.java, and BinaryTree.java in this <a href="provided/Lab4.zip">zip file</a>.</p>
+<h2 id="extra-credit">Extra credit</h2>
+<p>You are now able to compress and decompress files using Huffman encoding. You used the same tree to both encode and decode, however. Normally, the tree that you used to encode the file will not be around when decoding the compressed file. For a practical system (similar to zip), the code tree has to be saved and reconstructed. Note that when you are decoding, the frequencies do not matter; you need only the tree shape and the order of the characters at the leaves.</p>
+<p>For extra credit, implement a way to write out the code tree and then read it back in and regenerate it. You should write out the code tree when you compress a file and read it in when you decompress a file. For some extra credit, write a separate file to store the information needed to reconstruct the tree. For substantial additional extra credit, write this information at the front of the file that contains the encoded characters, so that the file contains all of the information needed to decompress it.</p>
+<p>When I say "write out the tree," I mean write out enough information to be able to regenerate the tree. One option is to use some sort of parenthesized notation that you then parse to reconstruct the tree. The trick of writing the tree in preorder and inorder could work, but you would need to generate unique names at the internal nodes that do not conflict with each other or with characters at the leaves. You could reconstruct the tree from frequency data, but you may have to be careful about the way that you deal with equal frequencies. I am sure that there are many other possibilities. You would like your representation to be compact, because the goal is to compress the file.</p>
+<p>Huffman coding is not the only way to compress text. Another method called <strong>LZW compression</strong> does not require the compressor to record within the output <em>any</em> information about how it compressed. You can read about it in <a href="LZW.pdf">this excerpt from <em>Algorithms Unlocked</em></a>. For even more extra credit, implement LZW compression and decompression, submitting the LZW compressor and decompressor in separate files. Just compress ASCII characters. Don't worry about Unicode. You'll need to start with just 256 characters. If you are going to write a binary file of ints, I suggest using the <code>DataOutputStream</code> class and its <code>writeInt</code> method. To read a binary file of ints, I suggest using the <code>DataInputStream</code> class and its <code>readInt</code> method. You can read about these classes in the <a href="http://docs.oracle.com/javase/7/docs/api/">Java documentation</a>, and you can always use your favorite search engine (what, there's more than one?) to ask about details of using these classes. It's extra credit, after all!</p>
+<p>If you come up with other interesting extra credit ideas, feel free to ask me how much extra credit they are worth.</p>
+<h2 id="suggestions">Suggestions</h2>
+<p>This is not the kind of program where you can write out all the code, click the run button, select WarAndPeace.txt, and expect to be able to tell from the files printed where the bugs are in your program. Start with a short file (a couple of dozen characters), preferably one with a range of character frequencies. Call <code>System.out.println</code> to print out the frequency map. (The Java <code>Map</code> implementations have a <code>toString</code> that gives reasonable output.) Then print the code tree. (You did override <code>toString</code> in your class that holds the character and its frequency, didn't you? The <code>BinaryTree</code> class supplies the rest of the <code>toString</code> to print an indented tree.) Print out the code map.</p>
+<p>My sample solution currently has all of these print statements in it, within the bodies of if-statements that check whether a boolean debugging flag is set. It could be interesting to see the frequency numbers for WarAndPeace.txt and to see how much the codeword length varies.</p>
+<p>You can also put print statements to print out every character or bit read from files and written to files. Again, you should either comment them out before you compress WarAndPeace.txt, or put the print statements under the control of a debugging flag.</p>
+<p>In my implementation, many of the methods are static.</p>
+<h2 id="acknowledgement">Acknowledgement</h2>
+<p>Some of the text for this assignment writeup is modified from a writeup by Delaney Granizo-Mackenzie.</p>
+<h2 id="how-to-submit-your-work">How to submit your work</h2>
+<p>For the basic assignment, submit everything in Canvas in a single zip file. Include <em>all</em> the files needed to run your code, even if I provided the file and you have not changed it. That will make it easy for your section leader to run your code. <strong>Submit the basic part of the assignment on Canvas in the Lab Assignment 2 column.</strong></p>
+<p>Uploading a single zip file will be easier than uploading lots of files to Canvas. <strong>If you do extra credit, submit a second zip file containing <em>all</em> the files needed to run your extra credit submission; if there's a file that is in your basic assignment and in your extra credit, include it in both zip files. Submit the basic part of the assignment on Canvas in the Lab Assignment 2 column, and extra credit in the Lab Assignment 2 Extra Credit column. Make sure that the zip files for the basic part of the assignment and the extra part have different names from each other.</strong> We ask for your extra credit to be submitted separately so that if it does not work correctly, we can still grade the basic assignment.</p>
+<p>Along with your code, include the test files that you wrote, along with their compressed and decompressed output. Include the compressed and decompressed versions or USConstitution.  <strong>Do not include input or output for the WarAndPeace and MobyDick .txt files that I have provided.</strong> These files are large and unnecessary. Your section leader can run your code on these files.</p>
+<h2 id="grading">Grading</h2>
+<p>Your section leader will run your program and will grade this assignment looking for the following things:</p>
+<p>Total of 135 points.<p>
+<h3>Correctness, Efficiency, and Elegance (80 points)</h3>
+<table class="rubric">
+<tr><th>10</th><td>Generates frequency map</td></tr>
+<tr><th>10</th><td>Creates a priority queue of singleton trees</td></tr>
+<tr><th>15</th><td>Builds the code tree</td></tr>
+<tr><th>15</th><td>Traverses the code tree to generate a `Map` from characters to code words</td></tr>
+<tr><th>10</th><td>Reads the input file, compresses it, and writes the compressed file.</td></tr>
+<tr><th>15</th><td>Reads the compressed file, decompresses it, and writes the decompressed file.</td></tr>
+<tr><th>5</th><td>Handles boundary cases correctly.</td></tr>
+</table>
+<h3>Structure (25 points)</h3>
+<table class="rubric">
+<tr><th>10</th><td>Good decomposition into objects and methods.</td></tr>
+<tr><th>5</th><td>Proper used of instance and local variable</td></tr>
+<tr><th>5</th><td>Instance variables are private</td></tr>
+<tr><th>5</th><td>Proper use of parameters</td></tr>
+</table>
+<h3>Style (20 points)</h3>
+<table class="rubric">
+<tr><th>5</th><td>Comments for classes</td></tr>
+<tr><th>5</th><td>Comments for methods (purpose, parameters, what is returned) in
+  JavaDoc form.</td></tr>
+<tr><th>4</th><td>Good names for methods, variables, parameters</td></tr>
+<tr><th>3</th><td>Layout (blank lines, indentation, no line wraps, etc.)</td></tr>
+<tr><th>3</th><td>Other unspecified style issues</td></tr>
+</table>
+<h3>Testing (10 points)</h3>
+<table class="rubric">
+<tr><th>5</th><td>Output from USConstitution.txt and your small test case(s).  Note 
+  that your files size for USConstitution should match those above.
+  <tr><th>5</th><td>Output from from your boundary case test(s).</td></tr>
+</td></tr></table>
+<h3>Extra Credit</h3>
+<table class="rubric">
+<tr><th>20</th><td>Write code tree information to a separate file and reconstruct the tree </td></tr>
+<tr><th>40</th><td>Include tree information in the _compressed file (in addition to the part above).</td></tr>
+<tr><th>60</th><td>LZW compression and decompression.</td></tr>
+<tr><th>?</th><td>Other interesting additions</td></tr>
+</table>
+</p></p></body>
+</html>

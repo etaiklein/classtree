@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-17-october-13">Lecture 13, October 13</h1>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="BinaryTree.java">BinaryTree.java</a></li>
+<li><a href="Expression.java">Expression.java</a></li>
+<li><a href="Constant.java">Constant.java</a></li>
+<li><a href="Variable.java">Variable.java</a></li>
+<li><a href="MultiplyDefinedVariableException.java">MultiplyDefinedVariableException.java</a></li>
+<li><a href="UndefinedVariableException.java">UndefinedVariableException.java</a></li>
+<li><a href="UnassignedVariableException.java">UnassignedVariableException.java</a></li>
+<li><a href="Sum.java">Sum.java</a></li>
+<li><a href="Difference.java">Difference.java</a></li>
+<li><a href="Product.java">Product.java</a></li>
+<li><a href="Quotient.java">Quotient.java</a></li>
+<li><a href="BinaryOp.java">BinaryOp.java</a></li>
+<li><a href="ExpressionDriver.java">ExpressionDriver.java</a></li>
+<li><a href="Fahrenheit.java">Fahrenheit.java</a></li>
+</ul>
+<h2 id="traversing-a-rooted-tree">Traversing a rooted tree</h2>
+<p>When we visit the nodes in a rooted tree, we are <strong>traversing</strong> the tree. Of the many possible orders for visiting nodes, three are most common. We think of them recursively, in terms of when to visit a node and when to visit its subtrees. We'll show examples in terms of this binary search tree, where we imagine visiting a node as printing out its key:</p>
+<div class="figure">
+<img src="search-tree-queries.png"/>
+</div>
+<ul>
+<li><strong>Preorder</strong>: Visit the root, then recursively visit each of the subtrees, from left to right. For our example, a preorder search would print keys in the order 15, 6, 3, 2, 4, 7, 13, 9, 18, 17, 20.</li>
+<li><strong>Postorder</strong>: Recursively visit each of the subtrees, from left to right, then visit the root. For our example: 2, 4, 3, 9, 13, 7, 6, 17, 20, 18, 15.</li>
+<li><strong>Inorder</strong>: An inorder traversal applies only to binary trees. Recursively visit the left subtree, then visit the root, then visit the right subtree. For our example: 2, 3, 4, 6, 7, 9, 13, 15, 17, 18, 20. It is no coincidence that if you visit the nodes of a binary search tree using an inorder traversal, you visit the nodes in nondecreasing order of their keys. Think about why that should be.</li>
+</ul>
+<p>These are basic approaches to designing tree algorithms.  You are not limited to them. The book talks about an Eulerian tour of a binary tree.  It even implements a template that visits each node three times (before its children, between its children, and after its children). The code supplies three methods for you to fill in called left, below, and right.  I would have called them before, between, and after.  But the idea is that you can be very flexible in how you traverse a tree.  (I sometimes find it easier to write the whole traversal rather than fill in the template methods, but it is a matter of taste.)  Eulerian traversals definitely abstract the idea of a traversal!</p>
+<p>Going back to our binary tree code in <a href="BinaryTree.java">BinaryTree.java</a>, we see methods <code>preorder</code>, <code>inorder</code>, and <code>postorder</code>. Each appends data from a subtree to a <code>List</code>. But <code>List</code> is an interface, and in the driver, you can see that it's actually implemented by a Java <code>LinkedList</code>. Here's the <code>preorder</code> method:</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">preorder</span>(List&lt;E&gt; dataList) {
+    dataList.<span class="fu">add</span>(data);
+    <span class="kw">if</span> (<span class="kw">this</span>.<span class="fu">hasLeft</span>())
+      left.<span class="fu">preorder</span>(dataList);  <span class="co">// recurse on left child</span>
+    <span class="kw">if</span> (<span class="kw">this</span>.<span class="fu">hasRight</span>())
+      right.<span class="fu">preorder</span>(dataList); <span class="co">// recurse on right child</span>
+  }</code></pre>
+<p>The other two methods just move the call to <code>add</code> to different locations in the code:</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">inorder</span>(List&lt;E&gt; dataList) {
+    <span class="kw">if</span> (<span class="kw">this</span>.<span class="fu">hasLeft</span>())
+      left.<span class="fu">inorder</span>(dataList);   <span class="co">// recurse on left child</span>
+    dataList.<span class="fu">add</span>(data);
+    <span class="kw">if</span> (<span class="kw">this</span>.<span class="fu">hasRight</span>())
+      right.<span class="fu">inorder</span>(dataList);  <span class="co">// recurse on right child</span>
+  }
+
+  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">postorder</span>(List&lt;E&gt; dataList) {
+    <span class="kw">if</span> (<span class="kw">this</span>.<span class="fu">hasLeft</span>())
+      left.<span class="fu">postorder</span>(dataList);   <span class="co">// recurse on left child</span>
+    <span class="kw">if</span> (<span class="kw">this</span>.<span class="fu">hasRight</span>())
+      right.<span class="fu">postorder</span>(dataList);  <span class="co">// recurse on right child</span>
+    dataList.<span class="fu">add</span>(data);
+  }</code></pre>
+<p>Traversing rooted trees comes up quite often. For example, the <code>TreeSet</code> implementation of the <code>Set</code> interface stores information in a binary search tree, and the iterator returned by its <code>iterator</code> method is guaranteed to iterate over the set elements in increasing order. Not surprisingly, this iterator traverses the binary search tree using an inorder traversal.</p>
+<p>There's another interesting use of traversals in binary trees. If all keys are distinct and you have both a preorder and an inorder traversal, you can reconstruct the entire binary tree. The method <code>reconstructTree</code> in the <code>BinaryTree</code> class does so. How does this method work? The first node in a preorder traversal is the root. The root is somewhere in the middle of an inorder traversal, with everything in its left subtree before it and everything in its right subtree after it. In the preorder traversal, all of the nodes in the left subtree are visited before anything in the right subtree. So we can build the tree recursively as follows:</p>
+<ol style="list-style-type: decimal">
+<li>Save the root's key.</li>
+<li>Build lists of the keys in the left subtree, one list from the preorder traversal (<code>leftPre</code> in the code) and one list from the inorder traversal (<code>leftIn</code> in the code). Do so by iterating through the preorder and inorder lists until getting to the root in the inorder list.</li>
+<li>Having constructed the <code>leftPre</code> and <code>leftIn</code> lists, use them to recursively build the left subtree.</li>
+<li>Build lists of the keys in the right subtree, one list from the preorder traversal (<code>rightPre</code> in the code) and one list from the inorder traversal (<code>rightIn</code> in the code). Do so by iterating through the remainder of the preorder and inorder lists, starting from where we left off in step 1 and jumping over the root in the inorder list.</li>
+<li>Having constructed the <code>rightPre</code> and <code>rightIn</code> lists, use them to recursively build the right subtree.</li>
+<li>Create a new node for the root with the root's key, and link the reconstructed left and right subtrees to the root. Return the root.</li>
+</ol>
+<p>How long does it take to traverse a rooted tree with <span class="math"><em>n</em></span> nodes? The answer is <span class="math">Θ(<em>n</em>)</span> time. Here's an easy way to see it. We have to consider each edge twice. The first time is when we traverse the edge from the parent down to a child. The second time is when we traverse the edge from the child back to the parent. Conceptually, there is also an edge down into the root, representing the work performed in the initial call of the method. How many edges are there? It is a fact that in any tree—whether or not we think of it as a rooted tree—the number of edges is <span class="math"><em>n</em> − 1</span>. Add in one more for the edge down to the root, and conceptually, there are <span class="math"><em>n</em></span> edges, each traversed twice. That makes the total time <span class="math">Θ(<em>n</em>)</span>.</p>
+<h2 id="expression-trees">Expression trees</h2>
+<p>We can think of expressions as being represented by trees. To keep things simple so that we don't have to think about operator precedence, let's consider only fully parenthesized expressions. Take the expression <code>((17.5 + (5.0 / x)) * (y - 4.0))</code>. We can represent it by this binary tree:</p>
+<div class="figure">
+<img src="expression-tree-example.png"/>
+</div>
+<p>Although we could build an expression tree on top of the binary tree code, we will write a new set of classes to represent expression trees. Each node will be its own type, so that we'll have nodes for variables, constants, and each of the binary operators. We won't include unary operators (such as unary minus) or ternary operators (such as the <code>? :</code> operator of Java), but we could—and we could not include unary operators if all expression trees had to be binary trees.</p>
+<p>The code for expression trees is in this <a href="expression-trees.zip">zip file</a>. (I will show you individual classes, but this is the easy way to download the whole thing.) First, look at <a href="Expression.java">Expression.java</a>. It is an interface that says that an <code>Expression</code> must provide two methods: <code>eval</code> and <code>deriv</code>. The <code>eval</code> method evaluates an expression and returns its value in a double. The <code>deriv</code> method gives returns an expression that is the symbolic version of the derivative with respect to a particular variable. An <code>Expression</code> should also override <code>toString</code>.</p>
+<p>Next, look at <a href="Constant.java">Constant.java</a>. To use a constant, you call its <code>define</code> method, just giving a double with the value of the constant. The <code>define</code> method is static and calls the constructor, which is private, so that the only way to define a constant is by calling <code>define</code>. The constructor just saves the value of the constant in the instance variable <code>myValue</code>, and then the <code>define</code> method returns a reference to the <code>Constant</code> object. Because <code>Constant</code> implements <code>Expression</code>, anywhere you have declared a reference to an <code>Expression</code>, the reference may actually be to a <code>Constant</code>. The <code>eval</code> method just returns the value in <code>myValue</code>, and the <code>deriv</code> method always returns a constant whose value is 0.0, since the derivative of a constant with respect to any variable is 0. The <code>toString</code> method just returns the <code>String</code> representation of <code>myValue</code>.</p>
+<p>This scheme, where the constructor is private and there is a static method that calls the constructor is a variant of a design pattern called the <strong>factory pattern</strong>. Instead of constructing objects directly, users of the class have to go through a method to create an object. One use is to allow the factory to decide to create a subclass object when asked to create a superclass object. Another is to give the user options on what parameters to pass to create the object. For example, complex numbers can be represented using polar or rectangular coordinates. Either way you present two <code>double</code> values, and so you cannot overload the constructor to accept either representation. You can create two factories, however, one of which expects polar coordinates and the other of which expects rectangular coordinates. For example:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">class</span> Complex {
+  <span class="kw">public</span> <span class="dt">static</span> Complex <span class="fu">fromCartesian</span>(<span class="dt">double</span> real, <span class="dt">double</span> imag) {
+    <span class="kw">return</span> <span class="kw">new</span> <span class="fu">Complex</span>(real, imag);
+  }
+
+  <span class="kw">public</span> <span class="dt">static</span> Complex <span class="fu">fromPolar</span>(<span class="dt">double</span> mag, <span class="dt">double</span> phase) {
+    <span class="kw">return</span> <span class="kw">new</span> <span class="fu">Complex</span>(mag * <span class="fu">cos</span>(phase), mag * <span class="fu">sin</span>(phase));
+  }
+
+  <span class="kw">private</span> <span class="fu">Complex</span>(<span class="dt">double</span> a, <span class="dt">double</span> b) {
+    <span class="co">// Code to store into private instance variables goes here.</span>
+  }
+}
+
+Complex c = Complex.<span class="fu">fromPolar</span>(<span class="dv">1</span>, pi);</code></pre>
+<p>It is less clear why we would want to use this pattern in the <code>Constant</code> class, but it will become clearer later.</p>
+<p>The <code>Variable</code> class in <a href="Variable.java">Variable.java</a> class is similar, but it has a symbol table to save variable values. These are saved in a <code>Map</code> that is implemented using a <code>HashMap</code>. Again, there's a <code>define</code> method, but this time it is overloaded. The two-parameter form takes the name of a variable as a <code>String</code> and a value for the variable, storing the name and value in the symbol table. The one-parameter form takes just the name of the variable, and it stores the name in the symbol table with <code>null</code> for the value. A variable whose value is <code>null</code> is defined but uninitialized. The constructor, called by both <code>define</code> methods, stores the variable's name in the instance variable <code>myName</code>. There is an <code>assign</code> method that stores the value in the symbol table entry for the variable. The <code>eval</code> method looks up the variable in the symbol table, using <code>myName</code> as the key, and it returns the value found in the symbol table for the key given by <code>myName</code>. The <code>deriv</code> method determines whether the variable <code>v</code> given as the parameter matches <code>myName</code>. If it does, then the derivative is 1; otherwise, the derivative is 0. The correct <code>Constant</code> is defined and returned in either case. The <code>toString</code> method just returns <code>myName</code>.</p>
+<p>Some errors can occur when using variables, and instead of just printing error messages, we throw exceptions. We have exceptions for three types of errors:</p>
+<ul>
+<li>If you try to define a variable more than once, the <code>define</code> method throws a <code>MultiplyDefinedVariableException</code>, defined in <a href="MultiplyDefinedVariableException.java">MultiplyDefinedVariableException.java</a>.</li>
+<li>If you try to assign to a variable that has not been defined via the <code>define</code> method, the <code>assign</code> method throws an <code>UndefinedVariableException</code>, defined in <a href="UndefinedVariableException.java">UndefinedVariableException.java</a>.</li>
+<li>If you try to evaluate a variable that does not have a value, the <code>eval</code> method throws an <code>UnassignedVariableException</code>, defined in <a href="UnassignedVariableException.java">UnassignedVariableException.java</a>.</li>
+</ul>
+<p>The classes in <a href="Sum.java">Sum.java</a>, <a href="Difference.java">Difference.java</a>, <a href="Product.java">Product.java</a>, and <a href="Quotient.java">Quotient.java</a> all perform <code>eval</code> by evaluating their operands and performing an operation on them. The only difference is the operator. Therefore, we have an abstract class in <a href="BinaryOp.java">BinaryOp.java</a> that has the template for evaluating a binary expression and another template for <code>toString</code>. These templates call abstract functions <code>doOperation</code> and <code>getOperation</code>, repectively. (The latter returns a <code>String</code> representation of the operator). It also has accessor methods to get the first or second expression.</p>
+<p>Notice that evaluating an expression is really a postorder traversal of the expression tree. To evaluate a <code>BinaryOp</code>, first evaluate its two subtrees, and then apply the appropriate binary operator to the results of evaluating the subtrees.</p>
+<p>Let's look at the <code>Sum</code> class more carefully. It provides the necessary two methods, which are fairly trivial. It supplies its <code>deriv</code> method, which adds the derivatives of its operands. But the interesting thing is <code>Sum.make</code>. Here we see the power of a factory method. It tries to simplify the expression. If the two expressions it is adding are constants, it adds them to get a new constant. If either operand is 0 it returns the other. So in three of the four cases it does not even create a <code>Sum</code> object! The other three operations are similar in how they try to simplify the resulting expression in their <code>make</code> methods.</p>
+<p>Finally, look at the driver in <a href="ExpressionDriver.java">ExpressionDriver.java</a>. After the <code>main</code> method, we have several static wrapper methods. They alleviate the need to call the static methods in the above classes with the name of the class. We also use method names <code>plus</code>, <code>minus</code>, <code>times</code>, and <code>over</code> instead of the class names <code>Sum</code>, <code>Difference</code>, <code>Product</code>, and <code>Quotient</code>. In that way, we can construct the expression tree above using lines of code such as</p>
+<pre class="sourceCode java"><code class="sourceCode java">Variable xVar = <span class="fu">define</span>(<span class="st">"x"</span>, <span class="fl">2.0</span>);
+Variable yVar = <span class="fu">define</span>(<span class="st">"y"</span>, <span class="fl">6.0</span>);
+
+Expression first = <span class="fu">plus</span>(<span class="fu">constant</span>(<span class="fl">17.5</span>), <span class="fu">over</span>(<span class="fu">constant</span>(<span class="fl">5.0</span>), xVar));
+Expression second = <span class="fu">minus</span>(yVar, <span class="fu">constant</span>(<span class="fl">4.0</span>));
+Expression third = <span class="fu">times</span>(first, second);</code></pre>
+<p>Or we can replace the last three lines by</p>
+<pre class="sourceCode java"><code class="sourceCode java">Expression fourth = <span class="fu">times</span>(<span class="fu">plus</span>(<span class="fu">constant</span>(<span class="fl">17.5</span>), <span class="fu">over</span>(<span class="fu">constant</span>(<span class="fl">5.0</span>), xVar)),
+    <span class="fu">minus</span>(yVar, <span class="fu">constant</span>(<span class="fl">4.0</span>)));</code></pre>
+<p>The driver also verifies that the three exceptions work correctly.</p>
+<h3>The Composite Pattern</h3>
+<p>This is an example of another design pattern, the <em>composite</em> pattern.  Here we have 
+individual things (constants and variables) and compositions of things (sums, differences, etc.), 
+but they all are expressions and can be treated in the same manner.  We perform the same operations
+on all of them, so we need not distinguish between individual things and groups of things.  Any 
+of the expression types can be used wherever an expression is expected, and everything works.
+For example, we take the derivative of the product of two huge, complicated expressions the same
+way that we take the derivative of 2*x.</p>
+<p>The same
+pattern arises in some graphical drawing programs, where there are individual shapes (circles, 
+rectangles, etc.) and groups of shapes (shapes are laid out and then combined into a single group).
+But all are shapes, and groups of shapes can be used wherever individual shapes can be used and 
+vise versa, and all are subject to the same scaling, translation, and other operations.  So you 
+compose a bunch of shapes and get another shape.</p>
+<a name="exceptions"></a>
+<h2>Exceptions</h2>
+</body></html>So far we have handled errors by printing error messages to <code>System.err</code>.  This is not a 
+great solution to the problem of handling errors.  Java has  a much better one - exceptions.
+Exceptions are objects that are <em>thrown</em> when an error occurs.  When an exception is thrown the
+program stops what it was doing and goes into error-handling mode. Exceptions are either <em>caught</em>
+and handled in the method that throws them or passed on the the method that called it.  If that method does not catch
+the exception it is passed to the method that calls it, etc.  If the main program does not catch the
+exception it kills the program and prints an error message.  You probably have seen these messages for null pointers
+or subscript out of bounds.
+Exceptions are an excellent way of passing an error on to a method that knows a reasonable way to handle them.
+Exceptions usually occur in a low-level method.  Consider trying to open a file and failing.  The file-opening
+method has no idea what the programmer wants to do if the file can't be opened.  Maybe the method that calls
+it has no idea, either.  If you don't know a good way to handle the exception it is best to pass it on.  
+Eventually you will get to a high-level method that does know what to do about the situation.  If the file
+name was just entered by the user it might be good to give her a second chance.  Or it may be that the 
+programmer has a backup file to use if the first cannot be opened.  Or it could be that the right thing to
+do is to print an error message and quit the program.  Exceptions give a way to let the low-level method
+that discovers the problem pass it on to a method that knows what to do about it.
+<p>There is a whole heirarchy of exceptions.  The top level class is <code>Exception</code>.  The heirarchy looks like:
+
+<ul>
+<li>Exception</li>
+<ul>
+<li>IOException</li>
+<ul>
+<li>EOFException</li>
+<li>FileNotFoundException</li>
+<li>MalformedURLException</li>
+<li>UnknownHostException</li>
+</ul>
+<li>ClassNotFoundException</li>
+<li>CloneNotSupportedException</li>
+<li>RuntimeException</li>
+<ul>
+<li>ArithmeticException</li>
+<li>ClassCastException</li>
+<li>IllegalArgumentException</li>
+<ul>
+<li>NumberFormatException</li>
+</ul>
+<li>IllegalStateException</li>
+<li>IndexOutOfBoundsException</li>
+<ul>
+<li>ArrayIndexOutOfBoundsException</li>
+</ul>
+<li>NoSuchElementException</li>
+<ul>
+<li>InputMismatchException</li>
+</ul>
+<li>NullPointerException</li>
+</ul>
+</ul>
+</ul>
+<p>I should also note that there are two types of exceptions, <em>checked</em> and <em>unchecked</em>.  
+When you call a method that could throw a checked exception the compiler checks to make sure that you
+handle it.  You can handle it in either of two ways.  The first one is to catch it.  The second is
+to pass the buck and add a <code>throws</code> clause at the end of the method header.  For example:
+
+<pre><code>
+public String readString(String fileName) throws IOException, CloneNotSupportedException {
+</code></pre>
+</p>Which are the checked and unchecked exceptions?  <code>RunTimeException</code> and all of its 
+subclasses are unchecked.  The rest are checked. The checked exceptions tend to be things that
+are outside of the programmers's control.  The <code>IOException</code> exceptions happen when the file
+you are reading is corrupted or there is a hardware glitch or somebody moved the file from where it
+was supposed to be or gave it a different name.  Since you can't control whether these things 
+happen you should make provisions to handle them when they do.</p>
+<p><code>RunTimeException</code> and its subclasses
+are all thing that happened because you made a programming error or failed to check something
+that you could have checked.  The thought was that checking for all of these things is a waste
+of time, and if one of them goes wrong you probably want to kill the program anyway.  
+(<code>NumberFormatException</code> is something of an exception to the rule - it often occurs
+when you are trying to convert strings typed in by the user into numbers.  But being unchecked
+doesn't mean that you can't check for them - the compiler just doesn't check to make sure that 
+you do.)</p>
+<p>So how do we catch an exception?  I have modified 
+<a href="Fahrenheit.java"><code>Fahrenheit.java</code></a> to demonstrate catching 
+a <code>NumberFormatException</code>.  The relevant part is in <code>actionPerformed</code>:
+
+<pre><code>
+    // Get the text entered in the text field.
+    String text = fahrenheit.getText();
+
+    try {
+      fahrenheitTemp = Integer.parseInt(text); // convert the text to an int
+      celsiusTemp = (fahrenheitTemp - 32) * 5 / 9; // do the actual conversion
+
+      // Convert the int celsius temperature to a String, and display it in
+      // the result label.
+      resultLabel.setText(Integer.toString(celsiusTemp));
+    }
+    catch(NumberFormatException ex) {
+      resultLabel.setText("*****");
+    }
+</code></pre>
+<p>The user supplies <code>text</code> via a <code>fahrenheit.getText()</code> call.  However, 
+what the user entered may not be a valid <code>int</code>.  Therefore we put the conversion
+and the statements that deal with the result of the conversion into a <code>try</code> block.
+If the conversion works successfully the result is displayed and the <code>catch</code>
+block is ignored.  If a <code>NumberFormatException</code> is thrown then <code>catch</code>
+is called with an argument of type <code>NumberFormatException</code>.  There can be several
+<code>catch</code> blocks, one after another, and the first one whose parameter is of the type
+of the exception (including a supertype) gets executed.  Here what happens is that the output
+field is filled with asteriks to show that an error occurred.</p>
+<p>There is also another possibility - a <code>finally</code> block.  Code in the <code>final</code>
+block is run whether the code in the <code>try</code> block succeeds or fails. It is used to 
+clean up.  A typical example is an open file that should be closed.  To extend our earlier 
+example:</p>
+<pre><code>
+	public String readString(String fileName) throws IOException {
+	  BufferedReader input =  new BufferedReader(new FileReader(pathName));
+	  String line = input.readLine();
+	  input.close();
+	  return line;
+	}
+</code></pre>
+<p>The first line opens a file.  (We will see more about file reading and writing soon.)
+If an <code>IOException</code> is thrown by the <code>readLine</code> call
+the file will never be closed.  By rewriting it:</p>
+<pre><code>
+	public String readString(String fileName) throws IOException {
+	  BufferedReader input =  new BufferedReader(new FileReader(pathName));
+	  
+	  try {
+	    String line = input.readLine();
+	  }
+	  finally {
+	    input.close();
+	  }
+	  
+	  return line;
+	}
+</code></pre>
+<p>the file will get closed whether an exception is thrown or not.  It is possible 
+to include both <code>catch</code> and <code>finally</code> blocks in the same
+<code>try</code> block, but it is not recommended because of confusion over
+what is happening in what order.  Instead have a <code>throws</code> clause 
+(as above) or nest two <code>try</code>
+blocks with the <code>finally</code> on the inside and </p></p>catch on
+the outside.)
+<p>Finally, you can write your own exceptions, as was done in the expression tree code.  An example is 
+<a href="UnassignedVariableException.java"><code>UnassignedVariableException</code></a>
+thrown by <code>Variable</code>.  No exception really described the problem, so I 
+extended <code>RuntimeException</code> to create one whose name was more descriptive.</p>
+
+

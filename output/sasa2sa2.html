@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="short-assignment-4-due-monday-september-22">Short Assignment 2 <br/>Due: Monday, September 22</h1>
+<p>This short assignment will give you a little practice in using inheritance, which you'll be using a lot in upcoming Lab Assignments.</p>
+<p>My bank is the Bailey Bros. Building and Loan of Bedford Falls. (Their office is near the sign that reads "You are now in Bedford Falls.") Bailey Bros. offers a special kind of savings account: an ATM savings account. It's like a savings account, except that all transactions occur via ATMs. Because Bailey Bros. is a small operation, they don't own any ATMs. So all transactions occur via what are known in the banking industry as "foreign ATMs." The owner of an ATM typically charges for each transaction, and Bailey Bros. passes the costs of some of these transactions on to the account holder.</p>
+<p>In particular, because Bailey Bros. is always pleased to get deposits (after all, you never know when there will be a run on the bank), they waive the ATM fee for deposits. (Ask that drunken souse Uncle Billy about things that can go wrong when you're making a deposit. Are you getting these subtle references to the movie <i>It's a Wonderful Life</i>?) But they pass on the $1.50 charge for each ATM savings account withdrawal to the customer.</p>
+<p>They allow each ATM savings account holder two free ATM withdrawals per month, so the $1.50 per-withdrawal charge kicks in for all withdrawals starting from the third one of the month.</p>
+<p>Your task is to create a class <code>ATMSavingsAccount</code> that represents a Bailey Bros. ATM savings account. It should support the following methods:</p>
+<ul>
+<li>A constructor that takes a rate. It sets the initial balance to $0.00.</li>
+<li>A constructor that takes a rate and an initial balance.</li>
+<li>A <code>deposit</code> method.</li>
+<li>A <code>withdraw</code> method.</li>
+<li>A <code>getBalance</code> method.</li>
+<li>A <code>transfer</code> method. (From the point of view of withdrawal charges, a transfer counts as a withdrawal from the account being transferred from.)</li>
+<li>A <code>toString</code> method.</li>
+<li>An <code>addPeriodicInterest</code> method. Along with adding the interest, this method also performs the deductions for having more than two withdrawals in the period. (First add interest, then deduct the charges.) Of course, it also resets the number of withdrawals in the period back to 0.</li>
+</ul>
+<p>Your <code>ATMSavingsAccount</code> class should be a subclass of one of the classes from the lecture of <a href="../../lectures/4/4.html">September 19</a>. I'll leave it to you to decide which class to make its direct superclass. <em>Note that some of the above methods can be simply inherited from the superclass, and some you will have to write yourself.</em></p>
+<p>Needless to say, you may not modify any of the classes <code>BankAccount</code>, <code>CheckingAccount</code>, <code>SavingsAccount</code>, or <code>TimeDepositAccount</code>.</p>
+<p>You should also modify the <code>AccountTest</code> class in <a href="../../lectures/4/AccountTest.java">AccountTest.java</a> to test your <code>ATMSavingsAccount</code> class. Hint: It's particularly easy to just change Harry's checking account to an ATM savings account.</p>
+<p>Submit via Canvas code for the <code>ATMSavingsAccount</code> and <code>AccountTest</code> classes, along with output from a test run.</p>
+</body>
+</html>

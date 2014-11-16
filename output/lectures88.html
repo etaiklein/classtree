@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-8-september-29">Lecture 8, September 29</h1>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="../7/ClickAMac.java">ClickAMac.java</a></li>
+<li><a href="ClickAMac2.java">ClickAMac2.java</a></li>
+<li><a href="Dots.java">Dots.java</a></li>
+<li><a href="DotsMouseListener.java">DotsMouseListener.java</a></li>
+<li><a href="DragAMac.java">DragAMac.java</a></li>
+<li><a href="DragAMac2.java">DragAMac2.java</a></li>
+<li><a href="RubberLines.java">RubberLines.java</a></li>
+<li><a href="Fahrenheit.java">Fahrenheit.java</a></li>
+</ul>
+<h2 id="classes-that-act-as-listeners">Classes that act as listeners</h2>
+<p>In <a href="../7/ClickAMac.java">ClickAMac.java</a>, we had the <code>ClickAMac</code> class, which really <em>is</em> the applet, implement the <code>MouseListener</code> interface. There's nothing wrong with that, but there is another way. Let's create a new class whose sole purpose is to implement the <code>MouseListener</code> interface. We'll create an object of this class to pass to Java as the listener. <a href="ClickAMac2.java">ClickAMac2.java</a> illustrates this approach.</p>
+<p>We create a class called <code>LocalMouseListener</code>. It is an inner class, and it is private, because we do not want it seen outside of the <code>ClickAMac2</code> class. It implements the <code>MouseListener</code> interface, using the exact same methods as in <a href="../7/ClickAMac.java">ClickAMac</a>.  <blockquote>**Remember that an inner
+class can access all the instance variables of the class it's declared
+in (its *outer class*), even if the instance variables in the outer
+class are private.**</blockquote> Therefore, because <code>LocalMouseListener</code> is an inner class, it can see all of the instance variables, even the private ones, of <code>ClickAMac2</code>.</p>
+<p>Now the <code>init</code> method of the <code>ClickAMac2</code> class creates a <code>LocalMouseListener</code> object called <code>listener</code> and passes it to <code>addMouseListener</code>. By the way, there was not actually any need to have named this <code>LocalMouseListener</code> object; we could replace the lines</p>
+<pre class="sourceCode java"><code class="sourceCode java">    LocalMouseListener listener = <span class="kw">new</span> <span class="fu">LocalMouseListener</span>();   
+
+    <span class="fu">addMouseListener</span>(listener);</code></pre>
+<p>by the single statement</p>
+<pre class="sourceCode java"><code class="sourceCode java">    <span class="fu">addMouseListener</span>(<span class="kw">new</span> <span class="fu">LocalMouseListener</span>());</code></pre>
+<p>Having <code>LocalMouseListener</code> be an inner class is not absolutely necessary, but it is very convenient. Why? Because we need the the <code>mouseClicked</code> method to be able access the instance variable <code>clickPoint</code> in <code>ClickAMac2</code>. For a separate class that is not an inner class to do that, we'd need to do the following:</p>
+<ul>
+<li><p>The separate listener class needs to have a reference to an object containing the instance variable <code>clickPoint</code>. This scheme requires somehow passing <code>this</code> to the listener class.</p></li>
+<li><p>Even doing that is not sufficient, because <code>clickPoint</code> is <code>private</code>, and so attempting to write to <code>theApplet.clickPoint</code> (where <code>theApplet</code> is a reference to the object containing <code>clickPoint</code>) will result in an error. Therefore there has to be a new method written to set <code>clickPoint</code>.</p></li>
+</ul>
+<p>We won't cover this approach in lecture, Lewis &amp; Loftus did precisely this in an example in their Java textbook: <a href="Dots.java">Dots.java</a> and <a href="DotsMouseListener.java">DotsMouseListener.java</a>. You can see how it is done. (I left these unchanged, so they extend <code>Applet</code> instead of <code>JApplet</code>.) In practice we will almost always prefer to use the applet itself (as in <a href="../7/ClickAMac.java">ClickAMac.java</a>) or to create an inner class (as in <a href="ClickAMac2.java">ClickAMac2.java</a>).</p>
+<h2 id="the-mousemotion-events">The <code>MouseMotion</code> events</h2>
+<p>The <a href="DragAMac.java">DragAMac.java</a> program demonstrates how to deal with mouse motion. The <code>MouseMotion</code> events are handled by the <code>MouseMotionListener</code> interface, with two methods: <code>mouseMoved</code> and <code>mouseDragged</code>. Like the methods in the <code>MouseListener</code> interface, these two methods take one parameter, which is a reference to a <code>MouseEvent</code> object. In all objects registered by calling <code>addMouseMotionListener</code>, the method <code>mouseMoved</code> is called when the mouse moves with the button up, and the method <code>mouseDragged</code> is called when the mouse moves with the button depressed.</p>
+<p>This program uses an inner class, <code>LocalMouseListener</code>, containing two methods to handle two different events. The <code>LocalMouseListener</code> class implements both the <code>MouseListener</code> and <code>MouseMotionListener</code> interfaces.</p>
+<ul>
+<li><p>When the mouse is pressed, we call the <code>mousePressed</code> method of the <code>LocalMouseListener</code> object. This method is part of the <code>MouseListener</code> interface.</p></li>
+<li><p>When the mouse is dragged, we call the <code>mouseDragged</code> method of the <code>LocalMouseListener</code> object. This method is part of the <code>MouseMotionListener</code> interface.</p></li>
+</ul>
+<p>Both methods perform the same action: they update <code>dragPoint</code> to be the current location of the mouse passed in <code>event</code>, and then they repaint the window. (In fact, we just made <code>mouseDragged</code> call <code>mousePressed</code>.) Thus, the Mac will be drawn at the location where the mouse is pressed, and it will be redrawn continuously as the mouse is dragged.</p>
+<p>The Java folks decided that these event types are different enough that they should be part of different interfaces. That's why we have both the <code>MouseListener</code> and <code>MouseMotionListener</code> interfaces. But that doesn't mean that we have to create two different objects to listen for these events. Instead, we created just a <code>LocalMouseListener</code> class that implements both interfaces and defines all the methods of both classes.</p>
+<p>Because we wanted just one <code>LocalMouseListener</code> object to handle the two events, we have registered the listener for the two events with two different calls (<code>addMouseListener</code> and <code>addMouseMotionListener</code>). We need to assign a reference to the <code>LocalMouseListener</code> object to a local variable in the <code>init</code> method, passing that reference to the two calls. Instead, we could have done without the local variable, but we would have had to create two <code>LocalMouseListener</code> objects and registered them separately:</p>
+<pre class="sourceCode java"><code class="sourceCode java">    <span class="fu">addMouseListener</span>(<span class="kw">new</span> <span class="fu">LocalMouseListener</span>());
+    <span class="fu">addMouseMotionListener</span>(<span class="kw">new</span> <span class="fu">LocalMouseListener</span>());</code></pre>
+<p>This approach works, but we prefer to create just the one <code>LocalMouseListener</code> object.</p>
+<p>There is another class that can handle events: the <code>Canvas</code> class. <a href="DragAMac2.java">DragAMac2.java</a> demonstrates this approach. The <code>Canvas</code> class implements the interfaces and is added to the content pane and to both of the calls to add listeners.</p>
+<h3>
+RubberLines
+</h3>
+<p>The program <a href="RubberLines.java">RubberLines.java</a> is from a textbook by Lewis &amp; Loftus. It is a good example of something done commonly in graphics.</p>
+<p>This program also uses both <code>MouseMotion</code> and <code>Mouse</code> events. Like <a href="../7/ClickAMac.java">ClickAMac.java</a>, the applet itself is the listener, but like <a href="DragAMac.java">DragAMac.java</a>, the listening object implements both the <code>MouseListener</code> and <code>MouseMotionListener</code> interfaces. Notice also the call to <code>setBackground</code> on the <code>Canvas</code> object; this <code>method</code> is inherited from <code>JPanel</code>.</p>
+<p>The applet's instance variables are called <code>point1</code> and <code>point2</code>. <code>point1</code> is where the mouse is pressed, and <code>point2</code> is the current location as the mouse is dragged. Therefore our two added methods do slightly different things. The method <code>mousePressed</code> updates <code>point1</code>, and the method <code>mouseDragged</code> updates <code>point2</code> and calls <code>repaint</code>. (What do you think would happen if <code>mousePressed</code> also called <code>repaint</code>? Actually, the behavior is a little bit subtle…we'll go over it in lecture. But you can make the change yourself and experiment.)</p>
+<p>This <code>paint</code> method simply draws a line from <code>point1</code> to <code>point2</code>, after setting the drawing color. These simple routines interact in a very cool way. Because <code>point1</code> stays fixed and <code>point2</code> moves, and because each <code>mouseDragged</code> call invokes <code>repaint</code>, thus clearing the window and then painting, we get a line with one fixed end while the other appears to be attached to the mouse, causing a "rubberbanding" effect.</p>
+<h2 id="more-gui-components">More GUI Components</h2>
+<p>So far, our applets have only drawn or responded to mouse, keyboard, and timer events. Graphical User Interfaces (GUIs) have many other things to interact with, however: buttons, menus, text fields, scroll bars, and so on. It is time to learn how to interact with these other <strong>components</strong>.</p>
+<p>As we said before, a component takes up visual space in the GUI. Most components generate events that the program must deal with. (Just like you've been writing programs that deal with mouse clicks or timer events.) That is how the program responds to events such as clicking on a button or selecting an item in a menu.</p>
+<p>We noted before that components are added to <strong>containers</strong>. There are different ways to place the components within a container. The layout we'll use for now is called <strong>flow layout</strong>. The components are laid out in rows, left to right, with a new row started when the next component won't fit in the current row. Later on, we will learn a number of other ways to lay out components.</p>
+<p>We have modified programs from a textbook by Lewis &amp; Loftus to show you some examples of simple GUIs. The first is <a href="Fahrenheit.java">Fahrenheit.java</a>.</p>
+<p>Note that the class <code>Fahrenheit</code> has two instance variables. One is a reference to a <code>JLabel</code>, and the other is a reference to <code>JTextField</code>.</p>
+<p>A <code>JLabel</code> is an area of text. The program can set and change its contents, but the user of the program cannot. It is used for labeling other components and for output to the user. Although it seems like you could get the same effect by calling the good old <code>drawString</code> method, all <code>drawString</code> does is write some text in the window. The layout manager does <em>not</em> leave any space for the text written by a call to <code>drawString</code>. In contrast, the layout manager does leave space for a <code>JLabel</code>. (Another difference is that if you use <code>drawString</code> to draw two text strings one atop the other, they actually overlay.)</p>
+<p>A <code>JTextField</code> is a bit more complex. It allows the user to enter input. When the user presses the Enter or Return keys an <code>ActionEvent</code> is generated. An <code>ActionListener</code> will handle that event. Recall that <code>ActionListener</code> is an interface consisting of one method, whose header is</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="dt">void</span> <span class="fu">actionPerformed</span>(ActionEvent event)</code></pre>
+<p>We have already used the <code>ActionListener</code> interface for the <code>Timer</code> class.</p>
+<p>In <a href="Fahrenheit.java">Fahrenheit.java</a>, the <code>init</code> method sets everything up. It first constructs three <code>JLabel</code>s and a <code>JTextField</code>. The actual parameters for the <code>JLabel</code>s are the text to appear in the labels.</p>
+<p>We set the colors of the text in the <code>JLabel</code>s by calling the <code>setForeground</code> method on each <code>JLabel</code>. <code>setForeground</code> takes as a parameter a reference to a <code>Color</code>. For the result, I wanted purple text, and there is no <code>Color.purple</code> provided. Instead, I made purple myself by constructing a <code>Color</code> object. For purple, I used half red and full blue.</p>
+<p>The parameter in the <code>JTextField</code> constructor gives the number of characters in the input field, which is five in this applet. We call the <code>setBackground</code> method to make the <code>JTextField</code>'s background yellow, and the call to <code>setForeground</code> will make any typed-in text appear in red. The <code>init</code> method then assigns an action listener (<code>this</code>, i.e., the applet itself) to listen to the <code>JTextField</code> via the call</p>
+<pre class="sourceCode java"><code class="sourceCode java">fahrenheit.<span class="fu">addActionListener</span>(<span class="kw">this</span>);</code></pre>
+<p>Notice that now there are two objects involved in "registering" the listener:</p>
+<ul>
+<li><p>The event will be generated by activity in the <code>JTextField</code> referenced by <code>fahrenheit</code>. That is the object to which we add an action listener.</p></li>
+<li><p>As the parameter to the <code>addActionListener</code> call, we give a reference to the object that will actually perform the action. In this case, the object is the applet itself.</p></li>
+</ul>
+<p>So, the above call says, "When an <code>ActionEvent</code> occurs within the object referenced by <code>fahrenheit</code>, I want you to call the method named <code>actionPerformed</code> within the current class (<code>Fahrenheit</code>)."</p>
+<p>This situation is a little different from how we registered listeners before. Previously, the events occurred in the applet itself. Now they don't. They occur in the <code>JTextField</code> object, and that's why we have to give the reference <code>fahrenheit</code> to the left of the dot in the <code>addActionListener</code> call. The applet itself is the listener, and hence the parameter <code>this</code>.</p>
+<p>So far, we have only added a single object (the canvas) to the applet's content pane. Now we will add four. We add them in the order in which they are to appear. First, we have the assignment</p>
+<pre class="sourceCode java"><code class="sourceCode java">Container cp = <span class="fu">getContentPane</span>();</code></pre>
+<p>which sets <code>cp</code> to reference the content pane for the applet. The line</p>
+<pre class="sourceCode java"><code class="sourceCode java">cp.<span class="fu">setLayout</span>(<span class="kw">new</span> FlowLayout());</code></pre>
+<p>tells the content pane that we are going to use flow layout when we add components. Note that we create a new <code>FlowLayout</code> object (whatever that is) and then tell the content pane that this <code>FlowLayout</code> object will handle the layout duties. Apparently, just providing a reference to a <code>FlowLayout</code> object as the actual parameter to <code>setLayout</code> suffices to indicate that we are using flow layout. (Note that we don't even need to create a local variable to hold this reference to a <code>FlowLayout</code> object. Since <code>new</code> gives back this reference, we just pass it directly to <code>setLayout</code>.) Then the four calls to <code>add</code>,</p>
+<pre class="sourceCode java"><code class="sourceCode java">cp.<span class="fu">add</span>(inputLabel);
+cp.<span class="fu">add</span>(fahrenheit);
+cp.<span class="fu">add</span>(outputLabel);
+cp.<span class="fu">add</span>(resultLabel);</code></pre>
+<p>tell the applet the order in which to lay out the components, using flow layout.</p>
+<p>Finally, the applet sets the background color to pink, and it sets the applet size. If we change the applet width, then the four GUI components are laid out in a different way. Make the applet wide enough, and all four appear in the same row. Make the applet narrow enough, and they appear in one column.</p>
+<p>Note that there is no <code>paintComponent</code> method provided. The GUI components are drawn automatically by <code>repaint</code>. The <code>JApplet</code> <code>paint</code> method takes care of drawing all the GUI components.</p>
+<p>The <code>actionPerformed</code> method handles the event in which the user types into the text field. It is called when the Enter or Return key is pressed. The method <code>getText</code> gets the text from the text field. What is returned by <code>getText</code> is a <code>String</code> reference, and this <code>String</code> is then converted to an integer via a call to <code>Integer.parseInt</code>. Recall that <code>Integer</code> is the wrapper class for <code>int</code>s, and it has many useful static methods, including this one and <code>toString</code>. The conversion to celsius is done, and then the command</p>
+<pre class="sourceCode java"><code class="sourceCode java">resultLabel.<span class="fu">setText</span>(Integer.<span class="fu">toString</span>(celsiusTemp));</code></pre>
+<p>displays the output in the label <code>resultLabel</code>. (Note that I added a space at the end of "N/A " in the creation of this field to make more room for later outputs.)</p>
+<p>Notice that the references <code>inputLabel</code> and <code>outputLabel</code> are local to the <code>init</code> method, rather than being instance variables. It would not have been a bug to have made them instance variables, but it would have been poor design, since the applet has no need to refer to these variables outside of <code>init</code> method. Therefore, it is cleaner to confine their use to just the method that needs them. Because the variables <code>resultLabel</code> and <code>fahrenheit</code> are needed in the <code>actionPerformed</code> method, they <em>must</em> be instance variables.</p>
+</body>
+</html>

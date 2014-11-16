@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lab-assignment-2-k-means-due-wednesday-October-8-at-1000-am">Lab Assignment 2: Singly linked list.<br/>Due: Wednesday, October 8 at 10:00 am</h1>
+<p>
+I suggest start on this problem set early.
+If you start early, you are likely not to find it difficult at all.
+On the other hand, if you start late and make some mistakes in manipulating references
+(which is easy to do when dealing with linked lists), it may be too late to get help.
+
+<p>This assignment will give you experience with low-level data structure
+manipulations.  Most of the time we will be using pre-packaged
+implementations of ADTs to solve problems.  However, being able to write your own data 
+structures to implement an ADT, when necessary, is a useful skill.  It is also important to 
+understand something about what is being hidden inside ADTs in order to be able
+to make intelligent tradeoffs.</p>
+<h2>Modify <code>SLL.java</code></h2>
+<p>We saw that a major drawback to <code>SLL.java</code> is the fact that
+deletion is an <em>O</em>(<em>n</em>) operation, because of the need to find the predecessor
+of the current item in order to delete it.  
+In class I briefly mentioned a way
+to get around this problem by using a dummy list header and keeping track
+of the item <em>before</em> the current 
+item.  In this part of the assignment you will modify 
+<a href="SLL.java"><code>SLL.java</code></a>
+to use this representation.  I suggest renaming the class.  Mine is called
+<code>HeaderSLL</code>, but you can choose whatever name that you like.</p>
+<p>You could still call the instance variable <code>current</code>, 
+but it is less confusing to call it <code>currentPred</code> or 
+some such name.  This is an excellent chance to use refactoring in Eclipse.
+Select the name "current" in its declaration, chose "Rename" from within
+the Refactor menu, change the name, and hit return.  All instances of the 
+variable get renamed.  The comments don't need to change, because we still
+have the same idea of current.  We have just changed how we represent it.</p>
+<p>For the basic assignment you should eliminate the <code>tail</code> instance
+variable.  Updating this efficiently turns out to be trickier
+than it would first appear.  Keeping track of the tail of the list
+will be extra credit.</p>
+<p>Our SLL with dummy header and currentPred is shown below.  The first
+element in the linked list (with <code>data</code> field <code>null</code>) is not 
+part of the list represented.  It is like the sentinel in <code>SentinelDLL</code>.
+It is there to make operations easier.  This represents a list with 3 elements,
+not 4.</p>
+<p>Note that 
+the current item is "NH", because <code>currentPred</code> 
+refers to the element before it in the list.  Note that using this representation, 
+deleting the current item will be the same no matter which item is deleted.
+You simply change the <code>next</code> field in the element referenced by
+<code>currentPred</code>.  This is the advantage of having a dummy list head.</p>
+<center>
+<img src="SLL.jpg">
+</img></center>
+<p>So what should an empty list look like?  The following shows <code>head</code>,
+<code>currentPred</code>, and the dummy list header.  Note that <code>currentPred</code>
+references the dummy list header rather than being null.  But if you follow 
+<code>next</code> from the dummy list header you get null, so this indicates that
+there is no current.  This is the situation that will arise naturally if you remove 
+the only item in a list, so it is more convenient than using <code>currentPred == null</code>
+as the test for no current.</p>
+<center>
+<img src="empty.jpg">
+</img></center>
+<p>Draw pictures of what the list should look like before and after various operations.
+Use them to figure out the names of fields that need to be changed and the values
+that they need to be changed to.  In many cases the only change needed is to use
+<code>currentPred.next</code> in places that <code>SLL.java</code> used <code>current</code>.
+
+<h3>Testing</h3>
+<p>Run your program with <a href="ListTest.java"><code>ListTest.java</code></a>
+to demonstrate that it works.  Notice that you have to change one line in <code>ListTest.java</code>
+in order to be able to test your implementation.
+Figure out which line it is and fix it.
+
+<p>
+Make sure to test all of the boundary cases - adding and 
+removing at the front of the list, the end of the list, the middle of the list, etc.
+Make sure that things work correctly for an empty list.  Your testing should not be
+random, but should be clearly organized and complete enough to convince us that your 
+program works correctly.</p>
+<h3>Extra credit: Include <code>tail</code></h3>
+<p>Create an instance variable <code>tail</code> and maintain it correctly as 
+you do adds and removes.  One thing that you will need to decide is
+whether <code>tail</code> should point to the last element in the list or
+to the element before the last element. (Note that <code>head</code> and
+<code>currentPred</code> point to the element before the one that they really
+mean.)</p>
+<p>It is easy to introduce subtle bugs.  Test your code carefully.</p>
+<p>Please turn in a solution to the standard problem separately from the extra credit solution
+(i.e., keep the two solutions as different files).
+Solving the standard problem and then modifying it to use
+<code>tail</code> is probably easier than starting with the tail instance variable.
+Furthermore, by keeping them as two separate solutions,
+you will not be penalized in your regular grade for errors in the 
+extra credit part.</p>
+<h2>Canvas submission</h2>
+
+Submit via Canvas the following files:
+
+<ol>
+<li> your modification of the <code>SLL</code> class.
+
+  <li> test run for your modified <code>SLL</code> class.
+
+  <li> An updated version of the <code>SLL</code> class if you did the extra credit.
+  (You should have one file with just the original assignment and 
+  another for extra credit, because sometimes adding the extra credit breaks something
+  in the original assignment.)
+
+</li></li></li></ol>
+<h2>Grading rubric</h2>
+
+On programming assignments it is important to write the code well enough that it compiles and runs,
+enabling you to test it thoroughly and tune it to perfection.
+Therefore, starting with this problem set, there will be a much more severe deduction of points
+for code that does not compile and for code that compiles and runs but does not accomplish much.
+
+<p>Total of 70 points</p>
+<h3>Correctness, Efficiency, and Elegance of SLL Modifications (45 points)</h3>
+<table class="rubric">
+<tr><th>10</th><td>Modify <code>add</code></td></tr>
+<tr><th>10</th><td>Modify <code>remove</code></td></tr>
+<tr><th>5</th><td>Modify <code>getLast</code></td></tr>
+<tr><th>5</th><td>Modify <code>addFirst</code></td></tr>
+<tr><th>5</th><td>Modify <code>isEmpty</code>, <code>hasCurrent</code>,
+     and </td></tr></table></p></p></p></body></html>hasNext
+<tr><th>10</th><td>Modify the other methods</td></tr>
+
+<h3>Style (15 points)</h3>
+<table class="rubric">
+<tr><th>5</th><td>Comments at top, explaining how your version represents 
+    the linked list.</td></tr>
+<tr><th>5</th><td>Good names for methods, variables, parameters</td></tr>
+<tr><th>5</th><td>Layout (blank lines, indentation, etc.)</td></tr>
+</table>
+<h3>Testing (10 points)</h3>
+<table class="rubric">
+<tr><th>10</th><td>A run demonstrating the correctness of the modified 
+  <code>SLL</code> class.</td></tr>
+</table>
+<h3>Extra Credit</h3>
+<table class="rubric">
+<tr><th>20</th><td>Adding tail reference and updating efficiently and correctly</td></tr>
+</table>
+
+

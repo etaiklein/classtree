@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">
+/*<![CDATA[*/
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode, table.sourceCode pre 
+   { margin: 0; padding: 0; border: 0; vertical-align: baseline; border: none; }
+td.lineNumbers { border-right: 1px solid #AAAAAA; text-align: right; color: #AAAAAA; padding-right: 5px; padding-left: 5px; }
+td.sourceCode { padding-left: 5px; }
+code.sourceCode span.kw { color: #007020; font-weight: bold; } 
+code.sourceCode span.dt { color: #902000; }
+code.sourceCode span.dv { color: #40a070; }
+code.sourceCode span.bn { color: #40a070; }
+code.sourceCode span.fl { color: #40a070; }
+code.sourceCode span.ch { color: #4070a0; }
+code.sourceCode span.st { color: #4070a0; }
+code.sourceCode span.co { color: #60a0b0; font-style: italic; }
+code.sourceCode span.ot { color: #007020; }
+code.sourceCode span.al { color: red; font-weight: bold; }
+code.sourceCode span.fu { color: #06287e; }
+code.sourceCode span.re { }
+code.sourceCode span.er { color: red; font-weight: bold; }
+/*]]>*/
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-2-march-26">Lecture 2, September 17</h1>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="../1/Counter.java">Counter.java</a></li>
+</ul>
+<h2 id="short-assignment-1">Short Assignment 1</h2>
+<p><a href="../../sa/sa1/sa1.html">Short Assignment 1</a> is due Friday.</p>
+<h2 id="a-quick-look-at-a-java-class-continued">A quick look at a Java class, continued</h2>
+   Last class we did a quick overview - class declaration, variable declarations, method declarations,
+   return types, parameters.  Now we will finish up the notes from last lecture and then will go through some things about Java in more detail.</body></html>
+<h2 id="java-types">Java types</h2>
+<p>One of the biggest changes for Python programmers in moving to Java is that you have to declare your variables and say what type each will hold. It isn't that Python didn't have types. It was that Python checked them at run time. Java checks them statically at compile time rather than at run time. By saving all of those run time-checks, Java code is able to run significantly faster than Python code.</p>
+<p>So what is a type, and what is it for?  At the basic level computer
+memory is a long sequence of 1's and 0's, each called a <em>bit</em>
+(BInary digiT).  It is broken into
+eight bit chunks (called bytes), each with its own address. There are
+may things that you might want to store in a computer: numbers, characters,
+colors, sounds, wildebeast objects, etc.  Even computer instructions are
+stored in memory.  Each "type" of thing has its own encoding as 
+bits.  When I was teaching the computer architecture course one of my favorite test
+questions was to give a 32 bit sequence of 0's and 1's and ask how it would 
+be interpreted if it were
+a computer instruction, an integer, a string of characters, a color, etc.</p>
+<p>When programming in machine language the programmer has to remember what each byte is supposed to represent. If he or she starts treating computer instructions as if they were integers, or integers as if they were computer instructions, bad things happen. (That is what many computer viruses do. They store a bit pattern as data, and then trick the program into running that pattern as code.)</p>
+<p>The two things that a type tells us are</p>
+<ul>
+<li><p>How to interpret the bits as a representation of the particular data.</p></li>
+<li><p>Which operations are valid on that data.</p></li>
+</ul>
+<p>Smalltalk, an early OO languge, has a very elegant solution to the type problem. Everything is an object, and the operations that are valid on the object are precisely those defined by its methods. The methods understand how to interpret the bit patterns. It is elegant, but having to ask a number to add itself to another number via a method call is a lot slower than using the hardware "add" instruction. As a result, Smalltalk is s-l-o-w.</p>
+<p>Java compromises. Most things are objects whose types are defined by the methods that they implement and the data that they store. The object data is stored somewhere in memory, and variables hold <strong>references</strong> to the object that tell how to find it. The variables <code>c1</code> and <code>c2</code> in the <code>Counter</code> class are examples. In practice the reference is a memory address, but Java treats the reference abstractly and uses it to communicate with the object. (Unlike C and C++, Java has no way to manipulate the memory addresses.) All references in Java are the same size, no matter how many instance variables and methods the object has.</p>
+<p>For speed's sake, Java has eight <strong>primitive</strong> types that are not objects:</p>
+<ul>
+<li><p>Four types for storing integers of in different numbers of bytes: <code>byte</code> (1), <code>short</code> (2), <code>int</code> (4), and <code>long</code> (8). We will almost always use <code>int</code>, which has a range between just under negative 2 billion and to just over 2 billion. (That's because an <code>int</code> has 32 bits. In 32 bits, we can store all integers in the range <span class="math"> - 2<sup>31</sup></span> to <span class="math">2<sup>31</sup> - 1</span>, and $2^{31} = $ 2,147,483,648.) <code>byte</code> is -128 to 127. <code>short</code> is basically plus or minus 32,000 ($2^{15} = $ 32,768). <code>long</code> is huge: <span class="math"> - 2<sup>63</sup></span> to <span class="math">2<sup>63</sup> - 1</span>, and $2^{63} = $ 9,223,372,036,854,775,808.</p></li>
+<li><p>Two types for storing numbers with fractions in scientific notation: <code>float</code> (4 bytes) and <code>double</code> (8 bytes). <code>float</code> has 7 or 8 significant decimal digits, <code>double</code> has about 15 significant decimal digits.</p></li>
+<li><p><code>char</code>, a type for storing characters in a system called Unicode (2 bytes).</p></li>
+<li><p><code>boolean</code>, which stores <code>true</code> or <code>false</code>.</p></li>
+</ul>
+<p>Values of a primitive type are actually stored in the variable itself, and so these primitives have different lengths in memory. Therefore, Java has two kinds of variables. If a variable is of a primitive type, the variable contains the actual data itself (the bit pattern representing the data). If a variable is of type <em>reference</em> to an object, then it contains a reference, and the data itself is stored elsewhere.</p>
+<p>Why is this distinction important? My wife and I have a joint checking account. We each have an ATM card. The cards are different and have different names on them, but the refer to the same checking account. If I withdraw money with my ATM card, there is less money in the account, and if my wife then looks at the balance it will be smaller even though she did nothing with her ATM card.</p>
+<p>In this analogy, the account is the object (and bank account objects are a common example in textbooks). The ATM cards are the variables, each holding a reference to the same account. Any changes made by either of us to the account via our ATM card are seen by both. On the other hand, if my wife has her ATM card re-programmed so that it refers to her personal account (changes the reference stored in the variable), that won't affect my card or the account. She just will no longer be able to use that ATM card to withdraw money from our joint account, because it no longer refers to our joint account.</p>
+<p>Demo in DrJava:</p>
+<pre>
+int x = 4;
+int y = x;
+x++;
+x
+y
+Counter c1 = new Counter();
+Counter c2 = c1;
+c1.tick();
+c1
+c2
+</pre>
+<h3 id="some-tricky-details">Some tricky details</h3>
+<ul>
+<li><p>As in Python and C, when you divide two integer types, you get integer division, which truncates the result so <code>11/3 = 3</code>.  % is the remainder operation.  
+<code>11%3 = 2</code>.  ONLY for integers.
+  <em>Demonstrate using DrJava.</em></p></li></ul>
+<li><p>Integer literals (e.g., <code>123</code>) are assumed to be of type <code>int</code>, unless followed by a <code>L</code> or <code>l</code>, in which case they are <code>long</code>.</p></li>
+<li><p>Floating-point literals (e.g., 3.14159) contain a decimal point and are assumed to be <code>double</code>, unless followed by an <code>F</code> or <code>f</code>, in which case they are <code>float</code>. The scientific notation form that you've seen in Python or C works in Java, too, e.g., <code>6.02e23</code>. <code>E</code> or <code>e</code> means "10 to the".</p></li>
+<li><p>As in C, character literals are written between single quotes, e.g., <code>'a'</code>. Pythonistas: Python does not have single-character variables or literals. In Python, <code>'a'</code> is a <em>string</em> consisting of one character, but in Java it's a <em>character literal</em>, which is a different type from a string. As in C and Python, <code>'2'</code> means the <em>character</em> 2, not the integer 2.</p></li>
+<li><p>As in C and Python, use the backslash as an escape character. For a character literal that's a single quote: <code>'\''</code>. For a backslash: <code>'\\'</code>. And <code>'\n'</code> is the newline character, with <code>'\t'</code> being the tab character.</p></li>
+<li><p>In Java, a <code>String</code> is an object rather than a primitive type. String literals are surrounded by double quotes: <code>"This is a   string"</code>. Strings can be concatenated using the <code>+</code> operator. To include a double-quote in a string, escape it with backslash: <code>"Strings are enclosed by \" characters"</code>. String literals cannot extend over multiple lines. If your String literal is that long, break it into pieces on separate lines and use the <code>+</code> operator to concatenate them.</p></li>
+<li><p>Java has <strong>type conversions</strong>. Some happen automatically. Others must be specifically requested via a process called <strong>casting</strong>. The distinction is whether the conversion can result in the loss of significant information. If an <code>int</code> is used where a <code>double</code> is expected, it is safe to do the conversion and it happens automatically. (Every <code>int</code> can also be represented as a <code>double</code>.) If a <code>double</code> is used where an <code>int</code> is expected, we have a problem. There is no good integer representation for 3.3, for instance. So we have to make a specific cast, which trucates the fractional part. You cast by putting the desired type name in parentheses to the left of the expression being cast:</p>
+<pre class="sourceCode"><code class="sourceCode java"><span class="dt">double</span> d = <span class="fl">3.3</span>;<br/><span class="dt">int</span> n = (<span class="dt">int</span>) d;</code></pre>
+<p>Going in the "safe" direction is called <strong>widening</strong>; going the other way is called <strong>narrowing</strong>. The order of primitive types from narrowest to widest is</p>
+<pre><code>byte =&gt; short =&gt; int =&gt; long =&gt; float =&gt; double
+</code></pre>
+<p>It is also widening to go from a <code>char</code> to a <code>short</code>, an <code>int</code>, or a <code>double</code>, because the Unicode in a <code>char</code> is stored as an integer value.</p></li>
+
+<h2 id="java-classes">Java classes</h2>
+<p>As I said before, think of a class like a blueprint, and of an object like a house. Defining a class does not create an object of that class, just as drawing a blueprint does not cause a house to be built. A blueprint says that <em>when</em> we build a house, here's what it will be like. And a class says that <em>when</em> we create an object, here are the instance variables and methods it will have.</p>
+<p>Although Java does not explicitly require us to, we observe various conventions for capitalization styles of various types of identifiers:</p>
+<ul>
+<li><p>Class names conventionally use title case: the first letter of each word in the name is capitalized. Example: <code>BarrelOfMonkeys</code></p></li>
+<li><p>Variables and method names conventionally start with a lowercase letter and then capitalize successive words. Example: <code>poundsOfBarbecue</code></p></li>
+<li><p>Constants (final variables) are all uppercase, with words separated by underscores. Example: <code>AVOGADROS_NUMBER</code>.</p></li>
+</ul>
+<h3 id="kinds-of-variables">Kinds of variables</h3>
+<p>Java has three distinct kinds of variables:</p>
+<ul>
+<li><p>Instance variables. The way that an object stores its "personal" data. One copy of each instance variable is created each time an object is created. The object's instance variables continue to exist as long as the object exists.</p></li>
+<li><p>Class variables (also known as static variables). These belong to the class, not to any particular object. So there is exactly one per class, no matter how many objects of the class there are. These variables exist before any objects are created. They last as long as the program is running. If any object changes the value of a class variable the value is changed for all objects of that class, because there is only one, and it's shared among all the objects in the class.</p></li>
+<li><p>Local variables. These are "scratch paper" created within a method. A local variable is created when execution reaches the variable's declaration, and it goes away no later than when the method returns. (Actually, when the program reaches the end of the "block" where the variable is declared. Blocks are delimited by curly braces. If you re-enter a block, a new copy of the variable gets created. Any previous value is gone.)</p></li>
+</ul>
+<p>Any variable declared within a method is a local variable. Parameters are <em>always</em> local variables for their methods.</p>
+<p>If a variable is declared outside a method, then it's either an instance variable (if the declaration does not include <code>static</code>) or a class variable (if the declaration includes <code>static</code>).</p>
+<p>You might expect there to be declarations like "instance variable" or "local
+        variable".  Unfortunately, that is not the way it works.  Show examples 
+        from <code>Counter</code>.</p>
+<p>Note that the three variable types are used for very different things.  A common
+        error is to be writing a method, realize that you need a temporary local variable, 
+        and declare it outside of the method.  This makes it an instance variable, which 
+        remains in existence as long as the object exists.  It runs correctly, but it is 
+        <em>wrong</em> to do this.  It is like realizing you need a piece of scratch paper,
+        and then going to a file cabinet and creating a new file folder and permanently
+        filing the piece of scratch paper, which you will never use again.</p>
+<p>One other note about variables - any of the three categories can be declared 	
+        <code>final</code>.  That 
+        means that the variable cannot be changed after it is assigned.  It is a constant.
+        This can be a very useful thing to do, and allows you to give meaningful names to
+        "magic values".</p>
+<p>While it is legal to declare a final instance variable, does it make sense to
+        do so?  Not really.  If you have a thousand objects, does each need its own copy
+        of the constant?  One for the whole class is enough, because it will be the same
+        for every object in the class.  So if you make an instance variable final, make it 
+        static as well, so it becomes a class variable.</p>
+<h3 id="public-and-private-variables-and-methods">Public and private variables and methods</h3>
+<p>When you declare an instance variable, static variable, or method, you should declare it as either <code>public</code> or <code>private</code>.</p>
+<p>If a variable is public, then it can be read or written from anywhere in the program. If a variable is private, then <em>only</em> methods in its class can read or write it. <strong>Most of the time, instance and class variables should be private.</strong> That way, only the methods in the class can see them. That's important from the point of view of abstraction: code from outside the class should interact with objects in the class only through the methods.</p>
+<p>If a method is public, then it can be called from anywhere in the program. If a method is private, then <em>only</em> methods in its class can call it. <strong>Most of the time, methods are public.</strong> Private methods can be useful, however, especially as "helper" methods within a class that code from outside the class need not know about.</p>
+<p>Later in the course, we'll see another way to declare variables and methods: <code>protected</code>.</p>
+<p><em>Note</em>: things are private to the <em>class</em>, not to the 
+         <em>object</em>.  So one object can see another object's private variables, if 
+         they are in the same class.</p>
+<h3 id="calling-a-method">Calling a method</h3>
+<p>Just as in C and Python, when you call a method, parameters get their values via <strong>call by value</strong>. Some terminology:</p>
+<ul>
+<li><p>A parameter declared in a method header is a <strong>formal parameter</strong>. Remember that a formal parameter is also a local variable.</p></li>
+<li><p>The value of a parameter supplied at the point of call is an <strong>actual parameter</strong>, or an <strong>argument</strong>.</p></li>
+</ul>
+<p>In call by value, the value of each actual parameter is copied into the corresponding formal parameter. Actual parameters match up with formal parameters one by one, left to right. A formal parameter must be a single variable. An actual parameter can be any expression of the correct type.</p>
+<h3 id="how-an-object-references-itself">How an object references itself</h3>
+<p>Suppose that an object needs a reference to itself. Java supplies the keyword <code>this</code> for just such a purpose. In Python, <code>self</code> accomplishes the same purpose. (Note that whereas Python requires the first parameter of a method to be <code>self</code>, you don't make a parameter for <code>this</code> in Java.)</p>
+<p>Here's one simple reason you'd want to use <code>this</code>. Suppose that we wrote our <code>Counter</code> class as follows:</p>
+<pre class="sourceCode"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Counter {<br/>  <span class="kw">private</span> <span class="dt">int</span> limit;    <span class="co">// upper limit on the counter</span><br/>  <span class="kw">private</span> <span class="dt">int</span> value;    <span class="co">// current value</span><br/>  ...<br/><br/>  <span class="kw">public</span> <span class="fu">Counter</span>(<span class="dt">int</span> limit) {<br/>    <span class="co">// How to assign the parameter limit to the instance variable limit?</span><br/>  }<br/><br/>  ...<br/>}</code></pre>
+<p>So how could we assign the parameter <code>limit</code> to the instance variable <code>limit</code>? We can't say <code>limit = limit;</code> because that would just assign a variable's value to the same variable. The problem here is that we have an instance variable and a local variable (the formal parameter) with the same name. Java's rule is that when such a conflict occurs, the local variable wins. So the line <code>limit = limit;</code> assigns the value of the formal parameter <code>limit</code> to the formal parameter <code>limit</code>.</p>
+<p>But we can use <code>this</code> to say that we mean the instance variable:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="kw">public</span> <span class="fu">Counter</span>(<span class="dt">int</span> limit) {<br/>    <span class="kw">this</span>.<span class="fu">limit</span> = limit;<br/>  }</code></pre>
+<p>When we write <code>this.limit</code>, we're saying "the instance variable <code>limit</code> in the object that the constructor is running on." Similarly, we could write the <code>set</code> method as</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">set</span>(<span class="dt">int</span> value) {<br/>    <span class="kw">if</span> (value &gt;= <span class="dv">0</span> &amp;&amp; value &lt; limit)<br/>        <span class="kw">this</span>.<span class="fu">value</span> = value;<br/>    <span class="kw">else</span><br/>        <span class="kw">this</span>.<span class="fu">value</span> = <span class="dv">0</span>;<br/>  }</code></pre>
+<p>The tests use the formal parameter, and the assignment is to the instance variable of the object that <code>set</code> is called on.  I personally prefer to write (and read) code that does not use the <code>this.value = value</code> idiom, preferring that parameters and instance variables have different names.  I find that it avoids confusion.
+Others have a different opinion. </p>
+<p>Now, you might wonder whether we really need <code>this</code>. After all, if we had the sequence</p>
+<pre class="sourceCode"><code class="sourceCode java">c = <span class="fu">Counter</span>();<br/>c.<span class="fu">set</span>(<span class="dv">4</span>);</code></pre>
+<p>couldn't we just refer to <code>c</code> in the <code>set</code> method? No way! First, <code>c</code> is probably local to some other piece of code, and it's not known within the <code>set</code> method. Second, what if we had two <code>Counter</code> objects:</p>
+<pre class="sourceCode"><code class="sourceCode java">c1 = <span class="fu">Counter</span>();<br/>c2 = <span class="fu">Counter</span>();<br/>c1.<span class="fu">set</span>(<span class="dv">4</span>);<br/>c2.<span class="fu">set</span>(<span class="dv">7</span>);</code></pre>
+<p>Now how do you know which <code>Counter</code> you want to use in <code>set</code>? Sometimes it's the one that <code>c1</code> references, and sometimes it's the one that <code>c2</code> references. The pronoun <code>this</code> always references the object that the method was called on. Problem solved.</p>
+<h2 id="printing-to-the-console">Printing to the console</h2>
+<p>As you've seen, you call <code>System.out.println</code> to print to the console. The <code>String</code> that you supply as a parameter is what's printed. If you don't supply a parameter, then a blank line prints to the console.</p>
+<p>If you want to print to the console but not end with a newline, then call <code>System.out.print</code>. For example, if you were printing a prompt and wanted the typed input to appear on the same line as the prompt, you could write</p>
+<pre class="sourceCode"><code class="sourceCode java">System.<span class="fu">out</span>.<span class="fu">print</span>(<span class="st">"Enter a prime number: "</span>);</code></pre>
+<h2 id="javas-increment-and-decrement-operators">Java's increment and decrement operators</h2>
+<p>C programmers are familiar with the <code>++</code> and <code>--</code> operators for incrementing and decrementing. (It might be hard to see but that's two minus signs in a row, with no space between them.) When you use these operators, they have to apply to variables.</p>
+<pre class="sourceCode"><code class="sourceCode java"><span class="dt">int</span> x = <span class="dv">7</span>;<br/>x++;     <span class="co">// legal; x gets the value 8</span><br/><span class="dv">7</span>++;     <span class="co">// not legal; 7 is not a variable</span><br/><span class="dt">int</span> y = <span class="dv">10</span>;<br/>(x+y)++; <span class="co">// not legal; (x+y) is not a variable</span><br/>y--;      <span class="co">// legal; y gets the value 9</span></code></pre>
+<p>You can use the <code>++</code> and <code>--</code> operators in expressions. If you put the <code>++</code> or <code>--</code> <em>before</em> the variable, then the increment or decrement happens <em>before</em> the variable's value is used in the expression. If you put the <code>++</code> or <code>--</code> <em>after</em> the variable, then the increment or decrement happens <em>after</em> the variable's value is used in the expression.</p>
+<pre class="sourceCode"><code class="sourceCode java"><span class="dt">int</span> x = <span class="dv">7</span>, y = <span class="dv">10</span>;<br/><span class="dt">int</span> z = ++x * y--;</code></pre>
+<p>Here, <code>x</code> is incremented before it's used in the expression, and so <code>x</code> gets the value 8, and the value of <code>x</code> used in the expression is 8. But <code>y</code> is decremented after it's used in the expression, and so although <code>y</code> will get the value 9, the value of <code>y</code> used in the expression is 10. Hence, <code>z</code> gets the value 80.</p>
+<p>As you can see, you can make some complicated expressions using the <code>++</code> and <code>--</code> operators. Just because you can doesn't mean you should!  My preference is to only use these operators as stand-alone statements, rather than embedding them in expressions.</p>
+
+

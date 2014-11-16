@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="short-assignment-4-due-monday-september-29">Short Assignment 4<br/>Due: Monday, September 29.</h1>
+<p>This assignment gives you practice manipulating linked lists.
+</p>
+<h2>Assignment</h2>
+<p>You are to add a method to <code>SentinelDLL.java</code> to append two 
+lists.  The JavaDoc comments and header for the method are:</p>
+<xmp>
+  /**
+   * Appends the list "other" to the end of the list "this",
+   * and sets the "other" to an empty list. 
+   * the current element of "this" remains the current element of the combined list.
+   * @param other the list to be appended to this list.
+   */
+  public void append(SentinelDLL<t> other) 
+</t></xmp>
+<p>Your code should take constant time.  This means that it cannot
+remove items one at a time from the second list and add them to the first.  It must
+manipulate references to combine the two lists.  Several references will
+need to be changed.</p>
+<p>The body of your method should contain approximately a half dozen lines of code.  I strongly suggest drawing out two linked lists and drawing arrows to figure out what references need to be changed and in what order.</p>
+<p>
+After you have written the <code>append</code> method,
+add the following <code>main</code> method to <code>SentinelDLL.java</code> to test your code.
+</p>
+<xmp>
+  public static void main(String [] args) {
+  	SentinelDLL<string> lst1 = new SentinelDLL<string>();
+  	SentinelDLL<string> lst2 = new SentinelDLL<string>();
+  	
+  	lst1.append(lst2);
+  	System.out.println("lst1:\n" + lst1);
+  	System.out.println("lst2:\n" + lst2);
+
+ 	lst1.addFirst("cat");
+ 	lst1.addLast("dog");
+ 	lst1.append(lst2);
+ 	System.out.println("lst1:\n" + lst1);
+ 	System.out.println("lst2:\n" + lst2);
+ 	lst1.clear();
+  	
+  	lst2.addFirst("cat");
+  	lst2.addLast("dog");
+  	lst1.append(lst2);
+  	System.out.println("lst1:\n" + lst1);
+  	System.out.println("lst2:\n" + lst2);
+  	
+  	lst2 = new SentinelDLL<string>();
+  	lst2.addFirst("eagle");
+  	lst2.addLast("sheep");
+  	lst1.append(lst2);
+  	System.out.println("lst1:\n" + lst1);
+  	System.out.println("lst2:\n" + lst2);
+  	
+  	System.out.println("lst1 in reverse:");
+  	for (Element<string> x = lst1.sentinel.previous; x != lst1.sentinel; x = x.previous)    
+          System.out.println(x.data);
+  }
+</string></string></string></string></string></string></xmp>
+<h2>Turn in</h2>
+<p>Submit via Canvas the a file that contains
+ your modified SentinelDLL.java, and a file or a screen shot that shows the output from your test run.
+</p>
+</body>
+</html>

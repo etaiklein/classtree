@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="short-assignment-1-due-friday-march-28">Short Assignment 1 <br/>Due: Friday, September 19.</h1>
+<p>In class we saw a Counter that would increment up to 
+a given limit, and then start over at 0 when that limit was
+reached.  I said that this would be a useful part of a digital
+watch or timer.</p>
+<p>This assignment is to write a <code>DigitalTimer</code> class 
+that creates objects that are digital timers with two fields:
+hours and minutes.  This timer represents
+24-hour time, so the hours should take on values 00 through 23 and 
+the minutes should take on values 00 through 59.</p>
+<p>Your <code>DigitalTimer</code> class should make public the following two constructors
+and three methods.  Note that two of these have preconditions.  A precondition is something 
+that you may assume about the parameters.  You need not test for it.</p>
+<xmp>
+	/**
+	 * Creates a timer initialized to 00:00
+	 */
+	public DigitalTimer()
+	
+	
+	/**
+	 * Creates a timer initialized to hours:minutes
+	 * Precondition: 0 &lt;= hours &lt;= 23 and 0 &lt;= minutes &lt;= 59
+	 *  
+	 * @param hours value for hours part of timer
+	 * @param minutes value of minutes part of timer
+	 */
+	public DigitalTimer(int hours, int minutes)
+	
+	
+	/**
+	 * @return the time in hours:minutes format
+	 */
+	public String toString()
+	
+	
+	/**
+	 * Increases the time by a minute, wrapping if necessary
+	 */
+	public void tick()
+	
+	
+	/**
+	 * Sets the current time to hours:minutes.
+	 * Precondition: 0 &lt;= hours &lt;= 23 and 0 &lt;= minutes &lt;= 59
+	 * 
+	 * @param hours value for hours part of timer 
+	 * @param minutes value for minutes part of timer
+	 */
+	public void set(int hours, int minutes)
+</xmp>
+<p>The private data in your <code>DigitalTimer</code> class should consist
+of two <code>Counter</code> objects, one
+to represent the hours and the other to represent the minutes. 
+You should use most of the methods from the <code>Counter</code> class
+that we saw in class to implement the methods for the  <code>DigitalTimer</code> class.
+Because methods of the <code>Counter</code> class do a lot of the work for you, none 
+of the <code>DigitalTimer</code> methods should be longer than a few lines of code.</p>
+<p>Note that it is not a problem that the <code>tick()</code> and <code>set()</code>
+methods appear in both
+the is the <code>Counter</code> and <code>DigitalTimer</code>
+classes.  Java can tell which you mean by looking at the
+type of the object before the dot when the method is called.</p>
+<p>Include the code for the  <a href="Counter.java"><code>Counter.java</code> </a>
+class and the
+<a href="TimerDriver.java"><code>TimerDriver.java</code> </a> 
+class in your project along with
+the <code>DigitalTimer</code> class that you put into the file 
+<code>DigitalTimer.java</code>.  Running <code>TimerDriver</code>'s
+<code>main</code> method will test the correctness of your
+<code>DigitalTimer</code> class. 
+</p>
+<h2 id="what-to-submit">What to submit</h2>
+<p>Put your <code>DigitalTimer.java</code> file and a file containing the
+the output of <code>TimerDriver.java</code> 
+(when in a project with your
+<code>DigitalTimer.java</code> code and my <code>Counter.java</code>) into
+a folder, zip them, and turn in the compressed file via Canvas.</p>
+</body>
+</html>

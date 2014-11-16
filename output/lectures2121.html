@@ -1,0 +1,674 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-21-may-14">Lecture 21, October 31</h1>
+<h2 id="lab-assignment-4">Assignments</h2>
+<p><a href="../../sa/sa11/sa11.html">Sort Assignment 11</a> is due next Monday, November 3.</p>
+<p><a href="../../lab/lab5/lab5.html">Lab Assignment 5</a> is due next Wednesday, November 5.</p>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="Cube.java"><code>Cube</code></a></li>
+<li><a href="CubeTower.java"><code>CubeTower</code></a></li>
+<li><a href="Insane1.java"><code>Insane1</code></a></li>
+<li><a href="Insane2.java"><code>Insane2</code></a></li>
+<li><a href="Insane3.java"><code>Insane3</code></a></li>
+<li><a href="BuriedCount.java"><code>BuriedCount</code></a></li>
+<li><a href="Fahrenheit.java">Fahrenheit.java</a></li>
+<li><a href="FahrenheitGUI.java">FahrenheitGUI.java</a></li>
+<li><a href="ButtonTest.java">ButtonTest.java</a></li>
+<li><a href="ButtonFrame.java">ButtonFrame.java</a></li>
+<li><a href="RectanglePanel.java">RectanglePanel.java</a></li>
+<li><a href="Rect.java">Rect.java</a></li>
+<li><a href="ChoiceTest.java">ChoiceTest.java</a> </li>
+<li><a href="ChoiceFrame.java">ChoiceFrame.java</a></li>
+<li><a href="ButtonFrame.java">ButtonFrame.java</a></li>
+<li><a href="../20/MazeSolver.java">MazeSolver.java</a></li>
+<li><a href="../20/MazeFrame.java">MazeFrame.java</a></li>
+<li><a href="../20/MazePanel.java">MazePanel.java</a></li>
+<li><a href="../20/Maze.java">Maze.java</a></li>
+</ul>
+<h2 id="backtracking">Backtracking</h2>
+<p>Sometimes instead of finding a single path or a single solution we want to find all solutions. A systematic way of doing this is called <strong>backtracking</strong>. It is a variant of depth-first search on an implicit graph. The typical approach uses recursion. At every choice point, loop through all the choices. For each choice, solve the problem recursively. Succeed if you find a solution; otherwise fail and backtrack to try an alternative.</p>
+<h3 id="n-queens"><span class="math"><em>N</em></span>-queens</h3>
+<p>Let's consider the <strong><span class="math"><em>N</em></span>-queens problem</strong>. The goal is to place <span class="math"><em>N</em></span> queens on an <span class="math"><em>N</em> × <em>N</em></span> chessboard such that no two queens can capture one another. (Two queens can capture one another if they are in the same row, column, or diagonal.)</p>
+<p>A truly brutish brute-force solution technique would be to consider <em>all</em> possible ways of placing <span class="math"><em>N</em></span> queens on the board, and then checking each configuration. This technique is truly awful, because for an <span class="math"><em>N</em> × <em>N</em></span> board, there are <span class="math"><em>N</em><sup>2</sup></span> squares and hence <span class="math">$N^2 \atopwithdelims() N$</span> possible configurations. That's the number of ways to choose <span class="math"><em>N</em></span> items (squares) out of <span class="math"><em>N</em><sup>2</sup></span>, and it's equal to <span class="math">$\displaystyle \frac{N^2!}{N!(N^2-N)!}$</span>. For an <span class="math">8 × 8</span> board, where <span class="math"><em>N</em> = 8</span>, that comes to 4,426,165,368 configurations.</p>
+<p>Another, less brutish, brute-force solution takes advantage of the property that we must have exactly one queen per column. So we can just try all combinations of queens, as long as there's one per column. There are <span class="math"><em>N</em></span> ways to put a queen in column 1, <span class="math"><em>N</em></span> ways to put a queen in column 2, and so on, for a total of <span class="math"><em>N</em><sup><em>N</em></sup></span> configurations to check. When <span class="math"><em>N</em> = 8</span>, we have reduced the number of configurations to 16,777,216.</p>
+<p>We can make our brute-force solution a little better yet. Since no two queens can be in the same row, we can just try all permutations of 1 through <span class="math"><em>N</em></span>, saying that the first number is the row number for column 1, the second number is the row number for column 2, and so on. Now there are "only" <span class="math"><em>N</em>!</span> configurations, which is 40,320 for <span class="math"><em>N</em> = 8</span>. Of course, for a larger board, <span class="math"><em>N</em>!</span> can be mighty large. In fact, once we get to <span class="math"><em>N</em> = 13</span>, we get that <span class="math"><em>N</em>!</span> equals 6,227,020,800, and so things are worse than the most brutish brute-force solution for <span class="math"><em>N</em> = 8</span>.</p>
+<p>So let's be a little smarter. Rather than just blasting out configurations, let's pay attention to what we've done. Start by placing a queen in column 1, row 1. Now we <em>know</em> that we cannot put a queen in column 2, row 1, because the two queens would be in the same row. We also cannot put a queen in column 2, row 2, because the queens would be on the same diagonal. So we place a queen in column 2, row 3. Now we move onto column 3. We cannot put the queen in any of rows 1–4 (think about why not), and so we put the queen in row 5. And so on.</p>
+<p>This approach is called <strong>pruning</strong>. At the <span class="math"><em>k</em></span>th step, we try to extend the partial solution with <span class="math"><em>k</em> − 1</span> queens by adding a queen in the <span class="math"><em>k</em></span>th column in all possible positions. But "possible" now means positions that don't conflict with earlier queen placements. It may be that no choices are possible. In that case, the partial solution cannot be extended. In other words, it's infeasible. And so we backtrack, undoing some choices and trying others.</p>
+<p>Why do we call this approach pruning? Because you can view the search as a tree in which the path from the root to any node in the tree represents a partial solution, making a particular choice at each step. When we reject an invalid partial solution, we are lopping off its node <em>and the entire subtree that would go below it</em>, so that we have "pruned" the search tree. Early pruning lops off large subtrees. Effort spent pruning usually (but not always) pays off in the end, because of the exponential growth in number of solutions considered each time a choice is made.</p>
+<p>Go through the backtracking for <span class="math"><em>N</em> = 4</span>:
+<p>Here is one solution for <span class="math"><em>N</em> = 8</span>, taken from Wikipedia:</p>
+<div class="figure">
+<img src="8Queens.jpg"/>
+</div>
+<h3>Instant Insanity</h3>
+<p>We consider the puzzle called Instant Insanity.  It came out well
+before Rubic's Cube and other really difficult puzzles.  The puzzle has
+four cubes.  For each cube each of its six sides is colored red, blue,
+green, or white.  (Show the puzzle.)  The puzzle is to make a tower 
+of the cubes by stacking them one on top of another in a way that
+each side of the tower has each color appearing once.</p>
+<p>We use an object-oriented approach to the puzzle.  We want an
+object type <a href="Cube.java"><code>Cube</code></a>
+to hold an individual cube.  It holds the colors of the six faces
+in instance variables, and allows us to rotate the cube, tip it 
+90 degrees around the front-back axis so that the top becomes the left
+face, and to flip it around the same axis so that the top becomes the
+bottm.</p>
+<p>Much of the work is done in the class 
+<a href="CubeTower.java"><code>CubeTower</code></a>.  This object
+contains all four cubes.  It supplies methods to rotate, flip, and 
+tip particular cubes and a validity test to see if there are any 
+conflicts.</p>
+<p>The program <a href="Insane1.java"><code>Insane1</code></a>
+is a really stupid, brute-force way to solve the puzzle.  It is clever 
+enough to note that flipping each piece simultaneously will give another
+solution and that rotating the tower, starting with either the original solution 
+or the flipped solution, will give four solutions each.  Therefore it only
+places the bottom cube in three positions, one for each top-bottom pair.</p>
+<p>The other cubes are each placed in 24 positions. (4 rotations, 
+flip, 4 rotations, flip back, rotate and tip. Repeat three times.  This actually
+gets you back to where you started.)  There is no pruning.
+Only when all 4 cubes are placed do we check for validity.  This results
+in 43,276 calls to <code>placeCube</code>.  Not bad for a computer, but slow by hand.
+(Thirty years ago it took a while even on a computer).</p>
+<p><a href="Insane2.java"><code>Insane2</code></a> has the sense to 
+check for validity of the first k placements before proceeding to placement
+k+1.  This improves things a whole lot.  It results in 1347 validity tests and
+58 calls to <code>placeCube</code>.  This is not unreasonable to do by hand,
+and takes virtually no time on a computer.</p>
+<p><a href="Insane3.java"><code>Insane3</code></a> adds additional pruning.
+The idea is that there are partial solutions that have no conflicts on their sides that still
+cannot be extended to a complete solution.  We would like to prune these, also.  
+Whenever we place a cube we "bury" its top color and its bottom color, in the sense
+that they are no longer available to appear on the sides. If we bury enough occurrances
+of a color there will not be 4 copies of that color to appear on all four sides of the
+tower, so the partial solution cannot be extended to a complete solution.  
+<a href="Insane3.java"><code>Insane3</code></a> uses the object 
+<a href="BuriedCount.java"><code>BuriedCount</code></a> to keep track of
+how many of each color have been buried and whether a solution might still be possible.
+It allows us to bury and unbury particular colors.
+<a href="CubeTower.java"><code>CubeTower</code></a> has methods to bury and 
+unbury the top and bottom faces of a cube and to ask <code>BuriedCount</code> 
+whether a solution is still possible.  This reduces the number
+of validity tests to 379 and the number of calls to <code>placeCube</code> to 37.  For
+36 of these calls we bury, unbury, and test whether we have buried too much three times.
+This is practical to do by hand.</p>
+<p>Note - The idea of this backtracking is simple, but the details of how the cubes are placed and rotated gets complicated.  The N-queens backtracking is <em>much</em> simpler.  You should not be creating new classes or using data structures beyond an <code>ArrayList</code> and some arrays.
+
+<h2>Applications with GUIs</h2>
+<p>The Maze program is an application, but it has a GUI.
+So far only applets have used GUIs. It also uses radio buttons,
+a concept that we have not seen yet.  We will now see how to create
+applications with GUIs as well, and will look at a few more of the
+dozens of specialized components that are in Swing.  Fortunately
+they all use the same basic way of communicating with your program
+(listeners), so once you have seen a few it is not hard to pick up
+new ones as you need them.</p>
+<p>In a GUI for an application instead of an Applet window we use a
+<strong>frame</strong>.  A frame has title bar (including a close box,
+which we will deal with, and the usual collection of other control
+boxes, which we will let Java deal with), and a content pane.  (It
+also has other things that we don't need to worry about.)
+
+<p>
+
+The first task is to get the frame displayed, and to get it to go away
+when we click the "close" box.  The main program creates the frame,
+<em>but even after the main program is done the frame continues to
+run.</em> That's because when we open a frame window, the program
+starts a new <strong>thread of execution</strong> that displays the
+GUI.  When the <code>main</code> method completes, its <em>main
+thread</em> is done, but the thread for the GUI is still running.
+Therefore, we need a way to stop the program when the close box is
+clicked.
+
+<p>
+
+We stop the program as in <a href="Fahrenheit.java">Fahrenheit.java</a> and <a href="FahrenheitGUI.java">FahrenheitGUI.java</a>.  We have seen most
+of the GUI components—<code>JPanel</code>, <code>JLabel</code>,
+and <code>JTextField</code>—before.  What's new is the
+<code>JFrame</code>.  In this example, the <code>FahrenheitGUI</code>
+object creates a new <code>JFrame</code> and sets the instance
+variable <code>frame</code> to reference it.  The constructor includes
+the string <code>Temperature Conversion</code> that is displayed in
+the frame's title bar.
+
+<p>
+
+The way that we indicate that the program gets stopped is with the
+line
+<xmp>
+frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+</xmp>
+
+The <code>setDefaultCloseOperation</code> says what should happen when
+the frame's close button is clicked.  Here, we specify that the
+program should exit, or terminate.
+
+<p>
+
+In this example, the <code>display</code> method of
+<code>FahrenheitGUI</code> calls <code>frame.pack</code> and
+<code>frame.setVisible(true)</code>.  The <code>pack</code> method
+sizes the frame to fit the components that have been added into it,
+and the <code>setVisible</code> method with a parameter of
+<code>true</code> tells the frame to actually display itself on the
+screen.  You should call <code>pack</code> on a <code>JFrame</code>
+if the <code>setSize</code> method has not been called on the
+<code>JFrame</code> to set its size.  In this example, we have called
+<code>setPreferredSize</code> on a <code>JPanel</code> that is added
+to the <code>JFrame</code>, but we have not called
+<code>setSize</code> on the <code>JFrame</code> itself.  The
+<code>pack</code> method of <code>JFrame</code> has the
+<code>JFrame</code> set its size to fit around the GUI components
+within the frame.
+
+<h3>More about frames</h3>
+
+It is considered bad form to draw directly on the frame, because the
+frame is used to lay out buttons, text fields, etc., and if you draw
+directly on the frame, the Swing methods won't know to avoid the areas
+where you have placed other GUI components.  Recall that the same
+holds for applets.  With applications, we will
+again use the <code>JPanel</code> both for drawing and as a container
+for grouping buttons, check boxes, or other components together.  We
+will add <code>JPanel</code> objects to a frame or to another
+container.  You can build a whole hierarchy of components by
+assembling <code>JPanel</code>s, getting a lot of control over the
+layout.  When components are added to a <code>JPanel</code> they use a
+Flow Layout by default.  We'll see later how to use a different layout
+manager for a <code>JPanel</code>.
+
+<p>
+
+As with the <code>JApplet</code> objects we saw earlier, we do not add
+components directly to a <code>JFrame</code>.  A frame has a number of
+panes, one of which is the content pane.  Therefore when adding
+components to a frame, we write
+<xmp>
+Container contentPane = getContentPane();
+</xmp>
+and then add components to the <code>contentPane</code>.  Or, as in
+the constructor for <code>FahrenheitGUI</code>, we don't bother
+storing the result of <code>getContentPane</code> in a variable.
+
+<p>
+
+The content pane of an application uses a different layout scheme
+called <strong>Border Layout</strong>.  We saw this before in PS-3,
+although we did not require you to program with it. The pane is partitioned into
+five regions: North, South, East, West, and Center.  They appear in
+the pane as follows:
+
+<p>
+<center>
+<img src="BorderLayout.GIF">
+</img></center>
+<p>
+
+You can add at most one component to any one of these regions.
+Regions with no component are taken over by the Center region, which
+expands to fill the leftover area.  We'll see that the North and South
+regions expand horizontally in ways that are sometimes a bit strange.
+
+<p>
+
+We can arrange the layout of a GUI using the content pane and as many
+<code>JPanel</code>s as we like.
+
+<a name="buttontest"></a>
+<h2><code>ButtonTest.java</code></h2>
+
+Let's look at an application that uses
+multiple <code>JPanel</code> objects: the program <a href="ButtonTest.java">ButtonTest.java</a>.  When running it, we can
+see that it has four buttons across the bottom and a large content
+pane where a rectangle can be moved via button clicks.  Try it out.
+We will see how to set up this GUI.
+
+<p>
+
+First, consider the <code>main</code> program.  It is similar to the
+frame example we looked at earlier.  The only differences are that it
+uses <code>frame.setTitle</code> to set the title here rather than
+doing it in the frame's constructor, and we call <code>setSize</code>
+on the frame, thus obviating the need to call <code>pack</code>.
+
+<p>
+
+The real work of setting up the GUI is in <a href="ButtonFrame.java">ButtonFrame.java</a>.  The
+<code>ButtonFrame</code> class has five private instance variables:
+<ul>
+<li> four <code>JButton</code>s to hold the buttons, and
+
+  <li> a <code>RectanglePanel</code>, which inherits from
+       <code>JPanel</code>.  This is a panel on which we draw the
+       moving rectangle.
+
+</li></li></ul>
+<p>
+
+In the constructor for <code>ButtonFrame</code>, we make sure that the
+program will stop when the window is closed by calling
+<code>setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)</code>.
+
+<p>
+
+The <code>ButtonFrame</code>constructor then assigns the instance
+variable <code>rectPanel</code> to a new <code>RectanglePanel</code>.
+It also creates the <code>JPanel buttonPanel</code> to group the
+buttons together.  This variable is local, because we do not need it
+after the constructor is done.  The buttons themselves are needed
+after the constructor finishes, but the panel that groups them is not.
+
+<p>
+
+All four buttons are created, with labels <code>Up</code>,
+<code>Down</code>, <code>Left</code>, and <code>Right</code>.  Unlike
+the GUI in Lab Assignment 3, all four buttons are assigned the same
+listener object.  We will see later how we can do different things in
+the method, depending on which button was pushed.
+
+<p>
+
+All we have done so far is create some objects.  We have yet to place
+them into the frame.  That's what happens next.  The program gets the
+<code>contentPane</code> from the frame and adds
+<code>rectPanel</code>, the drawing area, to the center region of the
+<code>contentPane</code> using the builtin constant
+<code>BorderLayout.CENTER</code>.  (Alternatively, you can instead use
+the string <code>"Center"</code> as the second parameter to
+<code>add</code>.)
+
+<p>
+
+We want all four buttons in the South area of the frame.  With the
+variable <code>layoutStyle</code> set to the value
+<code>flowLayout</code> (from the enumerated type
+<code>LayoutType</code>), we first add all four to the 
+<code>JFrame buttonPanel</code> (using Flow Layout) and then add
+<code>buttonPanel</code> to the south part of the
+<code>contentPane</code>.
+
+<p>
+
+The method <code>actionPerformed</code> in
+<code>DirectionListener</code> responds to the button clicks.  The
+<code>ActionEvent event</code> has within it a reference to the object
+that is the source of the event.  A call to
+<code>event.getSource</code> returns this reference.  By comparing
+<em>references</em> we can decide which button was clicked in a series
+of if-else statements.  Then each of them moves the rectangle in the
+<code>rectPanel</code> in a different direction by calling the
+<code>moveRectangle</code> method of <code>RectanglePanel</code> with
+the appropriate parameter values.  After moving the rectangle,
+<code>actionPerformed</code> has the <code>RectanglePanel</code> draw
+itself.
+
+<p>
+
+What remains is the <code>RectanglePanel</code> class in <a href="RectanglePanel.java">RectanglePanel.java</a>.  This is the panel
+for the drawing area.  Therefore it has the methods to deal with
+drawing on the panel (<code>paintComponent</code>) and the information
+about what is to be drawn there.
+
+<p>
+
+It has a private instance variable <code>theRect</code>, which
+references the <code>Rect</code> object to be drawn.  We've seen the
+<code>Rect</code> class, in <a href="Rect.java">Rect.java</a>, before.
+The rectangle is initialized in the constructor to be at the upper
+left-hand corner of the panel.  Each panel has its own coordinate
+system.
+
+<p>
+
+
+To draw we call <code>paintComponent</code>. 
+<strong>Important note: the first line of <code>paintComponent</code>
+should always be a call to <code>super.paintComponent</code>.</strong>
+Doing so gives the superclass method a chance to do what it needs to
+do with the panel.</p></p></p></p></p></p></p></p></p></p></p></p></p></p></p></p></p></p></p></p></p></p></p></body></html>
+Then it can do what we normally want.  In this case, it draws
+<code>theRect</code> and then draws a grid of light grey lines in
+multiples of the rectangle size.  The calls to <code>getWidth</code>
+and <code>getHeight</code> are actually calling methods inherited from
+<code>JPanel</code>; these calls return the width and height of the
+panel, so that we draw the grey lines at the correct lengths.
+
+<p>
+
+Another method is <code>moveRectangle</code>.  It simply shifts the
+rectangle by <code>dx</code> rectangle widths in the <i>x</i>
+direction and <code>dy</code> rectangle heights in the <i>y</i>
+direction.  Remember that the <code>actionPerformed</code> method
+called it to move the rectangle in response to button pushes.
+
+<p>
+
+The last method in <code>RectanglePanel</code> is <code>draw</code>,
+which just calls <code>repaint</code>.  Strictly speaking, we didn't
+need to define <code>draw</code> in <code>RectanglePanel</code>.
+Instead, we could have replaced the call <code>rectPanel.draw()</code>
+in the <code>actionPerformed</code> method of <code>ButtonFrame</code>
+by the call <code>rectPanel.repaint()</code>.  I chose to define and
+call the <code>draw</code> method because it is cleaner to hide that
+<code>rectPanel</code> has a <code>repaint</code> method from the
+classes that use it.  In fact, just calling <code>repaint</code> here
+would also work.
+
+<h3>Using a Border Layout manager in a JPanel</h3>
+
+The flow layout of the buttons doesn't really match the way I'd like
+the buttons to be placed.  I'd like to have the <code>Up</code> button
+on the top, the <code>Left</code> button on the left, the
+<code>Right</code> button on the right, and the <code>Down</code>
+button on the bottom.  Setting the variable <code>layoutStyle</code>
+to <code>wideBorderLayout</code> gets us closer.
+
+<p>
+
+Now our button layout is accomplished by the lines
+<xmp>
+buttonPanel.setLayout(new BorderLayout());
+buttonPanel.add(upButton, BorderLayout.NORTH);
+buttonPanel.add(downButton, BorderLayout.SOUTH);
+buttonPanel.add(leftButton, BorderLayout.WEST);
+buttonPanel.add(rightButton, BorderLayout.EAST);
+</xmp>
+
+That gives a more intuitive button layout, with the <code>Up</code>
+button on the North side, the <code>Down</code> button on the South
+side, the <code>Left</code> button on the West side, and the
+<code>Right</code> button on the East side.  The only aesthetic
+problem is that with Border Layout, the North and South borders
+stretch the entire horizontal span of the panel, so that the
+<code>Up</code> and <code>Down</code> buttons appear much, much wider
+than the <code>Left</code> and <code>Right</code> buttons.
+
+<p>
+
+We can solve that problem, too.  If we set variable
+<code>layoutStyle</code> to <code>niceBorderLayout</code>, we run the
+lines
+<xmp>
+buttonPanel.setLayout(new BorderLayout());
+JPanel northPanel = new JPanel();
+northPanel.add(upButton);
+JPanel southPanel = new JPanel();
+southPanel.add(downButton);
+buttonPanel.add(northPanel, BorderLayout.NORTH);
+buttonPanel.add(southPanel, BorderLayout.SOUTH);
+buttonPanel.add(leftButton, BorderLayout.WEST);
+buttonPanel.add(rightButton, BorderLayout.EAST);
+</xmp>
+Here, we create two more <code>JPanel</code> objects, referenced by
+<code>northPanel</code> and <code>southPanel</code>, each holding just
+one <code>JButton</code>.  By putting <code>upButton</code> and
+<code>downButton</code> each in its own little <code>JPanel</code>, we
+prevent these buttons from being stretched horizontally in a Border
+Layout.
+
+<a name="choice"></a>
+<h2>Text fields, check boxes, radio buttons, and combo boxes</h2>
+
+The program <a href="ChoiceTest.java">ChoiceTest.java</a> demonstrates
+four other Swing components used to make choices:
+<ul>
+<li> Check boxes: the <code>JCheckBox</code> class.
+  <li> Radio buttons: the <code>JRadioButton</code> class.
+  <li> Combo boxes: the <code>JComboBox</code> class.
+</li></li></li></ul>
+
+This program displays a sample of text, where the user gets to choose
+a font (Times, a font with serifs; Helvetica, a sans-serif font; or
+Courier, a monospaced font), a size (small, medium, or large), and a
+style (plain, italic, bold, or bold italic).  The user may also decide
+whether the text itself is editable and, if it is, may edit it.
+
+<p>
+
+At this point, many of the features of this program are probably
+self-explanatory.  Some are not.  We'll go through a few of them here.
+
+<p>
+
+The heavy lifting is done in <a href="ChoiceFrame.java">ChoiceFrame.java</a>.  The
+<code>ChoiceFrame</code> constructor builds the GUI.  As usual, we
+attach a listener to each button or combo box.  As in the
+<code>ButtonFrame</code> class in <a href="ButtonFrame.java">ButtonFrame.java</a>, we use one listener for
+all choice components.  This listener's <code>actionPerformed</code>
+method calls the method <code>setSampleFont</code>, which gets the
+value of each choice component and then displays the sample text
+according to these values.
+
+<p>
+
+When constructing the <code>JTextField</code> referenced by
+<code>sampleField</code>, we specify a text string to display.  We
+also set the editability of this text field to <code>false</code>, so
+that the user cannot edit it.  The editability can be changed,
+however, as we shall see.
+
+<p>
+
+All check boxes, from the Swing class <code>JCheckBox</code>, may be
+turned on and off individually.  We use them for independent choices.
+Here, we have three check boxes:
+<ul>
+<li> <code>editableCheckBox</code>, which the user can click to make
+       the text field editable.
+
+  <li> <code>italicCheckBox</code>, which specifies that the text is
+       to be displayed in italics.
+
+  <li> <code>boldCheckBox</code>, which specifies that the text is to
+       be displayed in boldface.
+
+</li></li></li></ul>
+
+To determine whether a check box is checked, we use the
+<code>isSelected</code> method.  The <code>setSampleFont</code> method
+makes calls such as <code>editableCheckBox.isSelected()</code> and
+<code>italicCheckBox.isSelected()</code>.
+
+<p>
+
+A combo box lets the user pick one of a list of items.  Here, the
+items are font names.  When one is chosen, an action event occurs,
+which is handled by the listener we attach to the combo box.  Because
+we set the combo box to be editable, the user can type in other font
+names, too.
+
+<p>
+
+We use radio buttons to select the font size: small, medium, or large.
+Radio buttons allow the user to make exactly one choice out of a set
+of choices.  The way we indicate each set of choices is with
+<code>ButtonGroup</code> objects.  We create a new
+<code>ButtonGroup</code> for each set of choices, and we add the
+buttons to the <code>ButtonGroup</code>.  A <code>ButtonGroup</code>
+has nothing to do with the layout of the buttons on the screen; it
+makes it so that when the user clicks one button of a set, Swing knows
+which other buttons have to become unselected.  (It takes care of
+unselecting them.)  We choose to start out with one radio button 
+being selected - if we did not none would be selected.  
+Here, we choose the one for the large text size.
+
+<p>
+
+We can also add tool tips to our check boxes and radio buttons.  By
+calling the <code>setToolTipText</code> method on a GUI component, we
+give text that will appear when the cursor is held over the component.
+This method applies to pretty much any GUI component, including combo
+boxes.
+
+<p>
+
+That takes care of setting up the objects.  Next is the physical
+layout.  We make a <code>JPanel</code> named <code>sampleFrame</code>,
+with Border Layout, to hold <code>editableCheckBox</code> and
+<code>sampleField</code>, with the check box above the text field.  By
+adding <code>sampleField</code> to the center region of the Border
+Layout, we make it so that when the window is resized, the sample
+text's panel grows and shrinks to fit the window.  We then make a
+panel for the font name combo box.  Next, a panel for the size radio
+buttons.  We put the title "Size" and an etched border around this
+panel.  Similarly, we make a panel for the style check boxes, with the
+title "Style" and an etched border.
+
+<p>
+
+The latter three panels—for the font name combo box, size radio
+buttons, and style radio buttons—are aligned vertically using a
+new layout manager: the Box Layout manager.  A Box Layout allows us to
+align components either vertically or horizontally.  Unlike the other
+layout managers, a <code>BoxLayout</code> constructor takes as a
+parameter a reference to the component that it is laying out.  I don't
+know why.  But it means that if you were using a Box Layout to lay out
+more than one component, you would have to create a new
+<code>BoxLayout</code> object for each one.  Here, the component that
+the Box Layout manager is working on is <code>southPanel</code>.
+
+<p>
+
+The two panels that we have yet to place into a
+container—<code>sampleFrame</code> and
+<code>southPanel</code>—are put into the content pane.  Recall
+that in an application, the content panel by default uses Border
+Layout.  Again, by putting the panel containing the sample text in the
+center region, the sample text's panel will grow and shrink as the
+window is resized.
+
+<p>
+
+Finally, the <code>ChoiceFrame</code> constructor calls
+<code>setSampleFont</code> to get the values of all the GUI components
+and redisplay the sample text.  The <code>setSampleFont</code> method
+asks whether each check box and radio button is selected, doing the
+appropriate thing for each component that is selected.  The call
+<code>fontnameCombo.getSelectedItem()</code> returns what appears in
+the combo box.  Here, we cast it to a <code>String</code>, which is
+what we'll be using.
+
+<p>
+
+The style is an integer that we set according to the check boxes.  It
+starts as a 0, indicating "plain," and we add into it according to
+other styles that we want.  <code>Font.ITALIC</code> and
+<code>Font.BOLD</code> are constants that indicate the styles used
+here.  We set the font size according to which of the radio buttons is
+selected.
+
+<p>
+
+Once we have the font name, style, and size, we call the
+<code>setFont</code> method on <code>sampleField</code> with the font
+name, style, and size.  This call changes some of the text field's
+display characteristics.  A call to <code>sampleField.repaint</code>
+causes the text field to actually redisplay.
+
+<a name="maze"></a>
+<h2>The Maze Program Layout and Operation</h2>
+<p>Given this we can see how the maze program is laid out. The
+top level <a href="../20/MazeSolver.java">MazeSolver.java</a>
+simply creates the maze frame, sets its size and title, and makes
+it visible.</p>
+<p>The work is done in <a href="../20/MazeFrame.java">MazeFrame.java</a>.
+This sets up the frame and the buttons.  Note that the <code>stepButton</code>, 
+<code>clearButton</code>,
+and <code>readButton</code> are local variables.  That is because once they are
+registered with a listener nothing more needs to be done with them.  The
+<code>solveButton</code> has to change its text (alternates between "Solve" and
+"Pause") and the radio buttons need to be tested to see which is selected.
+Therefore they are instance variables. The button layouts are very similar
+to ones we have seen before, so I will let you read them on your own.</p>
+<p>The listeners are worth looking at.  The <code>StepListener</code> does
+the work of actually performing a step in the maze.  It is used by both the
+<code>Timer</code> and the <code>stepButton</code>.  If the maze is solved 
+it turns off the timer and sets the label on the <code>solveButton</code> to 
+Solve.  If not, it calls <code>maze.stepMaze()</code> to do one more step
+in solving the maze.</p>
+The <code>SolveListener</code> is
+used to handle the <code>solveButton</code>.  It toggles the label on the 
+button and the state of the timer (if on, then turns it off, and vise versa).
+The <code>ReadListener</code> reads a new maze and creates it.  The 
+<code>RadioListener</code> creates a new maze, with <code>createMaze</code>
+looking at the radio buttons.  Creating a new maze is what we want to do
+when we clear the maze, so this works for the <code>clearButton</code> also.</p>
+</p>The <code>createMaze</code> method sets up a new maze. It creates the
+correct type of sequencer.  (Remember a sequencer is basically an abstract queue -
+it can add items and get the next item.)  It makes a maze from the text representation
+that has been read in (or does nothing if no text has been read or it has an error).
+It passes this maze on to the <code>mazeCanvas</code> and repaints.</p>
+<p>The <code>mazeCanvas</code> holds a <a href="../20/MazePanel.java">MazePanel.java</a>,
+which basically draws the current maze.  The code for <code>display</code> figures out
+the square size and the position of the upper left hand corner, and it draws each square 
+in the appropriate color.</p>
+<p><a href="../20/Maze.java">Maze.java</a> both initializes the maze in its
+constructor and performs a step of solving the maze in <code>stepMaze</code>. 
+Method <code>stepMaze</code> is where the virutal graph is explored.  It calls the 
+current sequencer to get the next
+maze square to be processed.  If the square to be processed is the target it traces back the path,
+marking each square as on the final path.  If not, and the square was not explored, 
+it tries to add each of its four potential
+neighbors to the sequencer (if they exist and are either empty or the target) and marks
+the current square as explored.  This will prevent it from being explored again later.</p>
+<p>The actual code for solving the maze would have been simpler if we were not creating
+an interactive GUI.  The GUI requires spreading the solution out, separating out the
+code for taking a step and making it act on the current "state" of the maze. This step
+code would normally be part of a loop.  But here the loop is provided by the GUI, either
+via the Step button or repeated calls from the Timer after clicking Solve.</p>
+</p></p></p></p></p></p></p></p></p></p></p></p></p></p>
+

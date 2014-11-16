@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-8-april-9">Lecture 9, October 1</h1>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="DrawRects.java">DrawRects.java</a></li>
+<li><a href="Rect.java">Rect.java</a></li>
+<li><a href="GeomShape.java">GeomShape.java</a></li>
+<li><a href="PointRelativeShape.java">PointRelativeShape.java</a></li>
+<li><a href="Circle.java">Circle.java</a></li>
+<li><a href="Rectangle.java">Rectangle.java</a></li>
+<li><a href="Segment.java">Segment.java</a></li>
+<li><a href="GeomShapeDriver.java">GeomShapeDriver.java</a></li>
+<li><a href="DragAMac3.java">DragAMac3.java</a></li>
+</ul>
+<h2 id="lab-assignment-1">Lab Assignment 2</h2>
+<p><a href="../../lab/lab2/lab2.html">Lab Assignment 2</a> is due next Wednesday, October 8. Your section leader will be discussing this lab assignment in detail in this week's section. Although attending your section is optional, I highly recommend showing up this week. The hour you spend in section will save you more than an hour later in the week.</p>
+<h2 id="dragging-out-rectangles">Dragging out rectangles</h2>
+<p>The class <a href="DrawRects.java">DrawRects.java</a> allows us to drag out and draw rectangles on the screen. Here, we use an expanded <code>Rect</code> class in <a href="Rect.java">Rect.java</a>. Each <code>Rect</code> object knows its upper left corner, width, height, and color. It also knows how to draw itself.</p>
+<p>The <code>DrawRects</code> class has the user drag out rectangles, and it adds each of them to the <code>ArrayList</code> named <code>boxes</code>. It does so using three methods that handle mouse events and mouse-motion events. The method <code>mousePressed</code> remembers the place where the mouse was pressed in <code>pressedPoint</code>, and it constructs a new <code>currentRect</code> with no width or height at the place where the mouse is pressed. It colors this new rectangle black.</p>
+<p>The method <code>mouseDragged</code> updates <code>currentRect</code> so that it has <code>pressedPoint</code> and the current mouse position as two opposite corners. Note the use of <code>Math.min</code> to get the upper left corner and of <code>Math.abs</code> to compute the height and width of this rectangle. Because this method responds to mouse dragged events, the rectangle is updated (almost) continuously. The screen is repainted after each update.</p>
+<p>The method <code>mouseReleased</code> completes the operation. It changes the color of the current rectangle to one of four that are saved in the array <code>color</code>. (Note the use of an initializer list when this array is defined.) It then adds the current rectangle to the set <code>boxes</code>. Finally it sets <code>currentRect</code> to <code>null</code> to indicate that the <code>Rect</code> object that <code>currentRect</code> had a reference to is now in the data structure <code>boxes</code> and should not be used any more for getting new rectangles from the user. Both this method and <code>mouseDragged</code> check to see that the <code>currentRect</code> is not <code>null</code> before doing anything to it.</p>
+<p>The drawing is done on a <code>Canvas</code> inner class similar to the ones that we have seen before. Its <code>paintComponent</code> first draws a black rectangle around the canvas. (The <code>-1</code> in the width and height keeps the pen from being off of the canvas on the right side and bottom). It then draws all the saved rectangles. Finally it draws the rectangle currently being dragged (if any).</p>
+<p>There is also a contructor for <code>Canvas</code>, which is something new. This constructor just sets the preferred size of the <code>Canvas</code> component. It does this by calling <code>setPreferredSize</code> and handing it a <code>Dimension</code> object. This is what you call on a <code>JPanel</code> instead of <code>setSize</code>.</p>
+<p>There is another method in <code>Canvas</code>: <code>actionPerformed</code>. The <code>Canvas</code> class implements <code>ActionListener</code>. The <code>actionPerformed</code> method will handle clicks on the Clear button. It just clears <code>boxes</code> and calls <code>repaint</code>.</p>
+<p>Finally we can look at the <code>init</code> method of <code>DrawRects</code>. It adds <code>this</code> as both a mouseListener and a mouseMotionListener. It sets the applet size. It gets the content pane and says that it should use <code>FlowLayout</code>. It adds the canvas to the content pane.</p>
+<p>It then creates a <code>JButton</code> with the label "Clear". It sets the button's background color and adds the canvas as an <code>actionListener</code>. Note that these calls are made on <code>clearButton</code> rather than <code>this</code>. Finally it adds the button to the content pane. Because there is not enough room next to the canvas, it is placed centered below the canvas.</p>
+<h2 id="abstract-classes-and-a-hierarchy-of-graphical-objects">Abstract classes and a hierarchy of graphical objects</h2>
+<p>In a previous lecture we used an interface to allow ourselves to define a variable declared to be a reference to a <code>GeomShape</code>. In fact, <code>GeomShape</code> was an interface, and the way we implemented the program, the variable was actually a reference to either a <code>Circle</code> or a <code>Rectangle</code> object. We can accomplish the same thing via inheritance and avoid duplicating code in the process.</p>
+<p>Consider geometric shapes: circles, rectangles, segments, squares, diamonds, etc. What do they have in common? We might want all of them to have a color, to know how to draw themselves, to know how to move themselves, and to know how to compute their area. The class <a href="GeomShape.java">GeomShape.java</a> defines a class with these properties. Note that all shapes will have a color, and so <code>myColor</code> is an instance variable that is initialized in a constructor. There are methods to set and get the color. The <code>draw</code> method doesn't know how to draw the object, but we will look later at how it can allow the shape to be drawn in the correct color without permanently changing the color of the <code>Graphics</code> object.</p>
+<p>The methods <code>areaOf</code> and <code>move</code> depend on specific information about the shape. Therefore they are given as <strong>abstract</strong> methods. The header ends in a semicolon and the word <code>abstract</code> is included in the header. The entire class is also declared as <code>abstract</code>. <strong>No object of an abstract class can ever be created.</strong> Hence, no <code>GeomShape</code> object can be created. <strong>Abstract classes exist only to serve as superclasses for other classes.</strong></p>
+<p>If a class declares one or more abstract methods, then the class itself must be declared <code>abstract</code>. However, you can still declare a class to be abstract even if it declares no abstract methods. As before, declaring a class to be <code>abstract</code> means that no object of the class can be created (even if the class contains no abstract methods).</p>
+<p>A second abstract class, <a href="PointRelativeShape.java">PointRelativeShape.java</a>, is a subclass of <code>GeomShape</code>. This class is for shapes that have some "center" or reference point, where the shape is defined relative to that reference point.</p>
+<p><code>PointRelativeShape</code> takes care of defining the instance variables <code>myX</code> and <code>myY</code>, providing methods to return these values, and providing the <code>move</code> method. It extends <code>GeomShape</code>. Even though it declares no methods as <code>abstract</code>, it fails to implement <code>areaOf</code>, and so it must be abstract as well.</p>
+<p>Finally, <a href="Circle.java">Circle.java</a> and <a href="Rectangle.java">Rectangle.java</a> inherit from <code>PointRelativeShape</code>. Note the use of <code>super</code> in the constructors. The <code>drawShape</code> methods (we'll see these methods soon) call <code>getX</code> and <code>getY</code> to figure out where the object is. They do not have to supply a <code>move</code> method, because they inherit it.</p>
+<p>We can also have classes that inherit directly from <code>GeomShape</code>. <a href="Segment.java">Segment.java</a> does so, and it implements everything itself.</p>
+<p>Here's a picture of our class hierarchy:</p>
+<div class="figure">
+<img src="GeomShape.png"/>
+</div>
+<p>Now, let's look at the driver <a href="GeomShapeDriver.java">GeomShapeDriver.java</a>, which demonstrates all of these classes, showing that everything works. Again, we see polymorphism in action. The variable <code>shape</code> is declared as a reference to <code>GeomShape</code>, but in reality it will refer to a <code>Circle</code>, <code>Rectangle</code>, or <code>Segment</code> object. The calls at the bottom of the loop body show dynamic binding in action. The first time through the loop, we call methods in the <code>Circle</code> class; the second time through, we call methods in the <code>Rectangle</code> class; and the third time through, we call methods in the <code>Segment</code> class.</p>
+<h3 id="how-to-leave-the-current-color-alone-when-drawing-an-object">How to leave the current color alone when drawing an object</h3>
+<p>So far, when we went to draw a shape, we set the color of the <code>Graphics</code> object and drew our shape. Therefore, the next time we draw something, it will be in the color of the last shape drawn. If we next call <code>drawString</code>, then the rendered text will be in that color. Suppose we wanted the text to remain whatever the original foreground color was?</p>
+<p>The <code>Graphics</code> class has a getter method that returns the current color for drawing: <code>getColor</code>. Thus, we can solve the problem by making the <code>draw</code> methods in the subclasses save the current color by calling <code>getColor</code>, changing the <code>Graphics</code> object's color to the color of the object being drawn, drawing the object, and finally restoring the saved color. For the <code>Circle</code> class, we could write the <code>draw</code> method as follows:</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">draw</span>(Graphics page) {
+    <span class="co">// Save the current color.</span>
+    Color savedColor = page.<span class="fu">getColor</span>();
+
+    <span class="co">// Set the color.</span>
+    <span class="fu">page.setColor(getColor());</span>;
+  
+    <span class="co">// Draw the circle.</span>
+    page.<span class="fu">drawOval</span>(<span class="fu">getX</span>() - myRadius, <span class="fu">getY</span>() - myRadius, <span class="dv">2</span>*myRadius, <span class="dv">2</span>*myRadius);
+
+    <span class="co">// Restore the color we had on the way in.</span>
+    page.<span class="fu">setColor</span>(savedColor);
+  }</code></pre>
+<p>Unfortunately, that's a lot of work that we'd have to repeat for each instantiable subclass of <code>GeomShape</code>. There's a better way to accomplish this goal, with less code. We move all of the code except the actual drawing of the shape up to the <code>GeomShape</code> class in <a href="GeomShape.java">GeomShape.java</a> in its <code>draw</code> method, and we add the following abstract method:</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">protected</span> <span class="kw">abstract</span> <span class="dt">void</span> <span class="fu">drawShape</span>(Graphics page);</code></pre>
+<p>Note that this is an example of the strategy pattern. The draw method does all of the color saving, changing, and restoring and leaves the detail of how to draw the shape to an abstract method.</p>
+<p>Each instantiable class will have to define the <code>drawShape</code> method, and it would consist of the code that is specialized to that shape. For example, here's the <code>drawShape</code> method in the <code>Rectangle</code> class, within <a href="Rectangle.java">Rectangle.java</a>:</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">protected</span> <span class="dt">void</span> <span class="fu">drawShape</span>(Graphics page) {
+    page.<span class="fu">drawRect</span>(<span class="fu">getX</span>(), <span class="fu">getY</span>(), myWidth, myHeight);
+  }</code></pre>
+<p>You can see also how we wrote the <code>drawShape</code> methods in <a href="Circle.java">Circle.java</a> and <a href="Segment.java">Segment.java</a>.</p>
+<p>Now we can understand the <code>draw</code> method in <a href="GeomShape.java">GeomShape.java</a>. It saves the current color, sets the current color to the shape's actual color, does the drawing specialized to the shape, and finally restores the original color:</p>
+<pre class="sourceCode java"><code class="sourceCode java">  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">draw</span>(Graphics page) {
+    Color savedColor = page.<span class="fu">getColor</span>(); <span class="co">// save the current color</span>
+    page.<span class="fu">setColor</span>(myColor);             <span class="co">// set the color</span>
+    <span class="fu">drawShape</span>(page);                    <span class="co">// draw the shape in the shape's color</span>
+    page.<span class="fu">setColor</span>(savedColor);          <span class="co">// restore the color we had on the way in</span>
+  }</code></pre>
+<p>Once again, dynamic binding helps us. When the <code>draw</code> method calls <code>drawShape</code>, which class has its <code>drawShape</code> method called? As usual, it's the class of the object that <code>draw</code> was called on.</p>
+<p>Why did I make <code>drawShape</code> protected? I intend <code>drawShape</code> to be called only by the <code>draw</code> method in <code>GeomShape</code>. By making it protected, it cannot be called by methods outside of <code>GeomShape</code> or its subclasses. (Well, except for the detail that any other class in the same package can call it, also!)</p>
+<p>Because <code>drawShape</code> is protected in <code>GeomShape</code>, I had to make <code>drawShape</code> protected in the subclasses <code>Circle</code>, <code>Rectangle</code>, and <code>Segment</code>—even though I don't intend for there to be any subclasses of <code>Circle</code>, <code>Rectangle</code>, and <code>Segment</code>. That's because when we declare a method as abstract in a superclass, the method has to have at least the same degree of "visibility" in the subclasses. Why? When we say that a superclass allows a method to be called, that method has to be callable in all subclasses. So the method must be at least as visible in the subclasses as it is in the superclass. Indeed, I could have declared <code>drawShape</code> as public in <code>Circle</code>, <code>Rectangle</code>, and <code>Segment</code>, so that it would be even more visible than in <code>GeomShape</code>, but there's no point in doing so.</p>
+<h2 id="access-control">Access control</h2>
+<p>We have talked about public and private access. Those are the kinds of access that we will usually use. However, you should know that there are four access levels:</p>
+<ol style="list-style-type: decimal">
+<li>public access,</li>
+<li>private access,</li>
+<li>protected access, and</li>
+<li>package access (which is the default when no other access is specified).</li>
+</ol>
+<p>We have seen that public access means that any method of any class can access the variable or method. Private access is limited to the given class and its inner classes.</p>
+<p>Protected access is new for us. With protected access, the variable or method should be accessible to only the class and any subclass that extends the class (or extends a class that extends the class, etc.). Protected access seems to be a good compromise between public and private, and it is certainly an improvement on public.</p>
+<p>There is a problem with protected access, however. Because anyone can extend a class, there is no real control over who can access protected instance variables. Again, there is no abstraction barrier between the superclass and its subclasses. A better way to restrict access is to make all instance variables (except constants) private and then to make the methods that can access those instance variables protected. That should prevent classes other than subclasses from accessing the instance variables, while still keeping encapsulation.</p>
+<p>The default access, package access, is what you get if you don't put anything before the instance variable or method. In other words, it's what you'd get for the instance variable <code>x</code> in the following class:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> Bozo {
+  <span class="dt">int</span> x;           <span class="co">// package access</span>
+  ...
+}</code></pre>
+<p>I consider it a design flaw of the language that there is no package visibility level specifier, as there is for public, private, and protected. It is too easy to forget to declare an instance variable (or method) private. I would have preferred that leaving off the visibility level specifier would be a syntax error. That way the programmer would always have to make an explicit choice.</p>
+<p>Package access makes the variable or method visible to everything in the same package. As we mentioned when we talked about import statements, package is a way of grouping methods together that are intended to work together as a group, such as java.util or java.awt. To put a file into a package, you start the file with a package statement:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">package package_name;</span></code></pre>
+<p>where you replace <code>package_name</code> by the name of the package.</p>
+<p>If there is not a <code>package</code> statement, then all classes in the file go into the default package.</p>
+<p>You seldom want package access. Anyone can add a class to a package, so you have very little control of who has access to things that have package access. It sometimes makes sense to give package access for methods that you want as utility routines within a package, but it seldom makes sense to have package access for instance variables.</p>
+<p>You might have noticed that when I described what protected means, I said it "should" only be available to the class and its descendents (subclasses or subclasses of those subclasses, etc.). That is what protected means in C++. Unfortunately, that is not what it means in Java. As we have described it, public is the least restrictive, private the most, and protected and package are both somewhere in between, but you can't say that one is more restrictive than the other. They control access in very different ways.</p>
+<p>The designers of Java decided that not having a linear heirarchy of protection levels was a bad idea. Therefore they somewhat arbitrarily decided that protected access should <em>include</em> package access, so that package access is more restrictive than protected. So in Java protected really means visible in descendents and to classes in the same package. If you are using the default package, that means it is not much different than public! However, I will still declare things protected to indicate who should have access.</p>
+<h2 id="adapter-classes">Adapter classes</h2>
+<p>When we created listeners, we had to implement an interface. For the <code>MouseListener</code> interface, there were five methods that had to be implemented, and we usually used only one or two. We had to create empty-bodied implementations for the others. Having to do so was a minor irritant.</p>
+<p>This situation comes up often enough that Java has provided an alternate approach. For each Listener interface, there is a corresponding Adapter class that supplies empty-body implementations for each of the methods in the interface. We then can extend these classes, overriding just the methods that we want to actually do something. We no longer have to supply the empty-body implementations, because the Adapter class has already done that, and we inherit them.</p>
+<p>For example, consider <a href="DragAMac3.java">DragAMac3.java</a>. It has two inner classes that implement the <code>MouseListener</code> and the <code>MouseMotionListener</code> interfaces. But instead of saying that we will implement these interfaces, we instead <em>extend</em> the <code>MouseAdapter</code> and <code>MouseMotionAdapter</code> classes. The empty-body implementations that we had to supply before are now gone.</p>
+<p>Note that if we use the applet itself as the listener (using <code>this</code> as the parameter to the appropriate <code>addListener</code> method calls), we cannot use this approach. That is because in creating the class <code>DragAMac3</code>, we have already extended <code>Applet</code>, and Java does not allow multiple inheritance. In other words, Java does not allow a class to extend more than one other class. <code>DragAMac3</code> has to extend <code>Applet</code>, and we can either implement the two interfaces directly or extend the Adapter classes in inner classes as we have done here. In fact, we had to use two different inner classes, since a single inner class cannot extend both Adapter classes.</p>
+<p>We saw one other interface that we use to handle events: the <code>ActionListener</code> interface. Unlike <code>MouseListener</code> and <code>MouseMotionListener</code>, <code>ActionListener</code> has no corresponding adapter class. There's a pretty good reason for that. What do you think it is?</p>
+<h2 id="inheritance-vs.-interfaces">Inheritance vs. interfaces</h2>
+<p>The above point is worth repeating.</p>
+<blockquote>
+<p>In Java, a subclass can extend just one superclass.</p>
+</blockquote>
+<p>(Extending more than one superclass would be multiple inheritance.) For example, the following class declaration would not be legal:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">class</span> Bozo <span class="kw">extends</span> Clown, TVStar {
+  ...
+}</code></pre>
+<p>On the other hand, a class is allowed to implement any number of interfaces. Thus, the following class declaration would be legal:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">class</span> Bozo <span class="kw">implements</span> Clown, TVStar {
+  ...
+}</code></pre>
+<p>Why doesn't Java allow multiple inheritance? Because it can cause problems that are difficult to resolve. What if more than one superclass defines the same instance variable that is visible to the subclass (i.e., either public or protected)? What if more than one superclass defines a method with the same name and signature? What if you have a "diamond" shaped inheritance structure, where A is the superclass, B and C both inherit from A, and D inherits from both B and C. D should have access to all instance variables that B and C have. But each has a copy of A's instance variables! Should D have two copies of each?</p>
+<p>C++ allows multiple inheritance, and it pays the price in its complexity. The designers of Java decided to keep things simple, and so Java does not provide for multiple inheritance. Interfaces provide a way to get most of the benefits of multiple inheritance without most of the problems. The downside of interfaces, of course, is that they don't allow you to define instance variables in them, nor do they allow you to provide method bodies that are inherited.</p>
+</body>
+</html>

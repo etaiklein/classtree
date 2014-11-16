@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="short-assignment-8-due-friday-april-18">Short Assignment 6<br/>Due: Friday, October 10</h1>
+<p>We have seen how to implement a queue using a linked list. It is also possible to implement a queue using two stacks, even if the stacks are implemented with <code>ArrayList</code> objects. That's what you will do in this assignment.</p>
+<p>To implement a queue using two stacks, let's call the two stacks the <code>inStack</code> and the <code>outStack</code>. To enqueue an element, push it onto the <code>inStack</code>. To dequeue, remove an element from the <code>outStack</code>. Ah, but what if the <code>outStack</code> is empty? If <code>outStack</code> is empty but the <code>inStack</code> is not, then the next element that should be dequeued is the one on the <code>inStack</code> that was least recently enqueued. Unfortunately, that item is on the bottom of the <code>inStack</code>. No problem: pop each element from the <code>inStack</code> and push it onto the <code>outStack</code>, and then that least-recently enqueued element ends up on the top of the <code>outStack</code>. Furthermore, all elements on the <code>outStack</code> are now in the correct order to be popped when dequeueing. (Pushing a number of elements onto a stack and then popping them off reverses their order.)</p>
+<p>Download the files <a href="provided/CS10Stack.java">CS10Stack.java</a>, <a href="provided/CS10Queue.java">CS10Queue.java</a>, <a href="provided/ArrayListStack.java">ArrayListStack.java</a>, and <a href="provided/StacksQueue.java">StacksQueue.java</a>. You will edit <a href="provided/StacksQueue.java">StacksQueue.java</a> to fill in the missing method bodies. Do not make any changes to the other three files. You may write private helper methods in <a href="provided/StacksQueue.java">StacksQueue.java</a> if you wish. Make sure that the <code>dequeue</code> and <code>front</code> methods return <code>null</code> if the queue is empty.</p>
+<h3 id="how-efficient-is-this-implementation">How efficient is this implementation?</h3>
+<p>Clearly, the <code>isEmpty</code> operation requires <span class="math">Θ(1)</span> time (assuming that the <code>size</code> method of <code>ArrayList</code> takes constant time, which is a valid assumption). The <code>enqueue</code> operation should also take <span class="math">Θ(1)</span> time, because it just adds to the end of <code>inStack</code>, which takes constant time (constant amortized time, anyway).</p>
+<p>What about the <code>dequeue</code> and <code>front</code> methods? Suppose you start with an empty queue and then call <code>enqueue</code> <span class="math"><em>n</em></span> times, followed by a call to <code>dequeue</code>. For that single <code>dequeue</code> operation, you need to pop the <span class="math"><em>n</em></span> elements from <code>inStack</code> and push each of these <span class="math"><em>n</em></span> elements onto <code>outStack</code>, finishing up with a single pop from <code>outStack</code>. Therefore, a single <code>dequeue</code> operation can take <span class="math">Θ(<em>n</em>)</span> time on a queue with <span class="math"><em>n</em></span> elements. That's not very good. But notice that once you've pushed an element onto <code>outStack</code>, it stays there until it's popped. So, for a given element, it is pushed onto <code>inStack</code> once, and it is popped from <code>inStack</code>, pushed onto <code>outStack</code>, and popped from <code>outStack</code> at most once. That makes for a total of at most <span class="math">2<em>n</em></span> pushes and pops per element over the entire time that the queue operates. Therefore, the amortized time per opertion is <span class="math">Θ(1)</span>.</p>
+<h3 id="testing-and-submitting">Testing and submitting</h3>
+<p>Test your code with the <code>main</code> method included in <a href="provided/StacksQueue.java">StacksQueue.java</a>.</p>
+<p>Via Canvas, submit your StacksQueue.java file and the console output from testing. You don't need to submit <a href="provided/CS10Stack.java">CS10Stack.java</a>, <a href="provided/CS10Queue.java">CS10Queue.java</a>, or <a href="provided/ArrayListStack.java">ArrayListStack.java</a>, since they are provided and you won't be changing them.</p>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">
+/*<![CDATA[*/
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode, table.sourceCode pre 
+   { margin: 0; padding: 0; border: 0; vertical-align: baseline; border: none; }
+td.lineNumbers { border-right: 1px solid #AAAAAA; text-align: right; color: #AAAAAA; padding-right: 5px; padding-left: 5px; }
+td.sourceCode { padding-left: 5px; }
+code.sourceCode span.kw { color: #007020; font-weight: bold; } 
+code.sourceCode span.dt { color: #902000; }
+code.sourceCode span.dv { color: #40a070; }
+code.sourceCode span.bn { color: #40a070; }
+code.sourceCode span.fl { color: #40a070; }
+code.sourceCode span.ch { color: #4070a0; }
+code.sourceCode span.st { color: #4070a0; }
+code.sourceCode span.co { color: #60a0b0; font-style: italic; }
+code.sourceCode span.ot { color: #007020; }
+code.sourceCode span.al { color: red; font-weight: bold; }
+code.sourceCode span.fu { color: #06287e; }
+code.sourceCode span.re { }
+code.sourceCode span.er { color: red; font-weight: bold; }
+/*]]>*/
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-4-march-31">Lecture 4, September 19</h1>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="BankAccount.java">BankAccount.java</a></li>
+<li><a href="SavingsAccount.java">SavingsAccount.java</a></li>
+<li><a href="CheckingAccount.java">CheckingAccount.java</a></li>
+<li><a href="TimeDepositAccount.java">TimeDepositAccount.java</a></li>
+<li><a href="AccountTest.java">AccountTest.java</a></li>
+<li><a href="AccountTest2.java">AccountTest2.java</a></li>
+</ul>
+<h2 id="short-assignment-3">Short Assignment 3</h2>
+<p><a href="../../sa/sa3/sa3.html">Short Assignment 3</a> is due Monday.</p>
+<h2 id="inheritance">Inheritance</h2>
+<p>We have already seen several of the key ideas of object-oriented programming. The most important one we have yet to see is inheritance.</p>
+<p><strong>Inheritance</strong> is a way to create new classes from existing classes. We call the existing class the <strong>superclass</strong> and the new class created from it the <strong>subclass</strong>. With inheritance, each object of the subclass "inherits" the instance variables and methods of the superclass. That way, we don't have to write these methods for the subclass unless we want to.</p>
+<p>Of course, we'll want to write <em>some</em> methods in the subclass, for if we don't, the subclass is exactly the same as the superclass and there would have been no point in creating the subclass. Compared with objects of the superclass, objects of the subclass have additional specialization.</p>
+<p>We used interfaces to provide <strong>polymorphism</strong>: the ability of an object reference to refer to more than one type of object. We will see that inheritance gives us another, very powerful, way to achieve polymorphism. So now we have two ways to achieve polymorphism: interfaces and inheritance.</p>
+<h3 id="the-golden-rule-of-inheritance">The Golden Rule of Inheritance</h3>
+<p>I'll give you some generalities about superclasses and subclasses that seem abstract at the moment, but we'll see a little later how they apply to object-oriented programming by specific examples.</p>
+<p>If there is one thing you should remember about inheritance, it is</p>
+<blockquote>
+<p>Use inheritance to model "is-a" relationships and only "is-a" relationships.</p>
+</blockquote>
+<p>What does this mean? Suppose we have two classes: <code>A</code> is the superclass of <code>B</code> (which is therefore the subclass). If we have used inheritance correctly, then</p>
+<ul>
+<li>Every object of class <code>B</code> is also an object of class <code>A</code>.</li>
+<li><code>B</code> is a subset of <code>A</code>.</li>
+<li>If a property is true of an object of class <code>A</code>, then it is also true of an object of class <code>B</code>.</li>
+<li>Objects of class <code>B</code> are like objects of class <code>A</code>, but with additional specialization.</li>
+</ul>
+<h3 id="the-bankaccount-class">The <code>BankAccount</code> class</h3>
+<p>For our first example of inheritance, we will look at bank accounts. <a href="BankAccount.java">BankAccount.java</a> is a basic bank account class. It has an instance variable <code>balance</code> that holds the current balance. It has two constructors. The first creates a new account with a balance of 0.00. The second takes in an <code>initialAmount</code> and uses that for the initial balance.</p>
+<p>The <code>BankAccount</code> class also has a set of useful methods:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">deposit</span>(<span class="dt">double</span> amount)<br/>  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">withdraw</span>(<span class="dt">double</span> amount)<br/>  <span class="kw">public</span> <span class="dt">double</span> <span class="fu">getBalance</span>()<br/>  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">transfer</span>(BankAccount other, <span class="dt">double</span> amount)<br/>  <span class="kw">public</span> String <span class="fu">toString</span>()</code></pre>
+<p>The <code>deposit</code>, <code>withdraw</code>, and <code>getBalance</code> methods do what you would expect. The <code>transfer</code> method transfers <code>amount</code> from the current bank account (referenced by <code>this</code>) to the bank account referenced by <code>other</code>. The method <code>toString</code> converts the information about the bank account to a <code>String</code>. (As you recall, every object in Java has a <code>toString</code> method defined for it, and <code>System.out.println</code> uses <code>toString</code> to print the value of the object.)</p>
+<p>We have seen much more complicated examples of classes. Perhaps the most interesting characteristic of our <code>BankAccount</code> class is the calls to <code>withdraw</code> and <code>deposit</code> within <code>transfer</code>. We could have written this method differently:</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="kw">public</span> <span class="dt">void</span> <span class="fu">transfer</span>(BankAccount other, <span class="dt">double</span> amount) {<br/>    balance -= amount;<br/>    other.<span class="fu">balance</span> += amount;<br/>  }</code></pre>
+<p>(Notice that a method may refer to private instance variables of another object in the same class. This capability has nothing to do with inheritance, but it's good to remember that methods of a class can always access instance variables of <em>any</em> object in the class for which they have a reference, not just the object referenced by <code>this</code>.)</p>
+<p>But instead, we chose to write the <code>transfer</code> method by having it call the <code>withdraw</code> and <code>deposit</code> methods. Why? If something changes about the way the withdrawals or deposits are done (for example, if we have the <code>withdraw</code> method check for overdrawn accounts) then <code>transfer</code> will automatically use the modifed methods. Abstraction works in our favor even within a class.</p>
+<p>Banks offer many kinds accounts, though. A savings account pays periodic interest. A checking account pays no interest and may have transaction fees for deposits and withdrawals. A time deposit account may have an interest penalty for early withdrawal. We could write a separate class for each of these variants of bank accounts. We would reproduce a lot of code, however. All of these different accounts have a <code>balance</code>, and they all have to deal with deposits, withdrawals, getting the account balance, transfers, and converting their contents to a <code>String</code>. Much of the code will be identical or only slightly modified.</p>
+<p>It is this situation that inheritance was designed to deal with. The goal is to "inherit" the instance variable <code>balance</code> and the various methods. Methods can be used as is, if they already do the right thing. If not, they can be overridden by writing new versions of some of the methods for the new account types. These new versions, however, can call the old versions to help them out if they need to.</p>
+<h3 id="the-savingsaccount-class">The <code>SavingsAccount</code> class</h3>
+<p>Our first subclass is <code>SavingsAccount</code>, defined in <a href="SavingsAccount.java">SavingsAccount.java</a>. A savings account is just like a basic bank account, except that it pays interest. All the methods for the <code>BankAccount</code> class work fine for the <code>SavingsAccount</code> class. The <code>SavingsAccount</code> class has to add an instance variable <code>interestRate</code> and a method <code>addPeriodicInterest</code>, but otherwise it is just a <code>BankAccount</code>.</p>
+<p>We indicate that <code>SavingsAccount</code> is a subclass of <code>BankAccount</code> by adding the words <code>extends Bankaccount</code> at the end of the header of the class declaration. Because <code>SavingsAccount</code> is a subclass of <code>BankAccount</code>, <code>SavingsAccount</code> will have copies of all the instance variables and methods of <code>BankAccount</code>. It can then add the declaration for the new instance variable <code>interestRate</code> and the new method <code>addPeriodicInterest</code>. Thus, every <code>SavingsAccount</code> object has two instance variables:</p>
+<ul>
+<li><code>balance</code>, which is inherited from <code>BankAccount</code>, and</li>
+<li><code>interestRate</code>, which is specific to <code>SavingsAccount</code>.</li>
+</ul>
+<p>A couple of complications arise, however. First, although every <code>SavingsAccount</code> object has an instance variable <code>balance</code>, because this instance variable is <em>private</em> to <code>BankAccount</code>, no methods of <code>SavingsAccount</code> are allowed to access it directly. This restriction may seem strange at first, and there is in fact a way to let a subclass have direct access to instance variables of the superclass. The trick is to use <code>protected</code> access instead of <code>private</code> access when declaring the instance variable in the superclass. We will discuss this idea later. But we can deal with private instance variables in the superclass in the same way that any other class would: access them indirectly via methods.</p>
+<p>The <code>addPeriodicInterest</code> method demonstrates this idea. The <code>getBalance</code> and <code>deposit</code> methods of <code>BankAccount</code> give indirect access to <code>balance</code>, and they are all that are needed to write <code>addPeriodicInterest</code>. But how is it determined what methods <code>getBalance</code> and <code>deposit</code> refer to?</p>
+<p>Let's look at <code>deposit</code>. We know that the method call <code>deposit</code> is really an abbreviation for <code>this.deposit</code>. We first look in the <code>SavingsAccount</code> class to see whether <code>SavingsAccount</code> defines a <code>deposit</code> method. It does not. And so <em>we look into the superclass <code>BankAccount</code></em>. Because we find a definition of <code>deposit</code> there, we need look no further. If we had not found <code>deposit</code> in the <code>BankAccount</code> class, then we would look at <code>BankAccount</code>'s superclass, if there is one. Eventually, we either find a superclass that defines the <code>deposit</code> method or we don't. If we do, we use the first superclass that defines the method. If we don't, then we have an error: we have called a method not defined for the class.</p>
+<p>The constructors get a bit trickier. We cannot see (and in general may not even know the names of) the private instance variables in <code>BankAccount</code>. How do we initialize them in our constructors?</p>
+<p>It turns out that a constructor for the superclass (<code>BankAccount</code>) will <em>always</em> be called in the subclass (<code>SavingsAccount</code>) constructors. The only questions are which superclass constructor is called (recall that <code>BankAccount</code> has two constructors), and whether the call is explicit or implicit.</p>
+<p>The first constructor for <code>SavingsAccount</code> has an <em>implicit</em> call of the superclass constructor. The only code appearing in the first constructor sets the instance variable <code>interestRate</code>. <em>Because there is no explicit call to the superclass constructor, the Java compiler automatically inserts a call to the superclass's <strong>default constructor</strong>—<strong>the one with no parameters</strong>—as the first line of the subclass constructor</em>. In this case, <code>balance</code> is initialized to 0.00 by the implicit call of the default constructor for <code>BankAccount</code>, and then <code>interestRate</code> is initialized by the constructor for <code>SavingsAccount</code>.</p>
+<p>The second <code>SavingsAccount</code> constructor explicitly calls the superclass constructor by calling <code>super(initialAmount)</code> as its first line. We'll see several uses of the reserved word <code>super</code> in our bank account example. Here, we use it to call the one-parameter constructor of the superclass <code>BankAccount</code>. When a subclass constructor explicitly calls its superclass's constructor, this call <em>must</em> be the first line of the subclass constructor.</p>
+<p>Let's return to the "golden rule" business above. We have made <code>SavingsAccount</code> a subclass of <code>BankAccount</code>. Have we fulfilled all four relationships that we said must hold?</p>
+<ul>
+<li>Is every savings account also a bank account? Yes!</li>
+<li>Is the set of savings accounts a subset of the set of bank accounts? Yes!</li>
+<li>If a property is true of a bank account, is it also true of a savings account? In other words, is it true that everything we can do to a bank account is also something we can do to a savings account? Yes!</li>
+<li>Is a savings account like a bank account, but with additional specialization? Yes, where the specialization is the ability to add interest.</li>
+</ul>
+<p>It is important to note that these relationships go only one way. For example, is every bank account also a savings account? No, it is not true. Checking accounts are bank accounts that are <em>not</em> savings accounts. Or we can ask if a property is true of a savings account, is it also true of a bank account? No, for we can add interest to savings accounts by calling <code>addPeriodicInterest</code>, but we cannot add interest to checking accounts; a call of <code>addPeriodicInterest</code> on a checking account would make no sense.</p>
+<p>It may be a bit confusing at first when you realize that a subclass is a subset of its superclass, yet the subclass may contain <em>more</em> instance variables and methods than the superclass. (I know that it confused me at first.) After a while, you get more comfortable with it.</p>
+<h3 id="the-checkingaccount-class">The <code>CheckingAccount</code> class</h3>
+<p>The <a href="CheckingAccount.java">CheckingAccount.java</a> class again is similar to the basic <code>BankAccount</code> class, but it incorporates transaction fees. In this implementation, the account owner gets <code>FREE_TRANSACTIONS</code> free transactions per month (3). After that, the account owner must pay a <code>TRANSACTION_FEE</code> for each additional transaction (50 cents). These fees are assessed at the end of each month. We have declared the constants <code>FREE_TRANSACTIONS</code> and <code>TRANSACTION_FEE</code> as <code>static</code> and <code>final</code> since they will never change (hence <code>final</code>) and they should be the same for all checking accounts (hence <code>static</code>).</p>
+<p>Rather than worrying strictly about months, our implementation of the <code>CheckingAccount</code> class just worries about some period of unspecified length. The instance variable <code>transactionCount</code> counts the number of transactions that have occurred in the current period. To keep this variable up-to-date, we increment <code>transactionCount</code> every time we make a deposit or a withdrawal. The methods <code>deposit</code> and <code>withdraw</code> that are inherited from the superclass <code>BankAccount</code> do not handle incrementing <code>transactionCount</code>. We must therefore override these methods by writing new versions of them.</p>
+<p>We can describe the desired behavior of <code>CheckingAccount</code>'s <code>withdraw</code> method as</p>
+<blockquote>
+<p>Do what the normal <code>withdraw</code> in <code>BankAccount</code> does, and then increment <code>transactionCount</code>.</p>
+</blockquote>
+<p>Our implementation of <code>withdraw</code> in <code>CheckingAccount</code> does so. The code</p>
+<pre class="sourceCode"><code class="sourceCode java">  <span class="kw">super</span>.<span class="fu">withdraw</span>(amount);</code></pre>
+<p>says to call the <code>withdraw</code> method of the superclass. (If we left off the <code>super.</code> it would try to call <code>this.withdraw</code>, which is the same method we are writing. We'd get a recursive call of the same method with the same parameters, which would cause infinite recursion. Big trouble.) Our implementation of the <code>deposit</code> method is analogous.</p>
+<p>The new method <code>deductFees</code> takes care of transaction fees by computing the amount to be charged, withdrawing it from the account, and then setting <code>transactionCount</code> back to 0. It performs the withdrawal by calling <code>super.withdraw</code>. (In this case, just calling <code>withdraw</code> would also work. It would increase the number of transactions, but that gets immediately set back to 0. It is safer to use <code>withdraw</code> from the superclass, which does not deal with transaction fees.)</p>
+<h3 id="the-timedepositaccount-class">The <code>TimeDepositAccount</code> class</h3>
+<p>Our last class in this hierarchy of bank accounts is the <code>TimeDepositAccount</code> class in <a href="TimeDepositAccount.java">TimeDepositAccount.java</a>. It is like the <code>SavingsAccount</code> class, except it has to charge a penalty for early withdrawal. Therefore it is a subclass of <code>SavingsAccount</code>. Note that it inherits the methods <code>deposit</code>, <code>withdraw</code>, <code>getBalance</code>, <code>transfer</code>, and <code>toString</code> from <code>BankAccount</code>. Why? The direct superclass of <code>TimeDepositAccount</code> is <code>SavingsAccount</code>, and these methods are not overridden in <code>SavingsAccount</code>. Therefore, they come from the superclass of <code>SavingsAccount</code>, which is <code>BankAccount</code>. On the other hand, <code>TimeDepositAccount</code> inherits the method <code>addPeriodicInterest</code> from <code>SavingsAccount</code>. For instance variables, <code>TimeDepositAccount</code> inherits <code>balance</code> from <code>BankAccount</code>, and it inherits <code>interestRate</code> from <code>SavingsAccount</code>; because they are <code>private</code>, neither of these inherited instance variables is directly accessible within methods of <code>TimeDepositAccount</code>.</p>
+<p><code>TimeDepositAccount</code> overrides both <code>addPeriodicInterest</code> and <code>withdraw</code>. In both cases, much of the work is done by calls to <code>super.addPeriodicInterest</code> and <code>super.withdraw</code>.</p>
+<h3 id="a-driver-program-that-demonstrates-polymorphism-and-dynamic-binding">A driver program that demonstrates polymorphism and dynamic binding</h3>
+<p><a href="AccountTest.java">AccountTest.java</a> exercises the bank account classes. It also shows that inheritance allows polymorphism and dynamic binding, as we are about to see. In this program, three accounts are created, one of each of our subclasses:</p>
+<ul>
+<li><code>momsSavings</code> is a reference to a <code>SavingsAccount</code> object.</li>
+<li><code>collegeFund</code> is a reference to a <code>TimeDepositAccount</code> object.</li>
+<li><code>harrysChecking</code> is a reference to a <code>CheckingAccount</code> object.</li>
+</ul>
+<p>Each of these objects is created using <code>new</code> and constructors.</p>
+<p>Let's examine the method calls this program makes.</p>
+<p>First is the call</p>
+<pre class="sourceCode"><code class="sourceCode java">  momsSavings.<span class="fu">deposit</span>(<span class="fl">10000.00</span>);</code></pre>
+<p>Because <code>momsSavings</code> references a <code>SavingsAccount</code> object, we first see whether <code>SavingsAccount</code> defines a <code>deposit</code> method. It doesn't, so we go to the <code>SavingsAccount</code>'s superclass, <code>BankAccount</code>. That's where <code>deposit</code> is defined. We conclude that this call of <code>deposit</code> actually invokes the <code>deposit</code> method defined in the <code>BankAccount</code> class. We could use the debugger to confirm this observation.</p>
+<p>Next is the call</p>
+<pre class="sourceCode"><code class="sourceCode java">  momsSavings.<span class="fu">transfer</span>(harrysChecking, <span class="dv">2000</span>);</code></pre>
+<p>Like <code>deposit</code>, the method <code>transfer</code> is not defined in <code>SavingsAccount</code>, but it is defined in the superclass, <code>BankAccount</code>. Thus, what is invoked is <code>BankAccount</code>'s <code>transfer</code> method.</p>
+<p>But there's something even more interesting going on in this call. The first formal parameter to <code>transfer</code>—<code>other</code>—is declared to be a reference to <code>BankAccount</code>. But when we look at the corresponding actual parameter, it is <code>harrysChecking</code>, which is a reference to <code>CheckingAccount</code>. This is OK, because of what is called the <strong>subclass principle</strong>:</p>
+<blockquote>
+<p>Any variable that is declared to be a reference to an object of a superclass may actually reference an object of a subclass.</p>
+<p>This principle applies as well to the variable <code>this</code> within non-static methods.</p>
+</blockquote>
+<p>In fact, we've been using the subclass principle already. When we called <code>momsSavings.deposit</code>, the <code>deposit</code> method expected <code>this</code> to be a reference to a <code>BankAccount</code> object, but it was actually a reference to a <code>SavingsAccount</code> object—the subclass principle at work!</p>
+<p>Let's continue examining the call of <code>transfer</code>. It first calls <code>withdraw</code> on the same object—the one that <code>momsSavings</code> references—on which it was invoked. That part's easy. But then it calls <code>deposit</code> on the object that <code>other</code> references—and that's the <code>CheckingAccount</code> object referenced by <code>harrysChecking</code>. Here's where polymorphism and the related concept of dynamic binding come into play. Although the declaration of <code>deposit</code> says that <code>other</code> is a reference to a <code>BankAccount</code> object, the way that <code>transfer</code> was called, <code>other</code> is actually a reference to a <code>CheckingAccount</code> object. <strong>And so it is the <code>deposit</code> method in the <code>CheckingAccount</code> class that is actually invoked.</strong></p>
+<p>This example shows the idea of polymorphism and dynamic binding. We have multiple versions of a method, appearing in various places within an inheritance hierarchy. <strong>Regardless of what class a method call appears in, which method is actually called depends only on the class of the object it is called on.</strong></p>
+<p>The calls to <code>harrysChecking.withdraw</code> are now straightforward: they call the <code>withdraw</code> method of the <code>CheckingAccount</code> class.</p>
+<p>Then there are three calls to the static method <code>endOfMonth</code>, and this method is overloaded. Version 1 takes a reference to a <code>SavingsAccount</code>, and version 2 takes a reference to a <code>CheckingAccount</code>. In the first call, the actual parameter is <code>momsSavings</code>, a reference to <code>SavingsAccount</code>, and so the version of <code>endOfMonth</code> actually invoked is version 1. In the second call, the actual parameter is <code>collegeFund</code>, a reference to <code>TimeDepositAccount</code>. We have no overloaded version of <code>endOfMonth</code> that takes a reference to <code>TimeDepositAccount</code>, but version 1 takes a reference to <code>TimeDepositAccount</code>'s superclass <code>SavingsAccount</code>. We apply the subclass principle, which says that it's OK to invoke version 1 and substitute a reference to <code>TimeDepositAccount</code> in place of a reference to <code>SavingsAccount</code>. Finally, in the third call, the actual parameter is <code>harrysChecking</code>, a reference to <code>CheckingAccount</code>, and version 2 of <code>endOfMonth</code> is actually invoked.</p>
+<p>We conclude by looking at the <code>System.out.println</code> calls. The first one has the actual parameter <code>"Mom's savings. " + momsSavings</code>. Here, the Java compiler calls <code>momsSavings.toString</code> in order to convert <code>momsSavings</code> to a <code>String</code> that it can concatenate with <code>"Mom's savings. "</code>. The only version of <code>toString</code> that we have implemented in this class hierarchy is in <code>BankAccount</code>, and so that is the method invoked. The same holds for all the other implicit calls to <code>toString</code> that occur in the <code>System.out.println</code> calls in this example.</p>
+<h2 id="dynamic-binding-and-overloading">Dynamic binding and overloading</h2>
+<p>Although dynamic binding and overloading seem similar, there is an important difference between the two concepts. The program <a href="AccountTest2.java">AccountTest2.java</a> illustrates the difference. It's the same as <a href="AccountTest.java">AccountTest.java</a>, but with six lines changed:</p>
+<ul>
+<li><p>The references <code>momsSavings</code>, <code>collegeFund</code>, and <code>harrysChecking</code> are all declared as references to the superclass <code>BankAccount</code>. The objects created are as exactly as in AccountTest.java, however. <code>momsSavings</code> actually references a <code>SavingsAccount</code> object, <code>collegeFund</code> actually references a <code>TimeDepositAccount</code> object, and <code>harrysChecking</code> actually references a <code>CheckingAccount</code> object. This is OK, because of the subclass principle. Notice that we have polymorphism here: variables declared as a reference to one type (<code>BankAccount</code>) actually reference objects of some other type.</p></li>
+<li><p>In the three calls to <code>endOfMonth</code>, the parameters all have to be cast. That is because each one is declared as a reference to <code>BankAccount</code>, and there is no version of <code>endOfMonth</code> that takes a reference to <code>BankAccount</code>. By casting, we make it clear what type of object each parameter references, so that the appropriate version of <code>endOfMonth</code> gets called.</p></li>
+</ul>
+<p>Something seems fishy here, doesn't it? Why is it OK to have <code>momsSavings</code>, <code>collegeFund</code>, and <code>harrysChecking</code> all declared as references to <code>BankAccount</code> and the calls to <code>deposit</code>, <code>transfer</code>, and <code>withdraw</code> work but the calls to <code>endOfMonth</code> require us to cast?</p>
+<p>The difference is in how the calls are made. When we call <code>deposit</code>, <code>transfer</code>, or <code>withdraw</code>, the object reference is to the left of the dot, e.g., <code>harrysChecking.withraw(200)</code>. <strong>When the reference is to the left of the dot, <em>then and only then</em> do we get dynamic binding.</strong> In other words, when the reference is to the left of the dot, the decision as to which method is actually called occurs <strong>at run time</strong>. When we call a non-static method but we don't supply a reference and a dot, then the method is called on <code>this</code>, and we still decide which method is called based on the type of the object that <code>this</code> references.</p>
+<p>On the other hand, observe that in the calls to <code>endOfMonth</code>, the object reference is not to the left of the dot. Instead, <em>it's a parameter</em>. In this case, <em>no dynamic binding occurs</em>. The decision as to which method is called is made <strong>at compile time</strong>, and <em>it is based on how the reference is declared.</em> The decision has nothing to do with what kind of objects the references really refer to! We call this compile-time decision <strong>static binding</strong>. In <a href="AccountTest2.java">AccountTest2.java</a>, <code>momsSavings</code>, <code>collegeFund</code>, and <code>harrysChecking</code> are all declared as references to <code>BankAccount</code>, and there is no version of <code>endOfMonth</code> that takes <code>BankAccount</code>, or any superclass of <code>BankAccount</code>, as a parameter. Thus, we must cast each of these references to the appropriate class so that the compiler can make the proper decision at compile time.</p>
+</body>
+</html>

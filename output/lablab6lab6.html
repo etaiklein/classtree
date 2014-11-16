@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lab-assignment-3-the-kevin-bacon-game-due-wednesday-may-14">Lab Assignment 6: Connect Four<br/>Due: Monday, November 17</h1>
+<h2>Important organizational notes</h2>
+<p>
+<strong>For this assignment, you are permitted to work with one other
+student currently in the class.</strong> You do not have to work with
+someone else, but you have the option of doing so.  If you choose to
+work with a partner, you will both get the same grade on the
+assignment.
+
+<p>
+
+There will be no penalty, in terms of points, for working together on this assignment.  
+Please make sure that <strong>both of you submit the code electronically</strong>.  
+When you submit on Blackboard, be sure to state the name of your partner in the comments section.
+
+<p>
+You should weigh whether you will get more out of this assignment
+working alone or with someone else.  The choice is up to you.
+
+<p>
+
+If you choose to work with someone else, pick your partner carefully.
+Make sure that there are times that you are both available to work
+together.  If you frequent the lab and you notice someone else who
+often is there when you are, that person might be a good choice as
+your partner.
+
+<h2><a name="general"></a>General Instructions</h2>
+<p><strong>Before you do anything</strong>, please read the entire
+assignment <strong>carefully</strong>.  It contains suggestions
+which can save you a lot of struggle later on.</p>
+<h2><a name="bg"></a>Background on Connect 4</h2>
+<p>Connect 4 is tic-tac-toe with gravity played on a board with 6
+rows and 7 columns. As the name implies, the goal is to get 4 in a
+row (vertically, horizontally, or diagonally).  The following is
+an image of a Connect 4 board taken from Wikipedia:</p>
+<img alt="Image of Connect4 Game Board" src="Connect4.jpg">
+<p>Checkers are dropped at the top of a column and fall until they
+reach the bottom or land on another checker.</p>
+<p>An applet that lets you play against a Monte-Carlo implementation of the puzzle is on this
+<a href="http://beej.us/blog/2010/01/monte-carlo-method-for-game-ai/">web page</a>.  However, 
+your solution should generally beat this program.</p>
+<p>You are to write a game-tree search program using alpha-beta pruning to play Connect 4.  The
+Kalah program gives you the general outline of such a program.  I have provided three interfaces that
+you should use: <a href="Connect4State.java">Connect4State</a>, 
+<a href="Connect4View.java">Connect4View</a>, and 
+<a href="Player.java">Player</a>.  These three files are combined in the zip file:
+<a href="provided.zip">provided.zip</a>.</p>
+<p>I have also provided you with a graphical user interface (and some other methods to be described
+later) in the jar file <a href="Connect4.jar">Connect4.jar</a>. Download this file.  To add this file to your project:
+
+<ol>
+<li>Create a new project for your Connect 4 game.</li>
+<li>Go into the Eclipse menu and select Preferences.  A window should open with General as a 
+choice.  Click the triangle (or whatever) to expand the choices under General.  One of them 
+is Workspace.  When you expand Workspace, one option is Linked Resources.  Click on this.  There
+should be a check box labeled "Enable linked resources".  Check it if it is unchecked.</li>
+<li>Click on your your project in the Package Explorer window on the left side
+  (mine is called <code>Connect4</code>), go to the File menu, and select Properties.
+  A window should open.</li>
+<li>Click on "Java Build Path" in the list of choices on the left side of the window.</li>
+<li>Click on "Libraries" in the choices along the top of the window.</li>
+<li>Click on "Add External Jars..." and navigate to the file <code>Connect4.jar</code>.
+  Select it and click "Open". The Jar file <code>Connect4.jar</code> should now be added to the build path.</li>
+</ol>
+<p>  Once you have done this you can create a <code>Connect4ViewGraphical</code> object 
+for communication between your game and the world, using a default (no-parameter) constructor.  
+(Playing it this way is a lot more fun that a text interface!)</p>
+<p>One point about the graphical view: its <code>reportMove</code> puts the thread to sleep for a 
+half a second.  This prevents moves from occurring so quickly that you can't see where they were
+played.  However, this also means that funny things can happen if your program changes the state
+that has been passed to the graphical view during that half second.  Checkers can appear and 
+disappear and jump around.  If this happens make a copy of the state and pass that to the view,
+so that it will not be changed.</p>
+<h2><a name="progex"></a>Programming Exercises</h2>
+<p>You should create the following classes, along with any other clases needed to implement them:</p>
+<ul>
+<li>A controller class to play the game, similar to <code>Kalah</code>.  I recommend using
+      the trick of looking for substrings of names to pick which sort of Players should be created
+      as the first and second player.</li>
+<li>A model class that implements <a href="Connect4State.java">Connect4State</a> and
+      holds information about the Connect4 game.  Note that this interface defines a number of 
+      constants.  Use these in your program, particularly the ones that describe the characters
+      representing checkers and and empty space, so that you can use <code>Connect4ViewGraphical</code>
+      to display the game.  Note that your model class can include additional methods besides those
+      required by the interface.</li>
+<li>Two classes that extend the <code>Player</code> abstract class.  One should be a human player.
+      The other should be a computer player that uses alpha-beta game tree search to pick moves.  
+      Both should
+      communicate with the world via a <a href="Connect4View.java">Connect4View</a>
+      object that is created in your controller class.</li>
+<li>A class that implements <a href="Connect4View.java">Connect4View</a> and provides
+      interaction via text that is read from the keyboard and printed on the Console.</li>
+</ul>
+<p>These should allow you to play Connect4.</p>
+<p>One of the challenging aspects of this project is to create a good static evaluation function.
+For Kalah this was easy.  For Connect 4 it will require a bit more thought and programming.  Part of
+your grade is coming up with a reasonably good static evaluation function.  Some things to consider
+when planning your static evaluation function:</p>
+<ul>
+<li>In order to win a Connect 4 game you have to get 4 checkers in a row.  Therefore the groups
+  of 4 board squares in a row that are useful are the ones that do not contain at least one of
+  each player's checkers.  (A 4-in-a-row that contains a checker belonging to each player cannot
+  eventually be a winning 4-in-a-row.)  We will call such a set of 4 squares in a horizontal,
+  vertical, or diagonal line an unblocked 4-in-a-row.
+  So maybe your static evaluation function should look at unblocked 4-in-a-rows.</li>
+<li>Having one checker in an unblocked 4-in-a-row is useful, but having 2 checkers in an unblocked
+  4-in-a-row is better and having 3 checkers in an unblocked 4-in-a-row is a whole lot better.  One
+  way to create a static evaluation function is to count unblocked 4-in-a-rows for each player,   
+  weighted by the number of checkers in the 4-in-a-row.</li>
+<li>Implementing the static evaluation function described above is sufficient for full credit for 
+  the static evaluation function.  However, there are other things that you could consider.  Unblocked
+  4-in-a-rows that contain 3 checkers and where there is no checker directly below the place where the
+  fourth checker would go are threats.  Your opponent cannot immediately block this  4-in-a-row.  If
+  the opponent runs out of other moves and is forced to play in the square below the missing checker 
+  you can then complete the 4-in-a-row.  Some threats are more valuable than others.  Can you evaluate
+  and incorporate threats into your  static evaluation function?  Extra credit for doing this or
+  coming up with other ways to improve your static evaluation function.</li>
+</ul>
+<h3>Some things to be careful about</h3>
+<ul>
+<p>
+<li>
+The bottom row of the board is row 0 of the matrix.
+
+<p>
+<li>The first subscript is the row number and the second is the column number.
+<p>
+<li>
+The move numbers returned by <code>getMove</code> are 0-6, not 1-7.
+</li></p></li></p></li></p></ul>
+<p>If you do not follow these conventions the graphical user interface will not work correctly.</p>
+<h3>Testing</h3>
+<p>You must test your static evaluation function separately.  If you just plug in
+a static evaluation function into a game tree search and look ahead a bunch of moves
+you will never know if it is working correctly or not. </p>
+<p>The easiest way that I found to handle this was to write a small main program in
+the <code>Connect4Game</code> class that created a game with two human players and a 
+graphical or text view.  While the game is not over it gets and makes moves, displaying
+the board and printing out the
+value of the static evaluation function after each move.  Then you can compare the values
+to what you get by doing the calculation by hand.</p>
+<p>You can also test the static evaluation function in the context of the search.  
+Search one or two levels deep, and print out the board and the value each time the 
+static evaluation function is called. (Use your text view.)  This way
+you can make sure that the game tree search is correctly picking the best move.  You can
+also print the low and high values from alpha-beta pruning to see if that is working 
+correctly.  </p>
+<h3><a name="hier_in"></a>Test Runs to Turn In</h3>
+<p>Include a test run that shows a game between your human player and your computer player using
+your text view.  You should also include demonstrations of your error handling for things like entering
+non-numbers or out of range numbers, etc.</p>
+<p>Also include test runs that show that you have tested your static evaluation function and
+it works correctly, and that the game tree search picks the correct move when looking ahead 2 moves.</p>
+<h2><a name="ec"></a>Extra Credit</h2>
+<ul>
+<li><p>Implement a player that uses Monte Carlo evaluation to pick its next move.</p>
+<li><p>Implement a hybrid player that uses game tree search, but uses a Monte Carlo static evaluation
+function.</p>
+<li><p>Implement an especially nice static evaluation function and explain why it is good.</p></li>
+<li><p>Implement improvements to speed up your alpha-beta search.  These can include things like choosing a better
+order for considering moves. (Some EC for a fixed order that is better than left to right.  More 
+extra credit for sorting by static evaluation.  Still more EC for ordering based on shallow search.)
+<!-- We discussed other possiblilities in class. -->
+<p></p></p></li>
+<li><p>Implement improvements to speed up your static evaluation and search code.  Examples: A move in Kalah
+often changes most of the board, and the board was small.  Therefore creating a new state for each
+recursive call was a reasonable choice.  However, in Connect 4 the board is larger and a move changes 
+very little, and it is easy to write an undoMove method.  Therefore it is possible to make and undo 
+moves and have only one
+game state in your game tree search that gets modified as you go down into and come back out of deeper levels.</p></li>
+<li><p>The jar file also includes my version of a computer player.  The class is <code>ComputerPlayerABPlus</code>,
+and its contructor has two parameters: a <code>String</code> name and an <code>int</code> desired look-ahead depth.  
+Therefore you can play your game tree search player (or Monte Carlo player or hybrid player) against mine.  
+You might find it interesting to play against it as a human player.
+Substantial extra
+credit (plus bragging rights) if your player beats mine when mine is playing with 16 lookahead.  For full credit
+it should win as both the first and the second player.
+To be fair your program has to take about the same amount of time that mine does - the slowest moves
+take about 30 seconds on my Macbook Pro, and an entire game with the program playing itself takes just over
+5 minutes.  You can also try it on levels 14 and 12, which are much faster.  Because of the horizon effect 
+my player tends to play very 
+defensively on odd depths, where the opponent has the last move.</p></li>
+<li><p>Implement your own version of a graphical view.</p></li>
+</li></li></ul>
+<h2><a name="turnin"></a>Canvas submission</h2>
+<p>Submit electronically via Canvas the zip file of a folder that contains:</p>
+<ol>
+<li>all the java files needed to run your program, and </li>
+<li>the text produced by the test runs described above.</li>
+</ol>
+<p>If you choose to do the extra credit, include those java files and text produced by their test runs also,
+but keep the extra credit files in a separate zip file from the regular ones so that any errors in your extra credit work
+will not affect your grade for the regular assignment.  If some classes are used by
+both the regular assignment and the extra credit, include a separate copie in each zip file.</p>
+<p>
+If you work with a partner, please make sure that <strong>each of you submits via Canvas</strong>
+and be sure to state the name of your partner in the comments section.
+
+
+<h2>Grading rubric</h2>
+<p>Total of 135 points</p>
+<h3>Correctness, Efficiency, and Elegance (85 points)</h3>
+<table class="rubric">
+<tr><th>15</th><td>Code compiles and runs</td></tr></table></p></p></img></p></p></p></p></body></html>
+<tr><th>10</th><td>Controller class</td></tr>
+<tr><th>15</th><td>Game state class</td></tr>
+<tr><th>5</th><td>Human player class</td></tr>
+<tr><th>10</th><td>Computer player class</td></tr>
+<tr><th>10</th><td>Correct implementation of game tree search with alpha-beta pruning</td></tr>
+<tr><th>10</th><td>Static evaluation function</td></tr>
+<tr><th>10</th><td>An implementation of View that uses text I/O</td></tr>
+
+<h3>Structure (20 points)</h3>
+<table class="rubric">
+<tr><th>10</th><td>Good decomposition, proper separation into model/view/controller.</td></tr>
+<tr><th>4</th><td>Proper use of instance and local variable</td></tr>
+<tr><th>2</th><td>Instance variables are private</td></tr>
+<tr><th>4</th><td>Proper use of parameters</td></tr>
+</table>
+<h3>Style (15 points)</h3>
+<table class="rubric">
+<tr><th>4</th><td>Comments for classes</td></tr>
+<tr><th>4</th><td>Comments for methods (purpose, parameters, what is returned) in
+  JavaDoc form.</td></tr>
+<tr><th>2</th><td>Good names for methods, variables, parameters</td></tr>
+<tr><th>2</th><td>Layout (blank lines, indentation, no line wraps, etc.)</td></tr>
+<tr><th>3</th><td>Other unspecified style issues</td></tr>
+</table>
+<h3>Testing (15 points)</h3>
+<table class="rubric">
+<tr><th>10</th><td>Include the test runs specified above.  In particular show that
+  your static evaluation function works correctly and that the game tree search works
+  correctly for depth 2 lookahead.</td></tr>
+<tr><th>5</th><td>Demonstrate that the text view works for error and boundary cases</td></tr>
+</table>
+<h3>Extra Credit</h3>
+<table class="rubric">
+<tr><th>15</th><td>Player using Monte Carlo move choice</td></tr>
+<tr><th>15</th><td>Player using hybrid move choice</td></tr>
+<tr><th>10</th><td>An especially nice static evaluation function</td></tr>
+<tr><th>10</th><td>Improve alpha-beta pruning</td></tr>
+<tr><th>10</th><td>Speed up static evaluation and game-tree code</td></tr>
+<tr><th>25</th><td>Implement your own graphical view</td></tr>
+<tr><th>25</th><td>Beat my computer player at 16 lookahead (both directions), while
+                     using a comparable amount of time.</td></tr>
+<tr><th>?</th><td>Other interesting additions</td></tr>
+</table>

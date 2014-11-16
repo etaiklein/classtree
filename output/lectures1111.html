@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-11-april-16">Lecture 11, October 8</h1>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="IteratedArrayListTest.java">IteratedArrayListTest.java</a></li>
+<li><a href="IteratedArrayList.java">IteratedArrayList.java</a></li>
+<li><a href="CS10ListIterator.java">CS10ListIterator.java</a></li>
+<li><a href="CS10IteratedList.java">CS10IteratedList.java</a></li>
+<li><a href="CS10LinkedList.java">CS10LinkedList.java</a></li>
+<li><a href="SentinelDLLIterator.java">SentinelDLLIterator.java</a></li>
+<li><a href="ListTestIterator.java">ListTestIterator.java</a></li>
+</ul>
+<h2 id="short-assignment-6">Short Assignment 6</h2>
+<p><a href="../../sa/sa6/sa6.html">Short Assignment 6</a> is due Friday.</p>
+<h2 id="iterators">Iterators</h2>
+<p>In recent lectures we saw linked lists in which the notion of the current element was part of the <code>SentinelDLL</code> or <code>SLL</code> object. Although in some ways this is convenient, in others it is not. For example, if some method is going through the list and passes the linked list to another method, that method can change the current element. It would be nice if there were some way that each method could have its own independent concept of the element in the list that it is currently dealing with.</p>
+<p>In fact, we don't have to incorporate <code>current</code> as an instance variable of <code>SentinelDLL</code> or <code>SLL</code>. We'll focus on modifying the <code>SentinelDLL</code> class today, and we'll see how to make a separate object that knows how to traverse and modify a given list. By making it a separate object, we can have any number of them active at any time. In other words, we could have 0, 1, 2, 3, or any other number of such objects around, and each could have its own notion of the current element of the list. Our modification of the <code>SentinelDLL</code> class will not have the instance variable <code>current</code>, nor will it have anything like <code>current</code>. Therefore it will not have <code>get</code>, <code>remove</code>, <code>next</code>, <code>hasNext</code>, <code>previous</code>, <code>hasPrevious</code>, <code>add</code>, or <code>set</code> methods.</p>
+<p>This style of going through a data structure is so common that there's a name for it: an <strong>iterator</strong>. In fact, it's the basis of one of the standard interfaces in Java: the <code>Iterator</code> interface.</p>
+<h3 id="the-iterator-interface">The <code>Iterator</code> interface</h3>
+<p>The <code>Iterator</code> interface consists of three methods:</p>
+<ul>
+<li><code>hasNext</code> returns a boolean indicating whether there is a next element in the iteration through the data structure.</li>
+<li><code>next</code> returns a reference to the next object in the data structure, and it advances the iteration by one place.</li>
+<li><code>remove</code> deletes the object returned by the most recent call to <code>next</code>. It might happen that there is no such object to delete, in which case <code>remove</code> throws an <code>IllegalStateException</code>. This method is optional, in that a class implementing the <code>Iterator</code> interface must define it, but it's allowed to have an empty body. The <code>remove</code> method should be called at most once each time <code>next</code> is called.</li>
+</ul>
+<p>Iterators apply to lots of different data structures, not just linked lists. There is a general style of using the <code>Iterator</code> interface. To demonstrate it, we need a class that allows us to get an <code>Iterator</code> for the contents of the collection. The <code>ArrayList</code> class is one such class. The driver in <a href="IteratedArrayListTest.java">IteratedArrayListTest.java</a> shows how.</p>
+<p>If the <code>Iterator</code> interface is implemented properly, then creating an object that implements the <code>Iterator</code> interface starts an iteration. In <a href="IteratedArrayListTest.java">IteratedArrayListTest.java</a>, the iterator for an <code>ArrayList</code> needs a reference to the <code>ArrayList</code>, and it starts the iteration. Then we typically have a while-loop, whose header calls the <code>hasNext</code> method. Within the body of the while-loop, a call to <code>next</code> fetches the next element in the data structure, and the call to <code>next</code> may be followed by a call to <code>remove</code>. <a href="IteratedArrayListTest.java">IteratedArrayListTest.java</a> has two iterations through the <code>ArrayList</code>: one to print out all elements and remove every other one, and one to show that the first iteration removed every other element.</p>
+<p>We will sometimes see iterators used in for-loops rather than while-loops, but that's OK. After all, a for-loop is just a while-loop in disguise.</p>
+<p>You might see similarities between the foreach-loops that we used to run through arrays and iterators. In fact, a foreach-loop for a collection of objects translates into code that uses iterators!. Foreach-loops work for arrays, <code>ArrayList</code>s, and anything else that is "Iteratable." However, an iterator gives us one power that foreach-loops do not. It allows us to remove items.</p>
+<h3 id="implementing-an-iterator-for-an-arraylist">Implementing an iterator for an <code>ArrayList</code></h3>
+<p>How might we implement an iterator for an <code>ArrayList</code>? The class <a href="IteratedArrayList.java">IteratedArrayList.java</a> does this.  It extends
+<code>ArrayList</code>, and overrides the <code>iterator</code> method to supply 
+its own iterator of type <code>CS10Iterator</code>, an inner class.  Note that this private inner class implements <code>Iterator</code> and has a private constructor, but public methods. This means that any program that has a reference to a <code>CS10Iterator</code> can call its methods, but the only way to create a
+<code>CS10Iterator</code> is to call the <code>iterator</code> method of
+<code>IteratedArrayList</code>, which can see the private constructor of its inner
+calls and calls it.</p>
+<p>The class <code>CS10Iterator</code> has three instance variables:</p>
+<ul>
+<li>An <code>int position</code> that is the index of the position <em>before</em> the one that we will return when <code>next</code> is called. It should be initialized to <span class="math"> − 1</span>.</li>
+<li>A <code>boolean nextWasCalled</code> that is <code>true</code> if <code>next</code> was called since the most recent <code>remove</code>. It should be initialized to <code>false</code>.</li>
+<li>A reference <code>myList</code> to the <code>ArrayList</code> that created the iterator.</li>
+</ul>
+<p>The <code>CS10Iterator</code> methods are implemented as follows:</p>
+<ul>
+<li><code>hasNext</code> tests if <code>position &lt; list.size()-1</code>. (Note that when <code>position == list.size()-1</code> you are saying that a call of <code>next</code> should return <code>list.get(list.size())</code>, which does not exist.)</li>
+<li><code>next</code> sets <code>nextWasCalled</code> to <code>true;</code>, increments <code>position</code>, and returns <code>list.get(position)</code>, but prints an
+error message if there is no next item.</li>
+<li><code>remove</code> prints an error message if <code>nextWasCalled</code> is <code>false</code>. Otherwise it calls <code>list.remove(position)</code> and sets <code>nextWasCalled</code> to <code>false</code>. The next item (and the rest of the <code>ArrayList</code>) will be moved up one position, and so <code>remove</code> also decrements <code>position</code>.</li>
+</ul>
+<p>The <code>main</code> program tests this code.  Also, you can change the
+initialization of <code>myList</code> in <a href="IteratedArrayListTest.java">IteratedArrayListTest.java</a> to create a <a href="IteratedArrayList.java">IteratedArrayList.java</a> as another way to test the
+iterator.
+
+<h2 id="an-iterator-interface-for-a-linked-list">An iterator interface for a linked list</h2>
+<p>When we use an iterator in a linked list, we often want more functionality than the standard <code>Iterator</code> interface provides. In fact, Java supplies a standard <code>ListIterator</code> class. Its concept of "current" is different from the one we have seen. It has a "cursor position" between two elements in the list. A call to <code>next</code> returns the item after the cursor and moves the cursor forward. A call to <code>previous</code> returns the item before the cursor and moves the cursor backwards. Because of the way this works, alternating calls to <code>next</code> and <code>previous</code> will keep returning the same element. In addition to the methods in <code>Iterator</code>, the <code>ListIterator</code> interface requires the following methods:</p>
+<ul>
+<li><code>previous</code>: return the previous element in the list and move the cursor forward.</li>
+<li><code>hasPrevious</code>: return a boolean indicating whether there is a previous element.</li>
+<li><code>add</code>: add an element item at thecurrent position, just before the cursor (so that a call to <code>previous</code> would return that item and a call to <code>next</code> would be unaffected).</li>
+<li><code>set</code>: replace the element item last returned by <code>next</code> or <code>previous</code> by <code>obj</code>.</li>
+<li><code>remove</code>: in this interface, remove the element most recently last returned by a call to <code>next</code> or <code>previous</code>.</li>
+<li><code>nextIndex</code>: return the index of the element that would be returned by a call to <code>next</code>.</li>
+<li><code>previousIndex</code>: return the index of the element that would be returned by a call to <code>previous</code>.</li>
+</ul>
+<p>Calls to the <code>remove</code> and <code>set</code> methods are invalid if there has never been a call to <code>next</code> or <code>previous</code> or if <code>remove</code> or <code>add</code> has been called since the most recent call to <code>next</code> or <code>previous</code>.</p>
+<p>The <code>ArrayList</code> class has a method that returns a <code>ListIterator</code>, also. There is a separate class <code>LinkedList</code>, which behaves like our circular doubly-linked list with a sentinel. Both implement the interface <code>List</code>, which requires a number of methods, including all that we saw for <code>ArrayList</code> plus <code>Iterator</code>, and <code>ListIterator</code>. They differ in the amount of time operations take. For instance, a <code>get</code>, <code>set</code>, or <code>add</code> on a <code>LinkedList</code> requires time proportional to the distance that the index is from the nearest end of the list, but these operations take constant on an <code>ArrayList</code>. On the other hand, an <code>add</code> to either the front or end of a <code>LinkedList</code> takes constant time, unlike an <code>ArrayList</code>. If a <code>ListIterator</code> is used, the time required for any method in the interface is constant. For an <code>ArrayList</code>, the time for an <code>add</code> or <code>remove</code> is proportional to the number of items after the item added or removed, even if using a <code>ListIterator</code>.</p>
+<p>Because the conventions and operations are different from what we have implemented in <code>SentinelDLL</code> we will show how to implement a <code>ListIterator</code> using this new concept of the current element. We extend the <code>Iterator</code> interface by declaring the <code>CS10ListIterator</code> interface in <a href="CS10ListIterator.java">CS10ListIterator.java</a>.  This interface does not have the
+<code>nextIndex</code> and <code>previousIndex</code> that a normal Java <code>ListIterator</code> requires.</p>
+<p>Because we have removed some of the methods from the <code>SentinelDLL</code> class, we need a new interface for the list class to implement. This new interface, <code>CS10IteratedList</code> in <a href="CS10IteratedList.java">CS10IteratedList.java</a>, is similar to the <code>LinkedList</code> interface in <a href="CS10LinkedList.java">CS10LinkedList.java</a>. The methods <code>add</code>, <code>remove</code>, <code>get</code>, <code>next</code>, and <code>hasNext</code>—all of which require access to the <code>current</code> instance variable—are gone.</p>
+<p>There one new method: <code>listIterator</code>. This method will return an object that can iterate through the object whose class implements <code>CS10ListIterator</code>. This returned object starts an iteration.</p>
+<h3 id="the-sentineldlliterator-class">The <code>SentinelDLLIterator</code> class</h3>
+<p><a href="SentinelDLLIterator.java">SentinelDLLIterator.java</a> is a modified version of the circular, doubly linked list with a sentinel that includes an iterator. The first thing to notice is that the <code>SentinelDLLIterator</code> class implements the <code>CS10IteratedList</code> interface, and so the methods that were in <code>LinkedList</code> but not in <code>CS10IteratedList</code> are missing from <code>SentinelDLLIterator</code>.</p>
+<p>The second thing to notice is that the <code>SentinelDLLIterator</code> class has just <code>sentinel</code> as an instance variable; there is no <code>current</code> instance variable, as there was in <code>SentinelDLL</code>.</p>
+<p>But the most salient feature of our <code>SentinelDLLIterator</code> class implementation is the inner class <code>DLLIterator</code>, which implements the <code>ListIterator</code> interface. The <code>DLLIterator</code> class is private. Users of the <code>SentinelDLLIterator</code> can still get a <code>DLLIterator</code> by calling the <code>listIterator</code> method. Moreover, because <code>DLLIterator</code> implements the public <code>CS10ListIterator</code> interface, once any part of any program has a reference to a <code>DLLIterator</code>, it can call the public methods in <code>CS10ListIterator</code> on it. The constructor is private, however, so that the only way to create a <code>DLLIterator</code> object is to call the method <code>listIterator</code> on a <code>SentinelDLLIterator</code> object.</p>
+<p>And, perhaps most importantly, by making <code>DLLIterator</code> an inner class of <code>SentinelDLLIterator</code>, the methods of <code>DLLIterator</code> can access anything that the methods of <code>SentinelDLLIterator</code> can access. That would include the instance variable <code>sentinel</code>, as well as anything that is <code>public</code> in the <code>Element</code> class (such as <code>data</code>, <code>next</code>, and <code>previous</code>).</p>
+<p>The <code>DLLIterator</code> class has two instance variables:</p>
+<ul>
+<li><code>current</code> is chosen so that the implicit cursor is between <code>current</code> and <code>current.next</code>. This may seem a strange thing to do, but it allows us to go through a list, removing elements either forward or backward by alternately calling <code>next</code> and <code>remove</code>, or <code>previous</code> and <code>remove</code>.</li>
+<li><code>lastReturned</code> is a reference to the <code>Element</code> whose data was returned by the most recent call to <code>next</code> or <code>previous</code>. This information is needed by <code>remove</code> and <code>set</code>. If <code>next</code> or <code>previous</code> was never called, or if a call to <code>remove</code> or <code>add</code> has changed the list since the last call to <code>next</code> or <code>previous</code>, this instance variable has the value <code>null</code>.</li>
+</ul>
+<p>From how we've defined <code>current</code>, it needs to be advanced in <code>next</code> <em>before</em> we return an object when moving forward and <em>after</em> determining the object to return when moving backward. In order for everything to work, <code>current</code> initially references the sentinel (rather than, say, <code>sentinel.next</code>).</p>
+<p>I have included an <code>equals</code> method in <code>DLLIterator</code>, and it is set so that two <code>DLLIterator</code> objects are considered equal if they are currently referencing the same <code>Element</code>. The code checks to ensure that both objects involved are <code>DLLIterator</code> objects, and it returns <code>false</code> if they're not.</p>
+<p>Returning to the <code>SentinelDLLIterator</code> class, there is a new method <code>listIterator</code>. It creates a new <code>DLLIterator</code> for the <code>SentinelDLLIterator</code> object and returns a reference to it. This <code>listIterator</code> method is made to be called from outside the <code>SentinelDLLIterator</code> class, and because it returns a reference to a <code>DLLIterator</code>, its return value may be assigned to <code>CS10ListIterator</code> or even <code>Iterator</code> (since <code>ListIterator</code> extends <code>Iterator</code>).</p>
+<h3 id="using-the-iterator">Using the iterator</h3>
+<p>In the <code>SentinelDLL</code> class, the <code>toString</code> method now uses the iterator. Notice how <code>toString</code> uses the iteration paradigm from before, with a while-loop whose test includes the call <code>iter.hasNext</code> and whose body includes the call <code>iter.next</code>.</p>
+<p>The <code>DLLIterator</code> created in <code>toString</code> is independent of any other <code>DLLIterator</code> in existence. Where one <code>DLLIterator</code>'s <code>current</code> is has no effect at all on where another <code>DLLIterator</code>'s <code>current</code> is.</p>
+<p>We can really see this independence in <a href="ListTestIterator.java">ListTestIterator.java</a>. Here, our test driver creates a <code>DLLIterator</code> by the line</p>
+<pre class="sourceCode java"><code class="sourceCode java">CS10ListIterator&lt;String&gt; iter = theList.<span class="fu">listIterator</span>();</code></pre>
+<p>The <code>current</code> instance variable of this <code>DLLIterator</code> is moved by <code>next</code> and <code>previous</code> and used by <code>add</code>. But when we call <code>theList.toString</code>, the <code>DLLIterator</code> created and used by <code>toString</code> does not affect the <code>DLLIterator</code> in <code>main</code>.</p>
+<p>Similarly, the <code>DLLIterator</code> created and used in calls to <code>addFirst</code> and <code>addLast</code> are independent of all others. Therefore adding to the front or back of a list does not change the current item in <code>iter</code>.</p>
+<p>I have also added a "clear" option that iterates through the list, removing all objects. (I could have used the <code>clear</code> method, but chose not to). I have added a "print reversed" option that runs through the list backwards, after advancing to the end.</p>
+<p>The "nested print" option really shows the power of separate iterators. Here, we have two <code>DLLIterator</code>s, <code>outer</code> and <code>inner</code>. For each list object traversed by <code>outer</code>, we perform a full traversal of the list with <code>inner</code>. This task would be impossible if we were limited only to the methods we had in our original linked list implementations.</p>
+<h3 id="multiple-iterators-can-still-be-dangerous">Multiple iterators can still be dangerous</h3>
+<p>Having multiple iterators on the same object can be very useful, as we just saw. As long as none of them modifies the list everything is fine. Problems may arise, however, if any of the iterators modifies the list. In particular, if one iterator removes an element that is the current element of another iterator, things can get very messy. Even changing the list by using <code>addFirst</code> and <code>addLast</code> can change how things work, and calling <code>clear</code> is definitely a problem!</p>
+<p>Multiple threads (streams of control) can really cause problems. Suppose that you are on the second to last item in the list, you call <code>hasNext</code> and <code>true</code> is returned, and then call <code>next</code>. Should be safe, right? Well, not if somebody else in another thread removed the last item between the two calls. (Maybe somebody clicked on a button or a Timer went off between the calls, and the method registered with the listener changed the list.)</p>
+<p>Because of this potential, a bulletproof iterator should throw an exception if the list has been modified in any way except via the iterator's own operations. We won't worry about these situations for now.</p>
+</p></body>
+</html>

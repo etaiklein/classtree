@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Spring 2014 </div>
+<h1 id="installing-java-7-and-eclipse-on-mac-os-x">Installing Java 7 and Eclipse on Mac OS X</h1>
+<p>This page tells you how to download and install Java 7 and Eclipse on Mac OS X, and how to configure Eclipse.</p>
+<h2 id="installing-java-7">Installing Java 7</h2>
+<ol style="list-style-type: decimal">
+<li><p>Go to the <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Oracle website</a>. You'll see something like this:</p>
+<div class="figure">
+<img src="Download-JDK7.png"/><p class="caption"></p>
+</div></li>
+<li><p>Scroll down until you see a heading beginning "Java SE 7u67." On the right, you'll see a Download button under the JDK header. Click it. The next screen will look like this:</p>
+<div class="figure">
+<img src="License-Agreement.jpg"/><p class="caption"></p>
+</div>
+<p>Click the radio button next to "Accept License Agreement" and then click on jdk-7u67-macosx-x64.dmg. You'll be asked whether to save the file that is going to be downloaded; click on Save File.</p></li>
+<li><p>Open your Downloads folder, and double-click on jdk-7u67-macosx-x64.dmg. You'll see this window:</p>
+<div class="figure">
+<img src="Download-Open.jpg"/><p class="caption"></p>
+</div></li>
+<li><p>Double-click on the package icon, and follow the instructions to install. When the installation has completed, click on Done. At this point, you may close up the window and drag jdk-7u67-macosx-x64.dmg to the Trash.</p></li>
+</ol>
+<h2 id="installing-eclipse">Installing Eclipse</h2>
+<ol style="list-style-type: decimal">
+<li><p>If you already have Eclipse installed on your Mac, you need to get rid of it. To do so, first quit Eclipse if you're currently running it. Then, go to your workspace folder (probably in Documents/workspace) and save anything there that you want to keep, because you're about to get rid of this folder. Next, drag the workspace folder to the Trash.</p>
+<p>Go to your Applications folder. One way to get there is, from the Finder, type command-shift-A. You'll a folder named eclipse in there; drag the eclipse folder to the Trash. If you have an Eclipse icon in your dock, remove it from the dock.</p></li>
+<li><p>Now you're ready to download and install the newest version of Eclipse. Go to <a href="https://www.eclipse.org/downloads">this website</a>. You'll see a window like this:</p>
+<div class="figure">
+<img src="Eclipse-Downloads.jpg"/><p class="caption"></p>
+</div>
+<p>Click on the "Mac OS X 64 Bit" link next to "Eclipse Standard 4.4."</p></li>
+<li><p>You'll see this window:</p>
+<div class="figure">
+<img src="Mirror.jpg"/><p class="caption"></p>
+</div>
+<p>Click on the green download arrow. If asked, click on "Open with Archive Utility (default)" and then click OK. The download might take a few minutes. You should not feel compelled to donate.</p></li>
+<li><p>After the download completes, folders should automatically expand. If they don't, double-click on the .tar file.  When that's done, you should see a folder named eclipse in your Downloads folder. When you open your Downloads folder, if you see Applications under the Favorites on the left side of the window, you should drag the eclipse folder into Applications. If you don't see Applications, then open a new window for Applications (from the Finder, command-shift-A), and drag the eclipse folder into Applications.</p></li>
+<li><p>Open your Applications folder, and then open the eclipse folder. You'll see an item named Eclipse; if you like, drag its icon into the dock so that you'll be able to launch Eclipse easily.</p></li>
+<li><p>Launch Eclipse. If you're asked whether you want to open it, of course you do; click Open. You'll see a window like this:</p>
+<div class="figure">
+<img src="WS-Launcher.jpg"/><p class="caption"></p>
+</div>
+<p>It will have your user name rather than mine (scot). Select where you want your workspace to be; I recommend the default of your Documents folder. Click the checkbox for using this location as the default, and then click OK.</p></li>
+<li><p>You'll see a window like this:</p>
+<div class="figure">
+<img src="Workbench.png"/><p class="caption"></p>
+</div>
+<p>Click on the Workbench arrow in the upper right that I've circled. You shouldn't see this screen again, even if you quit Eclipse and relaunch it.</p></li>
+<li><p>You'll get an empty workbench like this:</p>
+<div class="figure">
+<img src="Empty-Workbench.png"/><p class="caption"></p>
+</div>
+<p>You have now installed Eclipse!</p></li>
+</ol>
+<h2 id="configuring-eclipse">Configuring Eclipse</h2>
+<p>You don't <em>have</em> to configure Eclipse the way I do, but you'll probably avoid some confusion if you do. Here's how.</p>
+<ol style="list-style-type: decimal">
+<li><p>In the Eclipse menu bar, click on the Eclipse menu and then on "Preferences...". You'll see a window with two panes. On the left pane is a list of types of things you can configure.</p></li>
+<li><p>Click on the triangle to the left of General. Then click on the triangle to the left of Appearance. Then click on "Colors and Fonts." You should see a window like this:</p>
+<div class="figure">
+<img src="Colors-Fonts.png"/><p class="caption"></p>
+</div></li>
+<li><p>In the window in the middle, click on the triangle next to Java. Then double-click on "Java Editor Text Font":</p>
+<div class="figure">
+<img src="Java-Editor-Text-Font.png"/><p class="caption"></p>
+</div></li>
+<li><p>You'll see this window:</p>
+<div class="figure">
+<img src="Java-Font-Size.png"/><p class="caption"></p>
+</div>
+<p>On the right, where you can select the size, click 12. Then close this window by clicking on the window's close button.</p></li>
+<li><p>Close up the General preferences by clicking on the triangle to the left of General. Click the triangle next to Java and then click the triangle next to "Code Style." Then click Formatter. Here's what you should see:</p>
+<div class="figure">
+<img src="Formatter.png"/><p class="caption"></p>
+</div></li>
+<li><p>Click the button that says "New...". You'll see a window such as this one:</p>
+<div class="figure">
+<img src="New-Profile.png"/><p class="caption"></p>
+</div>
+<p>You can type in any profile name you like. I used "CS 10":</p>
+<div class="figure">
+<img src="CS10-Profile.png"/><p class="caption"></p>
+</div>
+<p>Click OK.</p></li>
+<li><p>You should see a window like this:</p>
+<div class="figure">
+<img src="Initial-Profile.png"/><p class="caption"></p>
+</div>
+<p>Change the tab size to 2:</p>
+<div class="figure">
+<img src="Tab-2.png"/><p class="caption"></p>
+</div>
+<p>You'll see that the indentation size automatically changes as well.</p></li>
+<li><p>Click on "Blank Lines," and after "Between import groups" and "Before declarations of the same kind," change the values 1 to 0:</p>
+<div class="figure">
+<img src="Blank-Lines.png"/><p class="caption"></p>
+</div></li>
+<li><p>Click on "Control Statements," and check the first four boxes as I've done here:</p>
+<div class="figure">
+<img src="Control-Stmts.png"/><p class="caption"></p>
+</div>
+<p>Click OK.</p></li>
+<li><p>Now click on triangles to close up Java. Click on the triangle next to Run/Debug, and then click on Console:</p>
+<div class="figure">
+<img src="Console.png"/><p class="caption"></p>
+</div></li>
+<li><p>Click on the green color sample next to "Standard In text color." You'll get a color picker:</p>
+<div class="figure">
+<img src="Color-Picker.png"/><p class="caption"></p>
+</div></li>
+<li><p>Slide the slider on the right down, so that you get a dark green. (You're at Dartmouth. What other color could you possibly want?)</p>
+<div class="figure">
+<img src="Dark-Green.png"/><p class="caption"></p>
+</div>
+<p>Close the color picker window by clicking its close button, and click OK again to close the Preferences window.</p></li>
+<p>And you're done!</p></ol></body></html>
+
+
+

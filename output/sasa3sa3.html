@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="short-assignment-1-due-monday-september-22">Short Assignment 3 <br/>Due: Wednesday, September 24.</h1>
+<p>The <code>Picture.java</code> file from the <code>java source</code> folder
+contains a number of methods to transform images.  This assignment asks
+you to add an additional method to that file that transforms an
+image by replacing each pixel color by a weighted sum of its color and 
+the colors of  its eight
+adjacent pixels.  Image processing people call this a convolution, so
+your method should be called <code>convolve</code>.  You may find it 
+useful to 
+write a private helper method that deals with a single pixel.  You may
+call this method whatever you like (as long as the name is meaningful).</p>
+<p>The method <code>public Picture convolve(double [][] matrix, String title)</code> 
+takes a parameter that is a 3 x 3 matrix of weights and a parameter that is the
+title of the new picture that you produce.  
+For each pixel that is not on the edge of
+the <code>Picture</code> you should produce a new pixel whose color
+is the weighted sum of its color and the colors of the surrounding
+pixels.  (Pixels on the edge should not be changed.)  The red, green, 
+and blue values must be summed separately in order to get the red, green, and 
+blue values for the new color.  Finally, you should use the <code>SimplePicture</code> method <code>setTitle</code> to change the label on the picture that you 
+produce so that you can tell which picture came from which matrix.</p>
+<p>Note that the original
+<code>Picture</code> should not be changed.  Follow the example of <code>flip</code>,
+<code>blueScreen</code>, and the other methods that return a <code>Picture</code>.  
+Create a new <code>Picture</code> and fill in
+the correct pixel values in that.</p>
+<p>The pixel above and to the
+left of the current pixel should be multiplied by <code>matrix[0][0]</code>,
+the one directly above should be multiplied by <code>matrix[0][1]</code>,
+the one above and to the right should be multiplied by 
+<code>matrix[0][2]</code>, and so on.  Thus the pixel itself is multiplied 
+by <code>matrix[1][1]</code> and the pixel down and to the right is multiplied
+by <code>matrix[2][2]</code>.  These products should be added together to get
+the new value.  
+</p>
+<p>There are many useful methods in the <code>Pixel</code> class that you will want to use.  In particular, the <code>correctValue</code> method will prove useful to make sure 
+that the sums that you compute are in range.  </p>
+<p>Test your code on the following three test matrices:</p>
+<xmp>
+    double ninth = 1.0/9.0;
+    double [][] blur = {{ninth, ninth, ninth}, 
+                       {ninth, ninth, ninth}, 
+                       {ninth, ninth, ninth}}; 
+    
+    double [][] edges = {{-1.0, -1.0, -1.0},
+                         {-1.0, 8.0, -1.0},
+                         {-1.0, -1.0, -1.0}};
+
+    double [][] sharpen = {{-1.0, -1.0, -1.0},
+                           {-1.0, 9.0, -1.0},
+                           {-1.0, -1.0, -1.0}};
+</xmp>
+<p>The names give some idea of what the matrices do.  Thus <code>blur</code>
+should make the picture slightly blurred (soft focus), 
+<code>edges</code> detects boundaries between different colors, and 
+<code>sharpen</code> makes boundaries more distinct.  I suggest changing the 
+<code>main</code> method to display the original picture and to 
+create and display the three modified pictures.</p>
+<h3>Setting up Eclipse to work with media files</h3>
+<p>If you want to use Eclipse instead of DrJava to solve this homework (or other
+homeworks that use the media files that you downloaded) you have two choices.  The 
+first is to create a new project and drag all of the files in java-source  
+(except the "doc" folder) into it.</p>
+<p>The other choice is to set classpaths, just as you did in DrJava.  This explains how.</p>
+<ol>
+<li>Go into the Eclipse menu and select Preferences.  A window should open with General as a 
+choice.  Click the triangle (or whatever) to expand the choices under General.  One of them 
+is Workspace.  When you expand Workspace, one option is Linked Resources.  Click on this.  There
+should be a check box labeled "Enable linked resources".  Check it if it is unchecked.</li>
+<li>Click on your your project in the Package Explorer window on the left side
+  (mine is called <code>cs10proj</code>), go to the File menu, and select Properties.
+  A window should open.</li>
+<li>Click on "Java Build Path" in the list of choices on the left side of the window.</li>
+<li>Click on "Libraries" in the choices along the top of the window.</li>
+<li>Click on "Add External Class Folder" and navigate to the folder <code>java-source.</code>  
+  Select it and click "Open". The folder <code>java-source</code> should now be added as a build path.</li>
+</ol>
+<p>You can now add <code>Picture.java</code> to the project, edit it, and run it. </p>
+<h2>Turn in</h2>
+<p>Electronically turn in your modifed <code>Picture.java</code> file (with
+comments indicating where your modification is) on Canvas.  Also 
+electronically turn in screen shot(s) showing the <code>beach.jpg</code> image and the
+<code>convolve</code> method run on this image  for
+each of the three matrices.  (I was able to lay them out on the screen
+so that one screen shot showed all four.)</p>
+<h3>Extra Credit</h3>
+<p>Find other matricies that give interesting effects.</p>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-18-may-5">Lecture 18, October 24</h1>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="net/datastructures/Graph.java">Graph.java</a></li>
+<li><a href="net/datastructures/AdjacencyMapGraph.java">AdjacencyMapGraph.java</a></li>
+</ul>
+<h2 id="graphs">Graphs</h2>
+<p>We often need to model entities that have connections between them. For example, we might want to know whether two people are friends. If we can identify a group of people all of whom are friends with each other that might tell us something about these people; for example, they might all be members of the same Greek house, or that they might constitute a terrorist cell.</p>
+<p>For another example of entities with connections, think of a road map. Each intersection is an entity, and a connection is a road going between two intersections.</p>
+<p>Sometimes we need to know more than just that there's a connection; there's some quantitative aspect of the connection that's important. For a road map, we might care not only that a road connects two intersections, but also about the length of the road. For another example, we might want to know, for any pair of world currencies, the exchange rate from one to the other.</p>
+<p>Many years ago, mathematicians devised a nice way to model situations with many entities and relationships between pairs of entities: a <strong>graph</strong>. A graph consists of <strong>vertices</strong> (singular: vertex) connected by <strong>edges</strong>. Each edge connects one vertex to some other vertex. A vertex may have edges to zero, one, or many other vertices. Think of each vertex as representing an entity and each edge as a connection.</p>
+<p>Here's a simple graph with 9 vertices and 11 edges:</p>
+<div class="figure">
+<img src="letter_graph.png"/>
+</div>
+<p>Each vertex in this particular graph is labeled by a letter, though in general we can label vertices however we like, including with no label at all. Just to take an example, vertex A has two edges: one to vertex C and one to vertex E.</p>
+<p>In some situations, we want <strong>directed edges</strong>, where we care about the edge going <em>from</em> one vertex <em>to</em> another vertex. Twitter's "follows" relationship is directed.  Just because a follows b does not imply that b follows a.  In other situations, such as the graph drawn above, the edges are <strong>undirected</strong>. Because the friendship relation is symmetric (in Facebook and real life), if we consider a graph in which vertices represent people and an edge between persons X and Y indicates that X and Y are friends, this graph would have undirected edges.  Then again, a graph of who loves whom should be directed, since love is not always reciprocated. A graph with undirected edges is an <strong>undirected graph</strong>, and a graph with directed edges is a <strong>directed graph</strong>.  We can always emulate an undirected edge between vertices <span class="math"><em>x</em></span> and <span class="math"><em>y</em></span> with directed edges from <span class="math"><em>x</em></span> to <span class="math"><em>y</em></span> and from <span class="math"><em>y</em></span> to <span class="math"><em>x</em></span>.</p>
+<p>When we put a numeric value on an edge, say to indicate the length of a road, we call that an <strong>edge weight</strong>, "weight" being a generic term for the quantity that we care about. (Unless you're a civil engineer building elevated highways, you probably don't care how much a road actually weighs.) Edges can be weighted or unweighted in either directed or undirected graphs.</p>
+<p>There are hundreds of computer applications where
+a graph is the appropriate ADT to use.  These include road maps as mentioned before
+(vertices are intersections and edges are roads between them), 
+airline routes (vertices are the airports and edges are scheduled
+flights between them), and computer networks (vertices are computers
+and edges represent network connections between them).</p>
+<p>An example that we will see in Lab 5 is a graph of actors, with
+edges for those who have been in a movie together (edge labels hold
+movie names).  A geekier example is a graph of authors of mathematical
+papers, with edges for coauthors (edge labels hold paper titles).</p>
+<p>Given such a graph, there are many types of analyses we could do on
+it.  Who's the most "popular" (has the most edges)?  Who are mutual
+acquaintences ("cliques" where all have edges to each other)?  Who is
+a friend-of-a-friend but is not yet a friend?</p>
+<p>And of course there is the Kevin Bacon game: someone has been in a movie
+with someone who has been in a movie ... who has been in a movie with
+Kevin Bacon — how many steps away are they (conjecture: usually
+at most 6)?  In the geekier version, the center of the universe is the mathematician
+Paul Erdos, who coauthored hundreds of papers in his career.  Mathematicians and
+theoretical computer scientists are
+characterized by their <a href="http://www.oakland.edu/enp">Erdos
+numbers</a>.  The highest known finite Erdos number is 13.  Remarkably, there are a <a href="http://en.wikipedia.org/wiki/Erdős–Bacon_number">number of
+people</a> who have both small Erdos numbers and small Bacon numbers
+(number = steps away).  Dan Kleitman has total Erdos-Bacon number of 3
+(Erdos 1, Bacon 2), but the Bacon number is due to a role as an extra in <em>Good Will Hunting</em>.
+Danica McKellar has an Erdos-Bacon number of 6, and is both a
+professional actress (The Wonder Years and West Wing) and wrote a published 
+math paper (as well as supplemental math texts designed for teenage 
+girls: <b>Math Doesn't Suck</b>, <b>Kiss My Math</b>, and 
+<b>Hot X: Algebra Exposed</b>.)</p>
+<p>You might sometimes hear other names for graph structures. Graphs are sometimes called <strong>networks</strong>, vertices are sometimes called <strong>nodes</strong> (you might recall that when I drew trees, I used the term), and edges are sometimes referred to as <strong>links</strong> or <strong>arcs</strong>.</p>
+<p>A few more easy definitions. In mathematics, we write the name of an edge from vertex <span class="math"><em>x</em></span> to vertex <span class="math"><em>y</em></span> as <span class="math">(<em>x</em>, <em>y</em>)</span>. If the edge is undirected, then <span class="math">(<em>y</em>, <em>x</em>)</span> is the same edge as <span class="math">(<em>x</em>, <em>y</em>)</span>, but not if the edge is directed. In an undirected graph, we say that the edge <span class="math">(<em>x</em>, <em>y</em>)</span> is <strong>incident on</strong> vertices <span class="math"><em>x</em></span> and <span class="math"><em>y</em></span>, and we also say that <span class="math"><em>x</em></span> and <span class="math"><em>y</em></span> are <strong>adjacent</strong> to each other, and they are <strong>neighbors</strong>. In the above graph, vertices D and G are adjacent and edge (D, G) is incident on both of them. In a directed graph, edge <span class="math">(<em>x</em>, <em>y</em>)</span> <strong>leaves</strong> <span class="math"><em>x</em></span> and <strong>enters</strong> <span class="math"><em>y</em></span>, and <span class="math"><em>y</em></span> is adjacent to <span class="math"><em>x</em></span> (but <span class="math"><em>x</em></span> is not adjacent to <span class="math"><em>y</em></span> unless the edge <span class="math">(<em>y</em>, <em>x</em>)</span> is also present). The number of edges incident on a vertex in an undirected graph is the <strong>degree</strong> of the vertex. In the above graph, the degree of vertex B is 5. In a directed graph, the number of edges leaving a vertex is its <strong>out-degree</strong> and the number of edges entering a vertex is its <strong>in-degree</strong>.</p>
+<p>If we can get from vertex <span class="math"><em>x</em></span> to vertex <span class="math"><em>y</em></span> by following a sequence of edges, we say that the vertices along the way, including <span class="math"><em>x</em></span> and <span class="math"><em>y</em></span>, form a <strong>path</strong> from <span class="math"><em>x</em></span> to <span class="math"><em>y</em></span>. A <strong>simple path</strong> is a path with no repeated vertices. The <strong>length</strong> of the path is the number of edges on the path. In the above graph, one path from vertex D to vertex A contains the vertices, D, I, C, A, with 3 edges; another path contains the vertices D, G, B, E, A, with 4 edges. Note that there is always a path of length 0 from any vertex to itself. A path from a vertex to itself containing at least one edge, and with all edges distinct, is a <strong>cycle</strong>. In the above graph, one cycle contains the vertices A, E, B, G, D, I, C, A; another cycle contains the vertices A, E, B, I, C, A. An undirected graph is <strong>connected</strong> if all pairs of vertices have some path between them.</p>
+<p>The book gives a <a href="net/datastructures/Graph.java">Graph</a> interface.  It has
+a number of useful methods.   However, it
+is missing one thing that is often useful - retrieving a vertex that has
+a particular element value.  The only way to do that here is to interate
+through the vertices and test them.</p>
+<p>Here is a list of the methods in the <code>Graph</code> interface. Some of them throw an <code>IllegalArgumentException</code> if given a bad parameter, such as a vertex or edge not actually in the graph.  We will discuss them in class.</p>
+<ul>
+<li><code>Vertex&lt;V&gt; insertVertex(V element)</code> inserts a vertex into the graph and returns a reference to its <code>Vertex</code> object. The parameter <code>element</code> is the information you want to store with the vertex, such as its name (in which case, the generic type <code>V</code> would be <code>String</code>).</li>
+<li><code>Edge&lt;E&gt; insertEdge(Vertex&lt;V&gt; u, Vertex&lt;V&gt; v, E element) throws IllegalArgumentException</code> inserts an edge into the graph, once you have created its two vertices. The parameter <code>element</code> is the information you want to store with the edge. If there is already an edge <span class="math">(<em>u</em>, <em>v</em>)</span> in the graph, <code>insertEdge</code> throws an <code>IllegalArgumentException</code>.</li>
+<li><code>Iterable&lt;Edge&lt;E&gt;&gt; incomingEdges(Vertex&lt;V&gt; v) throws IllegalArgumentException</code> returns an iterable collection that contains all the edges that enter vertex <code>v</code>.</li>
+<li><code>Iterable&lt;Edge&lt;E&gt;&gt; outgoingEdges(Vertex&lt;V&gt; v) throws IllegalArgumentException</code> returns an iterable collection that contains all the edges that leave vertex <code>v</code>.</li>
+<li><code>Vertex&lt;V&gt; opposite(Vertex&lt;V&gt; v, Edge&lt;E&gt; e) throws IllegalArgumentException</code> returns the vertex at the other end of edge <code>e</code> from vertex <code>v</code>.</li>
+<li><code>Edge&lt;E&gt; getEdge(Vertex&lt;V&gt; u, Vertex&lt;V&gt; v) throws IllegalArgumentException</code> returns the edge <span class="math">(<em>u</em>, <em>v</em>)</span>, or <code>null</code> if the graph contains no such edge.</li>
+<li><code>Vertex&lt;V&gt;[] endVertices(Edge&lt;E&gt; e) throws IllegalArgumentException</code> returns a two-element array containing the vertices that edge <code>e</code> is incident on.</li>
+<li><code>void removeVertex(Vertex&lt;V&gt; v) throws IllegalArgumentException</code> removes vertex <code>v</code> and all its incident edges from the graph.</li>
+<li><code>void removeEdge(Edge&lt;E&gt; e) throws IllegalArgumentException</code> removes edge <code>e</code> from the graph.</li>
+<li><code>Iterable&lt;Vertex&lt;V&gt;&gt; vertices()</code> returns an iterable collection that contains all the vertices in the graph.</li>
+<li><code>Iterable&lt;Edge&lt;E&gt;&gt; edges()</code> returns an iterable collection that contains all the edges in the graph.</li>
+<li><code>int numVertices()</code> returns the number of vertices in the graph.</li>
+<li><code>int numEdges()</code> returns the number of edges in the graph.</li>
+<li><code>int inDegree(Vertex&lt;V&gt; v) throws IllegalArgumentException</code> returns the in-degree of vertex <code>v</code>.</li>
+<li><code>int outDegree(Vertex&lt;V&gt; v) throws IllegalArgumentException</code> returns the out-degree of vertex <code>v</code>.</li>
+</ul>
+<h2 id="representing-graphs">Representing graphs</h2>
+<p>We can choose from among a few ways to represent a graph. Some ways are better for certain purposes than other ways. It's convenient to have a standard notation for the numbers of vertices and edges in a graph, and so we'll always use <span class="math"><em>n</em></span> for the number of vertices and <span class="math"><em>m</em></span> for the number of edges (either directed or undirected). It is often convenient to number vertices, and when we do, we number them from <span class="math">0</span> to <span class="math"><em>n</em> − 1</span>.</p>
+<p>The run times of various implementations differ primarily on the operations <code>getEdge</code>, <code>incomingEdges</code>, <code>outgoingEdges</code>, <code>vertices</code>, and <code>edges</code>.  (The number versions <code>numVertices</code>, <code>numEdges</code>, <code>inDegree</code>, and
+<code>outDegree</code> usually return the size of the corresponding iterable collection.)
+
+<h3 id="edge-lists">Edge lists</h3>
+<p>One simple representation is just an array or linked list of <span class="math"><em>m</em></span> edges, which we call an <strong>edge list</strong>. To represent an edge, we just give the numbers of the two vertices it's incident on. Each edge in the array is some object that includes the two vertex numbers. If the edge has a weight, the edge object also includes the weight.  </p>
+<p>Edge lists are simple, and they take only <span class="math">Θ(<em>m</em>)</span> space, but if we want to find whether the graph contains a particular edge, we have to search through the array. If the edges appear in the array in no particular order, that's a linear search through <span class="math"><em>m</em></span> edges, taking <span class="math">Θ(<em>m</em>)</span> time in the worst case. If there is not a separate list of vertices then finding all the vertices in the graph takes <span class="math"><em>m</em></span> time.  Even if there is an list of vertices, deciding which edges are incident to a vertex takes <span class="math"><em>m</em></span> time. (Question to think about: How can you organize an edge list to make searching for a particular edge take <span class="math"><em>O</em>(lg <em>m</em>)</span> time? The answer is a little tricky.)</p>
+<h3 id="adjacency-matrices">Adjacency matrices</h3>
+<p>For a graph with <span class="math"><em>n</em></span> vertices, an <strong>adjacency matrix</strong> is an <span class="math"><em>n</em> × <em>n</em></span> matrix of 0s and 1s, where the entry in row <span class="math"><em>i</em></span> and column <span class="math"><em>j</em></span> is 1 if and only if the edge <span class="math">(<em>i</em>, <em>j</em>)</span> is in the graph. (Recall that we can represent an <span class="math"><em>n</em> × <em>n</em></span> matrix by an <span class="math"><em>n</em></span>-element array in which each entry references an array of <span class="math"><em>n</em></span> numbers.) If you want to indicate an edge weight, put it in the row <span class="math"><em>i</em></span>, column <span class="math"><em>j</em></span> entry, and reserve a special value to indicate an absent edge. (For example, -1 if all weights are non-negative.  If a super-high weight indicates an absent edge, you can use <code>Double.POSITIVE_INFINITY</code> or <code>Integer.MAX_VALUE</code>.) Here's a unweighted, undirected graph and its adjacency matrix:</p>
+<div class="figure">
+<img src="adjacency-matrix.png"/>
+</div>
+<p>With an adjacency matrix, we can find out whether an edge is present in constant time, by just looking up the corresponding entry in the matrix. So what's the disadvantage of an adjacency matrix? Several things, actually. First, it takes <span class="math">Θ(<em>n</em><sup>2</sup>)</span> space, even if the graph is <strong>sparse</strong>: relatively few edges. In other words, for a sparse graph, the adjacency matrix is mostly 0s, and we use lots of space to represent only a few edges.
+Second, finding all of the edges takes <span class="math">Θ(<em>n</em><sup>2</sup>)</span> time.  Third, if you want to find out which vertices are adjacent to a given vertex <span class="math"><em>i</em></span>, you have to look at all <span class="math"><em>n</em></span> entries in row <span class="math"><em>i</em></span>, taking <span class="math">Θ(<em>n</em>)</span> time, even if only a small number of vertices are adjacent to vertex <span class="math"><em>i</em></span>.</p>
+<p>For an undirected graph, the adjacency matrix is <strong>symmetric</strong>: the row <span class="math"><em>i</em></span>, column <span class="math"><em>j</em></span> entry is 1 if and only if the row <span class="math"><em>j</em></span>, column <span class="math"><em>i</em></span> entry is 1. For a directed graph, the adjacency matrix need not be symmetric.</p>
+<h3 id="adjacency-lists">Adjacency lists</h3>
+<p>Representing a graph with <strong>adjacency lists</strong> combines adjacency matrices with edge lists. For each vertex <span class="math"><em>x</em></span>, store a list of the vertices adjacent to it. We typically have an array of <span class="math"><em>n</em></span> adjacency lists, one adjacency list per vertex. We can store an adjacency list with an array (if we don't plan to insert or remove adjacent vertices) or a linked list (if we expect to insert or remove adjacent vertices). Here's an adjacency-list representation of the graph from above, using arrays:</p>
+<div class="figure">
+<img src="adjacency-list.png"/>
+</div>
+<p>We can get to each vertex's adjacency list in <span class="math"><em>O</em>(1)</span> time, because we just have to index into the array of adjacency lists. To find out whether an edge <span class="math">(<em>x</em>, <em>y</em>)</span> is present in the graph, we go to <span class="math"><em>x</em></span>'s adjacency list in <span class="math"><em>O</em>(1)</span> time and then look for <span class="math"><em>y</em></span> in <span class="math"><em>x</em></span>'s adjacency list. How long does that take in the worst case? <span class="math">Θ(<em>d</em>)</span>, where <span class="math"><em>d</em></span> is the degree of <span class="math"><em>x</em></span>, because that's how long <span class="math"><em>x</em></span>'s adjacency list is. The degree of <span class="math"><em>x</em></span> could be as high as <span class="math"><em>n</em> − 1</span> (if <span class="math"><em>x</em></span> is adjacent to all other <span class="math"><em>n</em> − 1</span> vertices) or as low as 0 (if <span class="math"><em>x</em></span> is isolated, with no incident edges). In an undirected graph, <span class="math"><em>y</em></span> is in <span class="math"><em>x</em></span>'s adjacency list if and only if <span class="math"><em>x</em></span> is in <span class="math"><em>y</em></span>'s adjacency list. If the graph is weighted, then each element in each adjacency list includes the edge weight.</p>
+<p>How much space do adjacency lists take? We have <span class="math"><em>n</em></span> lists, and although each list could have as many as <span class="math"><em>n</em> − 1</span> vertices, in total the adjacency lists for an undirected graph contain <span class="math">2<em>m</em></span> items. Why <span class="math">2<em>m</em></span>? Each edge <span class="math">(<em>x</em>, <em>y</em>)</span> appears exactly twice in the adjacency lists, once in <span class="math"><em>x</em></span>'s list and once in <span class="math"><em>y</em></span>'s list, and there are <span class="math"><em>m</em></span> edges. For a directed graph, the adjacency lists contain a total of <span class="math"><em>m</em></span> items, one item per directed edge.</p>
+<h3 id="adjacency-maps">Adjacency maps</h3>
+<p>The textbook has another representation, the <strong>adjacency map</strong>, which the authors claim combines the best of adjacency lists and adjacency matrices. Instead of using an array or a linked list for each adjacency list, they use a map, implemented by a hash table. For a directed graph, each vertex has a hash table for its entering edges and a different hash table for its leaving edges, so that a directed graph has <span class="math">2<em>n</em></span> hash tables altogether. For an undirected graph, each vertex has just one hash table, for a total of <span class="math"><em>n</em></span> hash tables. Now you can determine whether an edge <span class="math">(<em>u</em>, <em>v</em>)</span> is present in <span class="math"><em>O</em>(1)</span> expected time by going to <span class="math"><em>u</em></span>'s hash table and, in <span class="math"><em>O</em>(1)</span> expected time, seeing whether <span class="math"><em>u</em></span>'s hash table has an entry for <span class="math"><em>v</em></span>.</p>
+<p>The adjacency map representation is implemented in <a href="net/datastructures/AdjacencyMapGraph.java">AdjacencyMapGraph.java</a>. This representation implements the <code>Graph</code> interface.  The constructor  takes a boolean parameter that indicates whether the graph is directed (<code>true</code>) or undirected (<code>false</code>).<p>
+<p>The <code>AdjacencyMapGraph</code> class is part of a large package called net.datastructures that is associated with the textbook; I've created a <a href="net.datastructures.zip">zip file</a> of the entire package. To use it within Eclipse first create a new project. After you've uncompressed, drag the <code>net</code> folder to the src folder within the new project in the Package Explorer pane. This will add the 51 java files in the uncompressed folder into net.datastructures package in your Eclipse project. If you're going to use any of these classes, then you'll need to have the line</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">import net.datastructures.*;</span></code></pre>
+<p>in your Java file.</p>
+<p>You need to use at least two other files in net.datastructures if you're going to use <code>AdjacencyMapGraph</code>. The <code>Vertex</code> and <code>Edge</code> interfaces take generic types that say what information you're storing in a vertex or edge.  Each interface has a single method:  <code>getElement()</code>.</p>
+<h3>A Named Adjacency Map</h3>
+<p><a name="NamedAdjacencyMapGraph-methods"></a></p>
+<p>We noted that a drawback to the AdjacencyGraphMap class (and all of the approaches we have discussed) is that finding the vertex with a particular label takes time proportional to the number of vertices in the graph.  This is because you must iterate through a list to find the correct vertex.  In sa10 you will created a subclass of <code>AdjacencyMapGraph</code> called <code>NamedAdjacencyMapGraph</code>. The <code>NamedAdjacencyMapGraph</code> class does everything that an <code>AdjacencyMapGraph</code> does, and it also maintains a map from vertex names (or whatever information you store with a vertex) to the <code>Vertex</code> object. In addition to the methods of <code>AdjacencyMapGraph</code>, it provides the following:</p>
+<ul>
+<li><code>Vertex&lt;V&gt; getVertex(V name)</code> returns the <code>Vertex</code> object corresponding to the name in the parameter, or <code>null</code> if there is no vertex with that name.</li>
+<li><code>boolean vertexInGraph(V name)</code> returns a boolean indicating whether the graph contains a vertex with the name in the parameter.</li>
+<li><code>Edge&lt;E&gt; insertEdge(V uName, V vName, E element) throws IllegalArgumentException</code> inserts an edge whose vertices have the names <code>uName</code> and <code>vName</code> into the graph. Like the <code>insertEdge</code> method of <code>AdjacencyMapGraph</code>, it throws an <code>IllegalArgumentException</code> if there is already an edge <span class="math">(<em>u</em>, <em>v</em>)</span> in the graph.</li>
+<li><code>Edge&lt;E&gt; getEdge(V uName, V vName) throws IllegalArgumentException</code> returns the edge whose endpoints are named by <code>uName</code> and <code>vName</code>, or <code>null</code> if the graph contains no such edge.</li>
+</ul>
+<p>It will also supply a constructor, override <code>insertVertex(V element)</code> to put the vertex name and the corresponding vertex into the map, and override <code>removeVertex(Vertex&lt;V&gt; v)</code> to remove the vertex name and corresponding vertex from the map.</p>
+<p>In an <code>AdjacencyMapGraph</code> it is valid to have multiple vertices with the same name.  However, in a <code>NamedAdjacencyMapGraph</code> this would cause problems, because it would not know which vertex to associate with a given name.  Therefore the overridden version of <code>insertVertex(V element)</code> must check to make sure that the name is not already in the map, and throw an IllegalArgumentException if it is.</p>
+<p>I find <code>NamedAdjacencyMapGraph</code> to be a convenient way to access vertices and their edges by the names of the vertices, rather than by the <code>Vertex</code> objects. It comes in particularly handy when you want to find a particular actor in to compute his or her Bacon number.</p>
+</p></p></p></body>
+</html>

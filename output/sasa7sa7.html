@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="short-assignment-7-due-monday-oct-23">Short Assignment 7<br/>Due: Monday, October 13</h1>
+<p>I mentioned in class that parent pointers are necessary to do things like determining the depth of a node in a tree, among other things.  The first thing that you will do in this short assignment is to add a fourth instance variable called <code>parent</code> to our <code>BinaryTree</code> class. The <code>parent</code> should refer to the parent of the current node, and should be null for the root of the tree.  You should also add a method <code>getParent</code> that returns a reference to the parent of a tree node, or <code>null</code> if the node is the root.</p>
+<p>How should the parent pointers get set?  Clearly the constructors will have to be changed to initialize it.  You might think that we would want a <code>setParent</code> method, but this can cause problems.  If you set a <code>parent</code> value without setting the corresponding <code>left</code> or <code>right</code> in the parent to point to the child you can create an inconsistent tree.  It is better to have constructors always initialize <code>parent</code> to <code>null</code> and make <code>setLeft</code> and <code>setRight</code> responsible for setting the <code>parent</code> pointer of the child (unless the child is <code>null</code>), as well as the <code>left</code> or <code>right</code> in the parent node.  Similarly, the three-parameter constructor should set the <code>parent</code> pointers of the two children as well as the <code>left</code> and <code>right</code> of the current node.  This reduces the probability that the tree will be inconsistent.  (You can guarantee consistency if you  require that the <code>parent</code>, <code>left</code>, and <code>right</code> values are <code>null</code> when the constructor, <code>setLeft</code>, or <code>setRight</code> sets them.  However, this removes the option of re-structuring the tree, which we will see can be useful for things like deleting nodes. Therefore we do not do it.)
+
+<p>The second part of this assignment is to add four new methods to the <code>BinaryTree</code> class. I've started them for you in <a href="provided/BinaryTree.java">BinaryTree.java</a>. Download that file, along with <a href="provided/MutableInteger.java">MutableInteger.java</a>.</p>
+<p>The <code>MutableInteger</code> class is like the <code>Integer</code> wrapper class, but it includes methods <code>set</code> and <code>get</code>; the <code>Integer</code> class has no setter method. On the other hand, because I had to write <code>MutableInteger</code> and it's not built into the Java language, autoboxing and unboxing do not apply to this class. You will not need to make any changes to the <code>MutableInteger</code> class.</p>
+<p>In <a href="provided/BinaryTree.java">BinaryTree.java</a>, you will see headers for four new methods whose bodies you have to write:</p>
+<ul>
+<li><code>isRoot</code> returns a boolean indicating whether the node is the root of the entire tree.</li>
+<li><code>depth</code> returns the depth of the node, which is the number of edges in the unique path from this node to the root of the entire tree. For example, the depth of the root is 0, the depth of the children of the root is 1, the depth of the grandchildren of the root is 2, and so on.</li>
+<li><code>countLeaves</code> returns the number of leaves in the subtree rooted at the node.</li>
+<li><code>copy</code> makes a copy of the subtree rooted at the node, returning a reference to the root of the copy of the subtree.</li>
+</ul>
+<p>Your <code>isRoot</code> should take constant time, and <code>depth</code> should take time <span class="math">Θ(<em>d</em>)</span>, where <span class="math"><em>d</em></span> is the depth of the node. You may write the <code>depth</code> method either iteratively (i.e., using a loop) or recursively. (Using recursion and the ternary operator, I was able to write the body of <code>depth</code> in one line, but you are not required to do so.)</p>
+<p>You <em>must</em> write both <code>countLeaves</code> and <code>copy</code> recursively. (This is a favor to you - writing them non-recursively is much harder.) For <code>countLeaves</code>, you may not call <code>fringe</code>, although you may look to it for inspiration.</p>
+<p>The <code>copy</code> method makes what we call a <strong>shallow copy</strong>. You should make a copy of each node, but do <em>not</em> make a copy of the object that the <code>data</code> instance variable references. You should work directly with the nodes; you are specifically prohibited from calling <code>reconstructTree</code> as part of the <code>copy</code> method. (And no fair doing something like making a new method that is exactly like <code>reconstructTree</code> but with a different name and calling it from within <code>copy</code>. You <em>must</em> work directly with the nodes.) Because it's a shallow copy, the value of <code>data</code> in a node and in its copy should be aliases. Therefore, if you call <code>setValue</code> on the copy of a node, the node and its copy will reference different objects in their <code>data</code> instance variables, because you've changed the reference in <code>data</code> within just the copy. But if you change the instance variables in the object that <code>data</code> references in the copy of a node, both the original node and the copy will still reference the same object in their <code>data</code> instance variables, but that referenced object will have changed.</p>
+<p>I have updated the <code>main</code> method in <a href="provided/BinaryTree.java">BinaryTree.java</a> to exercise the new methods that you will write. Here's what the output should look like:</p>
+<pre><code>tree: 
+  7
+    5
+3
+    1
+      6
+  2
+    4
+
+Size of tree = 7
+Height of tree = 3
+Fringe of tree = [4, 6, 5]
+Number of leaves = 3
+Depth of node 1 = 2
+Preorder traversal of the tree = [3, 2, 4, 1, 6, 7, 5]
+Inorder traversal of the tree = [4, 2, 6, 1, 3, 5, 7]
+Postorder traversal of the tree = [4, 6, 1, 2, 5, 7, 3]
+tree1: 
+  7
+    5
+3
+    1
+      6
+  2
+    4
+
+tree and tree1 are equal? true
+tree: 
+  7
+    5
+3
+    1
+      6
+  2
+    4
+
+modified tree1: 
+  8
+    5
+3
+    1
+      6
+  2
+    4
+
+tree and tree1 are equal? false
+tree2: 
+  7
+    5
+3
+    1
+      6
+  2
+
+Size of tree2 = 6
+Height of tree2 = 3
+Fringe of tree2 = [6, 5]
+tree and tree2 are equal? false
+tree3: 
+  7
+    5
+3
+    1
+      6
+  2
+    4
+
+Size of tree3 = 7
+Height of tree3 = 3
+Fringe of tree3 = [4, 6, 5]
+Number of leaves = 3
+Depth of node 1 = 2
+tree and tree3 are equal? true
+tree's right child's value = 8
+tree3's right child's value = 8</code></pre>
+<p>Note that the last three lines of <code>main</code>,</p>
+<pre class="sourceCode java"><code class="sourceCode java">  tree3.<span class="fu">getRight</span>().<span class="fu">getValue</span>().<span class="fu">set</span>(<span class="dv">8</span>);
+  System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"tree's right child's value = "</span> + tree.<span class="fu">getRight</span>().<span class="fu">getValue</span>());
+  System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"tree3's right child's value = "</span> + tree3.<span class="fu">getRight</span>().<span class="fu">getValue</span>());</code></pre>
+<p>should show that in both the original tree and <code>tree3</code>, the right child of the root references the <em>same</em> <code>MutableInteger</code> object.</p>
+<p>Submit your updated BinaryTree.java file and the console output via Canvas. (Yes, the console output should match the above exactly, but submit it anyway, to show that you've tested your code.)</p>
+</p></body>
+</html>

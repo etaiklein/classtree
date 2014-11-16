@@ -1,0 +1,637 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-21-may-14">Lecture 24, November 7</h1>
+<ul class="outline">
+<li><a href="#balanced">Balanced Binary Search Trees</a></li>
+<li><a href="#234">2-3-4 Trees</a></li>
+<li><a href="#properties">Red-Black Properties</a></li>
+<li><a href="#inserting">Inserting into a Red-Black Tree</a></li>
+<li><a href="#deletions">Deletions</a></li>
+<li><a href="#synopsis">Synopsis</a></li>
+<li><a href="#btrees">B-Trees</a></li>
+</ul>
+<a name="balanced"></a>
+<h2>Balanced Binary Search Trees</h2>
+<p>We have seen binary trees, and in particular binary search trees.  We
+have seen that insertion, search, deletion, finding the max and min in a
+tree can be done in time proportional to the height of the tree.</p>
+<p>However, as we also saw, a binary tree can have height O(n) in the
+worst case.  This occurs, for example, when all items are inserted in
+increasing order. (There are many other such configurations, too).</p>
+<p>So, how do we insure that this doesn't happen?</p>
+<p>First idea: 
+ - Each time you insert or delete, "fix up" the tree so that it is
+   always as close to balanced as possible.
+
+ - Problem:  This isn't as easy as it looks.  Consider this tree:
+<xmp>
+           50
+         /    \
+       30      70
+      /  \    /     
+     20  40  60    
+</xmp>
+<p>This is balanced just fine.  Now, insert 10.  A perfectly balanced
+tree with these keys would look like this:</p>
+<xmp>
+            40
+          /    \ 
+        20      60
+       /  \    /  \
+      10  30  50  70
+</xmp>
+<p>Note that not a single parent-child relationship is preserved between
+the original tree an the new, balanced one.  So, it's possible that
+keeping maintaining balance could take O(n) time, on each update!
+Well, maybe not every update, but every second one.  Consider 
+deleting 70 and inserting 0, then deleting 60 and inserting -10, ....
+That's no good, since the whole point was to make the dictionary
+operations run fast.</p>
+<p>Potential Solutions.  We have a binary search tree, we could:</p>
+<ol>
+<li>Give up "binary" -- allow nodes to have varying numbers of children.
+       Leads to 2-3-4 trees, B-trees.</li>
+<li>Give up "perfect" -- keep it "close" to perfectly balanced.  
+       Leads to AVL trees, Red-Black trees.</li>
+</ol>
+<p>AVL trees keep the difference in height between the left and right
+   subtrees of any node to be 0 or 1.</p>
+<p>We will first look at 2-3-4 trees, and then relate them to a structure
+called red-black trees, which are easier to implement.</p>
+<a name="234"></a>
+<h2>2-3-4 Trees</h2>
+<p>The book calls these (2,4) trees.  Both names are used.</p>
+<p>Intuition:</p>
+<ol>
+<li>We'll allow multiple keys to be stored at each node.
+
+   <li>A node will have one more child than it has keys:
+<xmp>
+   leftmost child -- all keys less than first key
+   next child     -- all keys between first and second keys
+   ... etc ...
+   last child     -- all keys greater than the last key
+
+   a       a:b      a:b:c
+  / \     / | \    / / \ \
+</xmp>
+</li></li></ol>
+<h3>Rules for 2-3-4 Trees</h3>
+<ol>
+<li>Every node has either 2, 3, or 4 children (1, 2, or 3 keys).</li>
+<li>All the leaves of the tree (either external nodes or null pointers) 
+        are on the same level.</li>
+</ol>
+<p>To insert, you first go as far down the tree as you can.
+So we build a tree by inserting 41, 38, 31:</p>
+<xmp>
+   41     -&gt;    38:41     -&gt;      31:38:41   -&gt;
+  / \           / | \             / /  \ \
+</xmp>
+<p>In general, go down to a node with external children, and if a 2 or 3
+node, expand to a 3 or 4 node, adding the new key in the right
+location.</p>
+<p>If the node that you get down to is a 4-node, SPLIT it into two
+2-nodes, promote the middle key to join the parent node (creating a
+new root if the current root is split), and then continue following
+down into the correct 2-node.  Note that promoting the middle key to
+the parent may add a fourth key to the parent, which then has to
+split, etc.</p>
+<p>Now let's insert 12:</p>
+<xmp>
+ - No room in the 4 node, so split:
+
+       38                             38
+      /  \                          /    \
+    31    41   now insert 12 --&gt;  12:31   41
+   /  \  /  \                    / | \   /  \
+</xmp>
+<p>Now let's insert 19:  No problem, goes into the 3 node</p>
+<xmp>
+        38
+      /    \
+  12:19:31  41
+  / / \ \  /  \
+</xmp>
+<p>But now if we insert 8:</p>
+<xmp>
+ - No room in the 4 node, so split, promoting 19
+
+       19:38                          19:38
+      /  |  \                       /   |   \
+    12   31  41  now insert 8 --&gt; 8:12  31   41
+   / \  / \  / \                 / | \  / \  / \
+</xmp>
+<p>Now insert 15 (unproblematic), and 17 (one split):</p>
+<xmp>
+       19:38                        19:38
+     /   |   \                    /   |   \
+   8:12  31   41   -- 15 --&gt; 8:12:15  31   41  -- 17 --&gt;
+  / | \  / \  / \            / / \ \  / \  / \
+
+      12:19:38
+    /  |   |  \
+   8 15:17 31  41
+  /\  /|\  /\  /\
+</xmp>
+<p>Now insert 33 and 35 (unproblematic):</p>
+<xmp>
+      12:19:38            12:19:38
+    /  |   |  \        /   /    \   \
+   8 15:17 31  41     8 15:17  31:33 41
+  /\  /|\  /\  /\    /\  /|\    /|\  /\
+
+      12:19:38
+   /   /     \    \
+  8 15:17 31:33:35 41
+ /\ / | \  / / \ \  /\
+</xmp>
+<p>Now insert 20 (drives a double split):<p>
+<xmp>
+ - We want to split 31:33:35, so we can insert 20, but we cannot,
+   because 12:19:38 is already a 4-node (full).  So first, we must
+   split that one:
+
+            19
+     /------+------\
+    12             38       &lt;&lt; after first split (root)
+   /  \       /-----|-----\
+  8  15:17  31:33:35      41
+ /\  / | \  / / \ \       / \
+
+
+            19
+     /------+------\
+    12            33:38     &lt;&lt; after second split
+   /  \          /  |  \
+  8  15:17     31   35  41
+ /\  / | \     /\   /\  /\
+
+
+            19
+     /------+------\
+    12            33:38   
+   /  \          /  |  \
+  8  15:17    20:31 35  41  &lt;&lt; 20 finally inserted
+ /\  / | \     /|\  /\  /\
+</xmp>
+<h3>Problems with 2-3-4 nodes</h3>
+<p>This is tricky to implement.  You could:</p>
+<ul>
+<li>Have three different types of nodes, and keep creating new ones as
+        you need to (complex to code, lots of allocations)</li>
+<li>Have each node big enough to hold a 4-node (wastes a lot of space)</li>
+</ul>
+<p>The big advantage binary nodes have is that they're simple and small;
+you always need at least TWO children anyway, so you can keep track of
+what's on either side of a particular key.</p>
+<p>Around 1984, Guibas and Sedgewick came up with the following clever idea:</p>
+<ul>
+<li>Translate each 2, 3, or 4-node into a miniature binary tree:</li>
+<li>We'll "color" each vertex, so that we can tell which nodes belong
+      together as part of a larger 2-3-4 tree node.</li>
+</ul>
+<xmp>
+2-nodes:
+  a   -&gt;     a
+ / \        / \
+
+
+3-nodes:
+  a:b    -&gt;     a      OR       b    (Here a double // or \\ means
+ / | \         / \\           // \    that the child is RED)
+                  b           a
+                 / \         / \
+
+
+4-nodes:
+  a:b:c  -&gt;      b
+ / / \ \       // \\
+               a   c
+              / \ / \
+</xmp>
+<p>So, basically we have encoded each 2, 3, or 4 node using only binary
+nodes, but we've painted each node with a "color", either red or
+black.  We paint a node red if it's part of a "bigger" node.  This is
+called a <b>red-black tree</b>.</p>
+<p>See tree above after inserting 33.  Would look like:</p>
+<xmp>
+           12:19:38
+        /   /    \   \
+       8 15:17  31:33 41  &lt;&lt; 2-3-4 tree version
+      /\  /|\    /|\  /\
+
+             19
+         //      \\
+        12         38
+       /  \       /   \
+      8   17     31    41
+     /\  // \   / \\   /\
+        15         33
+        /\         /\
+</xmp>
+<p>So, now, one simple way to think about Red-Black trees is to just
+apply the 2-3-4 tree rules, bearing in mind this encoding.  </p>
+<a name="properties"></a>
+<h2>Red-Black Properties</h2>
+<p>But, you can also think of a Red-Black tree as a structure separate
+from a 2-3-4 tree.  The rules are:</p>
+<ol>
+<li>Every node is either RED or BLACK; by convention, the empty
+    tree is a leaf, and is always considered BLACK.</li>
+<li>The root is black.  If an action colors it red, change it back 
+    to black.</li>
+<li>For any node which is RED, both of its children are BLACK
+    (this means:  No two consecutive red nodes along any path)</li>
+<li>Every path from any node to a descendant leaf has the same number
+    of black nodes.</li>
+</ol>
+<p>Claim: The Red-Black properties (1-4) mean that the depth of the tree
+   is O(lg(n)) if there are n nodes in the tree.</p>
+<p>Informal justification:</p>
+<xmp>
+ - Since every path from the root to a leaf has the same number of
+   black nodes (by property 4), the shortest possible path would be
+   one which has NO red nodes in it.
+
+ - Suppose k is the number of black nodes along any path from the root
+   to a leaf.
+
+   Q: How many red nodes could there be?
+
+   A: At most k.  By property 3, anytime you get a red node, your next
+      node must be black.  You can only do that k times before you run
+      out of black nodes.
+
+   So, the LONGEST possible path is at most 2 times the length of the
+   shortest, or h &lt;= 2k
+
+It can be shown that if each path from the root to a leaf has k black
+nodes, there must be AT LEAST 2^k - 1 nodes in the tree.  (We showed
+this when we looked at binary trees - 1 node at root, 2 nodes at level 1,
+4 nodes at level 2, etc.  Add them up.)  Since
+
+       h &lt;= 2k, i.e. k &gt;= h/2, 
+
+... there must be at least 2^(h/2) - 1 nodes in the tree.  If there
+are n nodes in the tree, that means
+
+       n &gt;= 2^(h/2) - 1
+
+Adding 1 to both sides:
+
+       n + 1 &gt;= 2^(h/2)
+
+...and taking the log (base 2) of both sides:
+
+       lg(n+1) &gt;= h/2
+or
+       2 lg(n + 1) &gt;= h,  which is O(lg(n)).
+</xmp>
+<a name="inserting"></a>
+<h2>Inserting into a Red-Black Tree</h2>
+<p>As usual for a binary search tree, find the location where the new
+element goes, and insert it there.  Initially, color it RED.  This
+insures that rules 1, 2 and 4 are preserved.  But rule 3 might be
+violated (a red node has black children).  There are several cases
+(assume we're inserting a key x).</p>
+<ol>
+<li>A 2-node (black node with black children)
+<xmp>
+       |        |       |
+       a   ==&gt;  a   or  a    (becomes a 3-node)
+      / \     // \     / \\
+              x           x
+
+   This is not problematic; no violation of rule 3.
+</xmp></li>
+<li>A 4-node (black node with red children)
+<xmp>
+       |
+       a
+     // \\
+     b   c
+    / \ / \
+            &lt;&lt; x to be inserted at one of these locations
+</xmp>
+<p>Here, we have to "split" the node, promoting the middle element to
+   a higher point in the tree.  But that's easy: Just join (a) with
+   its parent, and "unjoin" (b) and (c) from (a).  This amounts to a
+   "color flip", e.g.:</p>
+<xmp>
+       ||
+       a
+      / \
+     b   c
+    / \ / \\
+           x &lt;&lt; wherever x is, it's okay
+</xmp>
+<p> We haven't changed the black height of anything; the new node is
+   RED, and we just switched the order of red/black in the subtree.
+   So we haven't broken the other properties, and now rule 3 is okay
+   here.  But we must make sure the property hasn't been violated at a
+   higher point in the tree!  We'll come back to this.</p></li>
+<li>A 3-node (black root with one red child).
+   This case is a bit trickier.  It depends where you are inserting:
+<xmp>
+        |            |
+        a            a
+      // \     or   / \\
+      b   &lt;3&gt;     &lt;3&gt;  b
+     / \              / \
+   &lt;1&gt; &lt;2&gt;          &lt;2&gt; &lt;1&gt;
+</xmp>
+<p>If you are inserting at &lt;3&gt;, no problem; you're basically creating
+   a 4-node, adding x at the front or the back.  No color problem:</p>
+<xmp>
+        |            |
+        a            a
+      // \\    or  // \\    &lt;&lt; simple case, insert at &lt;3&gt;
+      b   x        x   b
+     / \ / \      / \ / \
+</xmp>
+<p>But if you insert at &lt;1&gt; or &lt;2&gt;, under the child, you get two red
+   nodes in a row.  So we have to fix that.</p>
+<p>Suppose you insert at position &lt;1&gt;.  Then, you have two red nodes
+   in a straight line:</p>
+<xmp>
+        |            |
+        a            a
+      // \     or   / \\
+      b  &lt;3&gt;      &lt;3&gt;  b
+    // \              / \\
+    x  &lt;2&gt;          &lt;2&gt;  x
+</xmp>
+<p>Note in this case that x &lt; b, and b &lt; a.  We could fix this
+   operation by "rotating" this whole structure to move b up to the
+   root of the structure, colored black with x on one side (colored
+   red) and a on the other side (colored red):</p>
+<xmp>
+        |            |
+        b            b
+      // \\    or  // \\
+      x   a        a   x
+         / \      / \
+       &lt;2&gt; &lt;3&gt;  &lt;3&gt; &lt;2&gt;
+</xmp>
+<p>Note that we haven't changed the number of black nodes along any
+   path by doing this, and we've fixed the double red.  And the sub-
+   trees &lt;2&gt; and &lt;3&gt; are still ordered properly.</p>
+<p>This is called a <b>single rotation</b>.</p>
+<p>On the other hand, suppose you inserted at position &lt;2&gt;.  Then you
+   have two red nodes in a row, but in a "zig-zag" pattern, e.g.:</p>
+<xmp>
+        |            |
+        a            a
+      // \     or   / \\
+      b  &lt;3&gt;      &lt;3&gt;  b
+     / \\            // \
+   &lt;1&gt;  x            x  &lt;1&gt;
+</xmp>
+<p>Now, the "middle" element is x, so we basically want to move x up
+   to the root, and have b and a on either side, both colored red:</p>
+<xmp>
+        |            |
+        x            x
+      // \\    or  // \\
+      b   a        a   b
+     / \ / \      / \ / \
+   &lt;1&gt;     &lt;3&gt;  &lt;3&gt;     &lt;1&gt;
+</xmp>
+<p> One way to think of this is to suppose that you do it as two single
+   rotations -- once around b, and then around x.  (Here it is shown
+   for the left case only; the other one is symmetric:</p>
+<xmp>
+       |           |           |
+       a           a           x
+     // \        // \        // \\
+     b  &lt;3&gt; ==&gt;  x  &lt;3&gt;  ==&gt; b   a
+    / \\       // \         / \ / \
+  &lt;1&gt;  x       b          &lt;1&gt;     &lt;3&gt;
+              / \
+            &lt;1&gt;
+</xmp>
+<p>This is called a <b>double rotation</b>.  The resulting 4-node will be the
+   same regardless of which 3-node version you started from.</p>
+<p>The book combines both of these cases into what they call a <b>trinode
+   restructuring</b>.  This captures the basic idea - you are turning the
+   three nodes of an invalid 4-node into a nice, balanced, valid 4-node.
+   This is the operation that prevents a tree from getting too vine-like. 
+   Note that everything under the bottom node moves up a level in the tree.</p>
+<p>Go through all of the 2-3-4 trees and show how the operations act on 
+   red-black trees.</p>
+<h3>Tree Maintenance</h3></li></ol></p></p></p></body></html>
+<p>Since a red-black tree is also a binary search tree, the time
+complexity of the `lookup' operation is O(h), which we just argued is
+O(lg(n)) in the worst case.</p>
+<p>Similarly, insertion works like in a binary search tree, except that
+we also have to fix up the color properties.  But, even in the worst
+case, you only have to fix colors along the path from the new node to
+the root, so that's only a constant factor of additional work.</p>
+<p>Furthermore, it can be proved that you will never have to do more than
+one rotation or double-rotation to fix up the tree.  All the other
+changes can be done with color-flips.  So, insert is also O(lg(n)).</p>
+<a name="deletions"></a>
+<h2>Deletions</h2>
+<p>Deleting from both these sorts of trees is a bit more tricky, but it
+doesn't increase the time complexity -- it can still be done in
+O(lg(n)) time, worst case.  The additional complexity comes because
+there is one way of splitting nodes, but several ways of merging nodes
+together (which you sometimes have to do when deleting).</p>
+<p>The first step in any deletion is to get the key to be deleted into
+a node with only external children (at the bottom of the tree). We do
+this basically the same way that we did in binary search tree deletion:
+swap it with its immediate predecessor or successor.  You find the 
+immediate predecessor in the same way - into the left subtree and follow
+rightmost links until you get to a bottom node, and take out the rightmost
+key.  Use it to replace the internal node to be deleted.
+<em>The red-black tree equivalent is to do a normal binary tree deletion.
+That is, once we have a node with an external child we point the parent 
+of the node being deleted at a child (the sibling of the external child).</em></p>
+<p>If the node that you are removing a key from is a 3 or 4 node you
+are done. <em>In red-black trees this corresponds to removing a vertex
+that is red or whose child is red.  In either case color the child 
+black and you are done.</em>  So to delete 10 replace it by 8:
+
+<xmp>
+       10             8
+      /  \           / \
+    7:8 12:13  -&gt;   7  12:13
+    / \ / | \      / \ / | \
+    
+    
+       10               8
+      /  \             / \
+     8    12     -&gt;   7   12   
+    // \  / \\       / \  / \\
+    7        13              13
+   / \       / \             / \
+</xmp>
+<p>The problem comes when deleting from a 2-node.  Call this vertex
+v.  This would leave a 1-node, which is not valid.  <em>In a 
+red-black tree this creates a node that is double-black to indicate
+that this path is short one black edge, so this edge counts as
+two black edges.</em> The cases are:</p>
+<ol>
+<li>If w is an adjacent sibling of v that is a 3 or 4 node, we adopt (steal?) a 
+  child of w and give it to v. To maintain the order we have to move a key 
+  from w up to their common parent and a key from the parent down to v.
+  <em>In a red-black tree this corresponds to a trinode restructuring
+  or a slightly more complicated "adjustment".  The book has the
+  details.</em>
+  So to delete 7:
+  
+<xmp>
+      8              12
+     / \             / \
+    7  12:13  -&gt;    8   13
+   / \ / | \       / \  / \
+    
+    
+      8               12
+     / \             /  \
+    7   12    -&gt;    8   13  
+   / \  / \\       / \  / \
+           13  
+           / \    
+</xmp></li>
+<li>If all of v's adjacent siblings are 2-nodes we fuse v with a sibling.
+To maintain the order we need a key between them, which we pull down 
+from the parent.  If the parent is a 3 or 4-node this is easy.  If
+not we have passed the underflow up to the parent node, which then 
+must be resolved at that level by adopting or fusing.  The fusing
+operation can be passed up the tree to the root.  If the root loses
+its only key it disappears and the tree is one level shorter. 
+<em>In a red-black tree this results in a re-coloring that passes
+the double black up to the parent, where it must be resolved.</em>
+Removing 3:
+
+<xmp>
+       12                 12            
+     /    \             /    \
+    7       20    -&gt;   _       20     -&gt;   12:20   
+   / \     /  \        |      / \         /  |  \
+  3   9   15  30      7:9    15  30     7:9  15  30
+ / \ / \  /\  /\     / | \   /\  /\    ? | \ /\  /\
+    
+       12                 12                 12
+     /    \            ///    \            /   \\          
+    7       20    -&gt;   7       20     -&gt;  7      20
+   / \     /  \       / \\     / \       / \\    / \  
+  3   9   15  30         9    15  30        9   15  30   
+ / \ / \  /\  /\        / \   /\  /\       / \   /\ /\
+</xmp></li>
+</ol>
+<p>The ideas are straightforward, but the implementation can be a 
+bit messy.  The book covers it in detail.</p>
+<a name="synopsis"></a>
+<h2>Synopsis</h2>
+<p>Binary search trees are a good data structure for implementing the
+Dictionary ADT, but their performance is best when they are kept in
+balance.  
+
+<ul>
+<li>Keeping "perfect" balance turns out to be too much work.</li>
+<li>But we can make it work if we either give up "binary" (have search
+   trees with variable numbers of children), or give up "perfect"
+   (allow trees to be "somewhat unbalanced")</li>
+<li>2-3-4 trees:  Use the first strategy.
+    <ul>
+<li>All leaves are at the same level, all paths the same length.</li>
+<li>But it is clumsy to implement due to variable-size nodes.</li>
+</ul></li>
+<li>Red-Black trees:  Use the second strategy.
+    <ul>
+<li>Encode 2-3-4 nodes as "mini-trees", nodes colored red to indicate
+        they are conjoined with their parent.</li>
+<li>Use "rotations" and "color flips" to keep the tree in balance,
+        takes no more than O(lg(n)) time.  Also, only do one restructuring
+        adjustment for a insertion or deletion.  This is important for
+        some algorithms that you will see if you take CS 31.</li>
+</ul></li>
+<li>Doing this, we get guaranteed O(lg(n)) runtime for all the
+   Dictionary operations -- insert, lookup, delete.</li>
+</ul>
+<a name="btrees"></a>
+<h2>B-Trees</h2>
+<p>2-3-4 trees are a special case of multiway trees.  A multiway tree of
+particular interest is the B-tree. A B-tree of order d has nodes with 
+between d/2 (rounded up) and d children.  So a 2-3-4 tree is a B-tree of
+order 4.  The B-trees of even order are particularly nice, because insertions
+and deletions are handled in very similar ways to 2-3-4 trees, with splits
+and fusions.</p>
+<p>The place where a B-tree is particularly useful is in storing a TreeMap
+of size n that is so large that it must be stored on disk.  Searching through a
+regular binary tree stored on disk would require O(log n) comparisons, but
+it is quite probable that most of the time getting a child's key would require
+reading a new disk block.  Disk reads are many orders of magnitude slower 
+than memory accesses, and O(log n) disk reads could be time-consuming.
+What is especially galling is that a disk read brings in a entire disk
+block, usually between 512 bytes and 2048 bytes, and we use only one key
+of maybe 4 bytes out of that block.</p>
+<p>An alternative is to store the TreeMap as a B-tree, whose order is the
+number of key/value pairs that will fit into a disk block.  If the value
+is some sort of a refererence to where the data is stored on disk, as 
+is usually the case, instead of getting a
+single key per disk read we get hundreds of them.  The depth of the B-tree
+of order d is still O(log n), but the base of the logarithm is d instead of 2.
+This is a case where constants matter, because disk reads are so slow compared
+to all of the other computation that takes place.  Even maps with terrabytes of keys can
+be stored in a few levels, so search takes only a few reads.  (Note that if d is 100 
+and there are 10<sup>12</sup>
+keys that the number of levels of the tree will be 6, as opposed to over 40 in
+a regular binary tree. This could result in a speedup of a factor of 6 or so in the 
+program, which is worth doing.)</p>
+</p></p>
+

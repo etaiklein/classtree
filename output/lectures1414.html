@@ -1,0 +1,349 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+<meta content="text/css" http-equiv="Content-Style-Type"/>
+<meta content="pandoc" name="generator"/>
+<title></title>
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+</head>
+<body>
+<!-- <script type="text/javascript" -->
+<!--   src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"> -->
+<!-- </script> -->
+<script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+</script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+<link href="http://www.cs.dartmouth.edu/~scot/cs10/azul.css" rel="stylesheet" type="text/css"/>
+<div id="menubar">
+<ul>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/syllabus.html">Syllabus</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/schedule.html">Schedule</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/sa/short_assignments.html">Short assignments</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/lab/lab_assignments.html">Labs</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/exams.html">Exams</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/software.html">Course software</a>
+<li><a href="http://www.cs.dartmouth.edu/~scot/cs10/help.html">Get help</a>
+</li></li></li></li></li></li></li></ul>
+</div>
+<div id="termtitle"> CS 10: Fall 2014 </div>
+<h1 id="lecture-13-april-23">Lecture 14, October 13</h1>
+<h2 id="code-discussed-in-lecture">Code discussed in lecture</h2>
+<ul>
+<li><a href="ParseIntException.java">ParseIntException.java</a></li>
+<li><a href="CreatingExceptions.java">CreatingExceptions.java</a></li>
+<li><a href="OutOfRangeException.java">OutOfRangeException.java</a></li>
+<li><a href="MinPriorityQueue.java">MinPriorityQueue.java</a></li>
+<li><a href="ArrayListMinPriorityQueue.java">ArrayListMinPriorityQueue.java</a></li>
+<li><a href="SortedArrayListMinPriorityQueue.java">SortedArrayListMinPriorityQueue.java</a></li>
+<li><a href="HeapMinPriorityQueue.java">HeapMinPriorityQueue.java</a></li>
+<li><a href="Heapsort.java">Heapsort.java</a></li>
+</ul>
+<h2 id="short-assignment-8">Short Assignment 8</h2>
+<p><a href="../../sa/sa8/sa8.html">Short Assignment 8</a> is due Friday.</p>
+<h2 id="short-assignment-10">Lab Assignment 4</h2>
+<p><a href="../../lab/lab4/lab4.html">Lab Assignment 4</a> is due in two weeks.</p>
+<h2 id="exceptions">Review Exceptions</h2>
+<p>Last class we looked at exceptions.  They were in the context of other programs, so the ideas might not have been as clear as they could have been.  What follows is a more comprehensive discussion of exceptions.  I will only pick out a few points in class, but am giving you the whole thing so that you can read it.</p>
+<p>Programs have to handle all sorts of errors. That's too bad, because programming would be a lot more fun if errors didn't occur. But they do, and in a commercial program, it's not uncommon for far more than half the program text to be for handling errors that are fairly rare.</p>
+<p>Yet think about what it would be like to use real software if it doesn't handle errors. A good example was Mac OS 9, which let you corrupt memory that you shouldn't be able to corrupt—and eventually the whole machine would crash.</p>
+<h3 id="error-situations">Error situations</h3>
+<p>The following situations are common error cases:</p>
+<ul>
+<li>User input errors: User input does not follow syntactic or semantic rules of the application. For example, if the user should enter a number but instead enters non-numeric characters.</li>
+<li>Device errors: Devices may be unavailable, e.g., a printer is turned off or a disk drive is not connected.</li>
+<li>Physical limitations: The program runs out of memory, a disk fills, an operation times out, etc.</li>
+<li>Component failures: These are errors due to programming mistakes, e.g., a called method returns an invalid result, an array index error, or calling a method on a null reference.</li>
+</ul>
+<h3 id="philosophy-of-error-handling">Philosophy of error handling</h3>
+<p>Note that the following three places in a program almost always differ:</p>
+<ol style="list-style-type: decimal">
+<li>Where the error is made (assuming that it's made in the code).</li>
+<li>Where the error is detected.</li>
+<li>Where corrective action occurs (which may in fact be several places).</li>
+</ol>
+<p>In particular, we often need the corrective action to take place within a method that calls the method that detects the error. Or perhaps within a method that calls the method that calls the method that detects the error. Or perhaps within <em>that</em> method's caller. That's the major reason why error handling is so tricky. We need some good way to transfer control from the point of detection to the point of correction. Although calling a method to handle the error might seem like a nice idea, it's often the opposite of what we really need to do. Rather than <em>pushing</em> a method onto the runtime stack, we need to <em>pop</em> methods off the stack.</p>
+<p>Java exceptions provide a mechanism to do just this. Java uses three keywords, <code>try</code>, <code>throw</code>, and <code>catch</code>, for exception handling. (C++, by the way, also has exceptions and uses the same three keywords.)</p>
+<h3 id="errors-and-exceptions">Errors and exceptions</h3>
+<p>The convention when programming in Java is that there is a distinction between errors and exceptions; errors are more dire. An <strong>error</strong> occurs when something goes awry and there is no way to continue the program. For example, perhaps a file required to be linked into the program is missing, or one of the "threads of control" has died. An <strong>exception</strong> occurs when something goes awry, but there might be a way for the program to deal with it. For example, an array index is out of bounds, or we try to open a file that does not exist.</p>
+<p>Exceptions are objects. They are subclasses of <code>Throwable</code>, and there's a whole class hierarchy under the <code>Exception</code> class.</p>
+<h3 id="what-happens-when-an-exception-occurs">What happens when an exception occurs</h3>
+<p>Exceptions are <strong>thrown</strong>. Sometimes by an explicit <code>throw</code> statement, and sometimes just by the program's own bad behavior. As examples of the latter, consider</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="dt">int</span> a = <span class="dv">1</span>, b = <span class="dv">0</span>, c;
+c = a / b;</code></pre>
+<p>You get the following message:</p>
+<pre><code>Exception in thread "main" java.lang.ArithmeticException: / by zero</code></pre>
+<p>Or how about</p>
+<pre class="sourceCode java"><code class="sourceCode java">String s = <span class="kw">null</span>;
+System.<span class="fu">out</span>.<span class="fu">println</span>(s.<span class="fu">toUpperCase</span>());</code></pre>
+<p>which results in</p>
+<pre><code>Exception in thread "main" java.lang.NullPointerException</code></pre>
+<p>We'll see <code>throw</code> statements in a moment.</p>
+<p>To deal with an exception, it is <strong>caught</strong> in a try-catch statement. The "try" part is a set of statements. If an exception occurs in the try part, and the "catch" part lists the exception as an exception class that it deals with, then that's where it's dealt with. We say that the exception is caught at that point. Otherwise, the method (let's call it <code>f</code>) <strong>immediately terminates</strong> and <strong>control is immediately transferred to its caller</strong> (let's call it <code>g</code>). If the call of <code>f</code> within <code>g</code> was itself within a try-catch statement, and the catch part lists the exception as an exception class that it deals with, then <code>g</code> catches the exception. Otherwise, <code>g</code> propagates the exception back to its caller. And so on. Eventually, we either get to a method that deals with the exception, or we have popped the entire runtime stack. In the latter case, we have propagated the exception all the way back to <code>main</code> without finding a method that catches the exception. In this case, the program terminates, and a message is printed out, along with a stack trace.</p>
+<p>Although it may seem horrible to terminate the entire program due to an uncaught exception, doing so is better than the alternatives. The program should not merrily go along, acting as if everything is OK. Something has gone very wrong, and rather than let the program do something wrong, it is better to just stop it.</p>
+<p>Note how this scheme of each method either catching the exception or propagating it back to its caller gives us the behavior described above, in which methods are popped from the runtime stack until we find one that catches the exception.</p>
+<h3 id="throwing-an-exception">Throwing an exception</h3>
+<p>It's pretty easy to throw an exception. There are already a bunch of Java exception classes, and it's quite possible that what has happened fits into one of them. For example, suppose that we were writing the method <code>Integer.parseInt</code>, which takes as a parameter a reference to a <code>String</code> and returns the corresponding <code>int</code>. What if the string does not contain characters that can be interpreted as an <code>int</code>, e.g., <code>7x</code>? There's a class <code>NumberFormatException</code>, and we can throw an object of this class. We can see this behavior in <a href="ParseIntException.java">ParseIntException.java</a>. If <code>s</code> references a <code>String</code> containing <code>7x</code>, and we call <code>Integer.parseInt(x)</code> in <code>main</code>, we get the output</p>
+<pre><code>Exception in thread "main" java.lang.NumberFormatException: For input string: "7x"
+    at java.lang.NumberFormatException.forInputString(NumberFormatException.java:65)
+        at java.lang.Integer.parseInt(Integer.java:492)
+        at java.lang.Integer.parseInt(Integer.java:527)
+        at ParseIntException.main(ParseIntException.java:18)</code></pre>
+<p>We typically construct exception objects with a string that describes what happened. For example, the <code>parseInt</code> method in <a href="ParseIntException.java">ParseIntException.java</a> does so.</p>
+<p>The string that we give to the exception constructor is part of what's returned by <code>toString</code>. If this exception is caught later on, and we print the exception, we'll actually print that string.</p>
+<p>We'll see a little later how to create our own exception classes.</p>
+<h3 id="catching-an-exception">Catching an exception</h3>
+<p>As I said, we use a try-catch statement to catch an exception. For example, suppose we want the user to enter two doubles, and the program divides them and prints the quotient. Here's how we can deal with the denominator being 0 without checking in advance:</p>
+<pre class="sourceCode java"><code class="sourceCode java">Scanner input = <span class="kw">new</span> Scanner(System.<span class="fu">in</span>);
+<span class="dt">int</span> a, b;
+a = input.<span class="fu">nextInt</span>();
+b = input.<span class="fu">nextInt</span>();
+<span class="kw">try</span> {
+  System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"The quotient is "</span> + (a / b));
+}
+<span class="kw">catch</span> (ArithmeticException e) {
+  System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"Sorry, but we don't allow dividing by zero."</span>);
+}</code></pre>
+<p>If we want to use the message in the exception, we could rewrite the example as</p>
+<pre class="sourceCode java"><code class="sourceCode java">Scanner input = <span class="kw">new</span> Scanner(System.<span class="fu">in</span>);
+<span class="dt">int</span> a, b;
+a = input.<span class="fu">nextInt</span>();
+b = input.<span class="fu">nextInt</span>();
+<span class="kw">try</span> {
+  System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"The quotient is "</span> + (a / b));
+}
+<span class="kw">catch</span> (ArithmeticException e) {
+  System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"Arithmetic exception: "</span> + e);
+}</code></pre>
+<p>Note how we take advantage of the object <code>e</code> being an <code>ArithmeticException</code> object.</p>
+<p>This example showed how we can catch an exception. In fact, this is a lousy use of an exception, because we could have just as easily tested in advance:</p>
+<pre class="sourceCode java"><code class="sourceCode java">Scanner input = <span class="kw">new</span> Scanner(System.<span class="fu">in</span>);
+<span class="dt">int</span> a, b;
+a = input.<span class="fu">nextInt</span>();
+b = input.<span class="fu">nextInt</span>();
+<span class="kw">if</span> (b != <span class="dv">0</span>)
+  System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"The quotient is "</span> + (a / b));
+<span class="kw">else</span>
+  System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"Sorry, but we don't allow dividing by zero."</span>);</code></pre>
+<p>In general, we use exceptions for problems that we either cannot check in our code or are just too inconvenient to check. (For example, perhaps we are in the midst of a long calculation that has a lot of divisions. If we want to catch any of them being a divide by zero, we can use a try-catch statement.)</p>
+<p>We can catch more than one type of exception by using multiple catch clauses. If an exception occurs, we go through the catch clauses one by one. The first one to match the type of exception thrown is executed. Note that the subclass principle applies here. If an exception is listed in a catch clause, and the thrown exception is of a subclass, then it matches.</p>
+<h3 id="the-finally-clause">The finally clause</h3>
+<p>Sometimes, you want a piece of code to be executed whether or not an exception occurred. For example, you might want to free up a resource whether or not there was an exception. We use a <code>finally</code> clause, following all the <code>catch</code> clauses, to do so. To continue the brief but bad example from before:</p>
+<pre class="sourceCode java"><code class="sourceCode java">Scanner input = <span class="kw">new</span> Scanner(System.<span class="fu">in</span>);
+<span class="dt">int</span> a, b;
+a = input.<span class="fu">nextInt</span>();
+b = input.<span class="fu">nextInt</span>();
+<span class="kw">try</span> {
+  System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"The quotient is "</span> + (a / b));
+}
+<span class="kw">catch</span> (ArithmeticException e) {
+  System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"Arithmetic exception: "</span> + e);
+}
+<span class="kw">finally</span> {
+  System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"Have a nice day."</span>);
+}</code></pre>
+<p>The "Have a nice day" message will be printed out in all cases.</p>
+<h3 id="bonus-coverage-defining-new-exceptions">Defining new exceptions</h3>
+<p>We define new kinds of exceptions by making a subclass of <code>Exception</code> or one of its transitive subclasses (i.e., anything below <code>Exception</code> in the class hierarchy.) For example, <a href="CreatingExceptions.java">CreatingExceptions.java</a> and <a href="OutOfRangeException.java">OutOfRangeException.java</a> show how to do so. The <code>OutOfRangeException</code> class is a subclass of <code>Exception</code>. All it does is give the string in its constructor to its superclass's constructor. Granted, that's not much help.</p>
+<p>Bear in mind, however, that since exceptions are objects, they can include whatever instance variables we want. Let's say that you want to implement your own class called <code>AssociativeArray</code>. An <strong>associative array</strong> is like an <code>ArrayList</code>, but its indices can be any <code>String</code>. Just to give you a flavor, we might have an associative array indexed by the name of a state and whose contents are the state's capital. Let's suppose that the <code>AssociativeArray</code> class also has a method called <code>lookup</code>, which takes a <code>String</code> and gives you the value stored with that <code>String</code> as the index:</p>
+<pre class="sourceCode java"><code class="sourceCode java">AssociativeArray capitals = <span class="kw">new</span> <span class="fu">AssociativeArray</span>();
+capitals.<span class="fu">add</span>(<span class="st">"New Hampshire"</span>, <span class="st">"Concord"</span>);
+capitals.<span class="fu">add</span>(<span class="st">"Vermont"</span>, <span class="st">"Montpelier"</span>);
+capitals.<span class="fu">add</span>(<span class="st">"Maine"</span>, <span class="st">"Augusta"</span>);
+System.<span class="fu">out</span>.<span class="fu">println</span>(<span class="st">"The capital of Maine is "</span> + capitals.<span class="fu">lookup</span>(<span class="st">"Maine"</span>));</code></pre>
+<p>This fragment prints</p>
+<pre><code>The capital of Maine is Augusta</code></pre>
+<p>Now suppose that we make the call <code>capitals.lookup("Samoa")</code>. Since we have no associative array entry indexed by <code>Samoa</code>, we might throw an exception. And it might be good for the exception to include the offending index. We could define an exception class as follows:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">class</span> AssociativeArrayIndexException <span class="kw">extends</span> Exception {
+  <span class="kw">private</span> String badIndex;
+
+  <span class="fu">AssociativeArrayIndexException</span>(String s) {
+    badIndex = s;
+  }
+
+  <span class="kw">public</span> String <span class="fu">toString</span>() {
+    <span class="kw">return</span> <span class="st">"AssociativeArray indexing error: index is "</span> + badIndex;
+  }
+}</code></pre>
+<p>And our <code>AssociativeArray</code> class, upon detecting such an indexing error, could include the code</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> String <span class="fu">lookup</span>(String index) {
+  ...
+  <span class="kw">if</span> (indexNotFound)
+    <span class="kw">throw</span> <span class="kw">new</span> <span class="fu">AssociativeArrayIndexException</span>(index);
+}   </code></pre>
+<p>where <code>indexNotFound</code> is a <code>boolean</code> indicating that <code>index</code> does not index an entry of the associative array.</p>
+<h3 id="bonus-coverage-checked-and-unchecked-exceptions">Checked and unchecked exceptions</h3>
+<p>Exceptions in Java are considered either <strong>checked</strong> or <strong>unchecked</strong>. When you call a method that throws a checked exception, you need to indicate what you will do about the exception if it is ever thrown. You have two choices as to how to indicate what you will do:</p>
+<ol>
+<li> 
+You can catch it in your method. You do so in the usual way: with a try-catch statement that catches the checked exception.
+</li>
+<li>
+<p>You can have your method not catch it, but then you need to explicitly indicate that your method is not catching it and will instead propagate the checked exception up to its caller. You do so in the method header. For example, the <code>OutOfRangeException</code> that we saw earlier is a checked exception. If your method, let's call it <code>bozo</code>, calls a method that could throw an <code>OutOfRangeException</code>, and <code>bozo</code> doesn't catch <code>OutOfRangeException</code>, then the header for <code>bozo</code> should look like</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="dt">void</span> <span class="fu">bozo</span>() <span class="kw">throws</span> OutOfRangeException</code></pre>
+<p>The <code>throws</code> clause in the header alerts <code>bozo</code>'s caller that <code>bozo</code> may throw an <code>OutOfRangeException</code>. The caller has to either catch it or propagate it up, and so on.</p>
+<p>If a method can propagate multiple checked exceptions, list them in the header, separated by commas:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="dt">void</span> <span class="fu">bozo</span>() <span class="kw">throws</span> OutOfRangeException, FileNotFoundException</code></pre>
+Here, <code>FileNotFoundException</code> occurs when the program tries to access a file on the computer, and the file is not there.
+</li>
+</ol>
+<p>How do you know which exceptions are checked and which are unchecked? The general rule is that <strong>checked exceptions aren't your fault</strong>. For example, a <code>FileNotFoundException</code> is not your fault. Maybe the user typed the wrong file name. Maybe some clown trashed the file. But it's not the fault of the programmer.</p>
+<p><strong>Unchecked exceptions <em>are</em> your fault</strong>. For example, a <code>NullPointerException</code>. You either should not have had a null pointer, or you should have checked for it before using it. Either way, it's your bad.</p>
+<h2 id="priority-queues">Priority Queues</h2>
+<p>A <strong>priority queue</strong> is a queue which instead of being FIFO is "Best Out." "Best" is defined by a priority. For a typical priority queue, low priority numbers are removed first. That may seem backwards, but think of "you are our number one priority!" That's better than being their number two or three priority.</p>
+<p>There are hundreds of applications of priority queues. They come up in computer systems (high-priority print jobs, various priority levels of jobs running on a time-sharing system, etc.). They are used in finding shortest paths and other search problems. And a priority queue gives you an easy way to sort: put everything into the priority queue, then take them out one at a time. They come out in sorted order.</p>
+<p>There are two flavors of priority queues: <strong>min-priority queues</strong> and <strong>max-priority queues</strong>. They vary only in whether a low or high priority number corresponds to "better" priority.</p>
+<p>Min-priority queues form the heart of discrete event simulators. A <strong>discrete event simulator</strong> simulates a system in which events occur. Each event occurs at some moment in time. The simulation runs through time, where the time of each occurrence is nondecreasing (i.e., the simulated time either increases or stays the same—it never backs up). An event can cause another event to occur at some later time. A min-priority queue keeps track of the events that have yet to occur, with the key of an element being the time that its event is to occur. When an event is created, it is added to the min-priority queue. To process the next event to occur, we have to determine the event in the min-priority queue with the lowest time of occurrence and remove it from the queue so that we don't try to process it more than once. Sometimes, the result of an event is to allow some other event, already scheduled, to occur even earlier.</p>
+<p><a href="MinPriorityQueue.java">MinPriorityQueue.java</a> contains the interface for a min-priority queue. Here, each element has a value, which we call its <strong>key</strong>. The <code>MinPriorityQueue</code> interface supports the following operations:</p>
+<ul>
+<li><code>isEmpty</code>, a predicate that tells whether the priority queue is empty.</li>
+<li><code>insert</code>, which inserts an element into the priority queue.</li>
+<li><code>minimum</code>, which returns the element in the priority queue with the smallest key, but leaves the element in the priority queue.</li>
+<li><code>extractMin</code>, which returns the element in the priority queue with the smallest key and removes it from the priority queue.</li>
+</ul>
+<p>Some applications also require a <code>decreaseKey</code> operation, which reduces the priority value in a given element. The <code>decreaseKey</code> operation makes code more complex, because the surrounding application needs a way to identify individual elements within the priority queue. Doing so could expose the implementation of the priority queue to the surrounding code, unless we use some opaque type as a "middleman" between the code that implements the priority queue and the surrounding code.</p>
+<p>We can also define a <strong>max-priority queue</strong>, which replaces <code>minimum</code> and <code>extractMin</code> by <code>maximum</code> and <code>extractMax</code> (and <code>increaseKey</code> if you include it). We will focus on min-priority queues, but if you can implement one, you can implement the other easily.</p>
+<p>Java provides a class <code>java.util.PriorityQueue</code>, although surprisingly no interface for a general priority queue. This implementation is based on a heap, which we will see later in this lecture. Once again, Java chooses different names:</p>
+<ul>
+<li><code>insert</code> becomes <code>add</code> or <code>offer</code>.</li>
+<li><code>minimum</code> becomes <code>peek</code>.</li>
+<li><code>extractMin</code> becomes <code>poll</code>.</li>
+<li>And there is no <code>isEmpty</code> method. But there is a <code>size</code> method, and you can compare its return value against 0.</li>
+</ul>
+<p>We define a <code>MinPriorityQueue</code> interface in <a href="MinPriorityQueue.java">MinPriorityQueue.java</a>. Here, the interface is declared as</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">public</span> <span class="kw">interface</span> MinPriorityQueue&lt;E <span class="kw">extends</span> Comparable&lt;E&gt;&gt;</code></pre>
+<p>This declaration says that you can use any type <code>E</code> that extends the <code>Comparable</code> interface. But wait, you don't <em>extend</em> an interface; you <em>implement</em> an interface. In the context of generic types, however, you always extend, even if you do it by implementing. Better not to ask why. There might even be a good reason.</p>
+<p>What is the <code>Comparable</code> interface? It is the standard Java interface for comparing two objects for less than, greater than, or equal. You need to implement a single method, <code>compareTo(other)</code>. It is used to compare this object to the other object. The result is an integer that is negative when <code>this</code> is "less than" <code>other</code>, 0 when <code>this</code> "equals" <code>other</code>, and positive when <code>this</code> is "greater" than <code>other</code>. For example, we might see code like this:</p>
+<pre class="sourceCode java"><code class="sourceCode java"><span class="kw">if</span> (list.<span class="fu">get</span>(smallest).<span class="fu">compareTo</span>(list.<span class="fu">get</span>(i)) &gt; <span class="dv">0</span>)</code></pre>
+<p>This line tests whether <code>list.get(smallest) &gt; list.get(i)</code>, i.e., is the element in position <code>smallest</code> of <code>list</code> greater than the element in position <code>i</code>. To test less than you would replace <code>&gt; 0</code> by <code>&lt; 0</code>, and to test equality you would replace it by <code>== 0</code>.</p>
+<p>There is another way to compare two objects: the <code>Comparator</code> interface. The book discusses this interface on pages 363–364. You implement the method <code>compare(a, b)</code> and give the same negative, zero, or positive result as in <code>compareTo</code>. The Java <code>PriorityQueue</code> class will use "natural order" (meaning the results of <code>compareTo</code>) if you call the constructor with no arguments. If you want to use a <code>Comparator</code> you call a constructor that takes two arguments: the initial size of the queue and a <code>Comparator</code> object. This style is more flexible, because you can define different orders for different purposes.</p>
+<h2 id="implementing-a-priority-queue">Implementing a priority queue</h2>
+<p>We will look at three implementations of min-priority queues. Each has different running times for the various operations, leading to tradeoffs on which implementation to choose.</p>
+<h3 id="a-min-priority-queue-implemented-by-an-unsorted-arraylist">A min-priority queue implemented by an unsorted <code>ArrayList</code></h3>
+<p>The simplest way to implement a min-priority queue is by an <code>ArrayList</code> whose elements may appear in any order. <a href="ArrayListMinPriorityQueue.java">ArrayListMinPriorityQueue.java</a> gives such an implementation.</p>
+<p>The methods of this class, which implements the <code>MinPriorityQueue</code> interface, are straightforward. The private method <code>indexOfMinimum</code> computes and returns the index in the array of the element with the smallest key. This method is called by the <code>minimum</code> and <code>extractMin</code> methods. <code>extractMin</code> seems a bit strange. Instead of always removing the smallest element, it moves the last element to the place where the smallest element was and then removes the last element. Why? Because removing the last element is faster than removing an element from the middle of the <code>ArrayList</code>.</p>
+<p>Let's look at the worst-case running times of the min-priority queue operations in this implementation. We express them in terms of the number <span class="math"><em>n</em></span> of elements that will ever be in the min-priority queue at any one time.</p>
+<ul>
+<li><code>isEmpty</code> just returns a boolean indicating whether the size of the <code>ArrayList</code> is 0. This method takes constant time, or <span class="math">Θ(1)</span>.</li>
+<li><code>insert</code> just adds a new reference at the end of the <code>ArrayList</code>, and so it takes <span class="math">Θ(1)</span> amortized time.</li>
+<li>Both the <code>minimum</code> and <code>extractMin</code> methods call <code>indexOfMinimum</code> to find the element with the smallest key. This helper method takes <span class="math">Θ(<em>n</em>)</span> time to search through <span class="math"><em>n</em></span> elements, and therefore so do <code>minimum</code> and <code>extractMin</code>.</li>
+</ul>
+<h3 id="a-min-priority-queue-implemented-by-a-sorted-arraylist">A min-priority queue implemented by a sorted <code>ArrayList</code></h3>
+<p>The biggest disadvantage of implementing a min-priority queue by an unsorted <code>ArrayList</code> is that <code>minimum</code> and <code>extractMin</code> take <span class="math">Θ(<em>n</em>)</span> time. We can get the running time of these operations down to <span class="math">Θ(1)</span> if we keep the <code>ArrayList</code> sorted between operations. <a href="SortedArrayListMinPriorityQueue.java">SortedArrayListMinPriorityQueue.java</a> gives this implementation. An important detail is that it is sorted in decreasing order, so that the last position is the minimum.</p>
+<p>The <code>minimum</code> method is simpler now: it just returns the element in position <code>size-1</code> of the <code>ArrayList</code>. The <code>extractMin</code> method removes and returns the element in position <code>size-1</code>. Thus both of these operations take <span class="math">Θ(1)</span> time.</p>
+<p>The tradeoff is that, although <code>minimum</code> and <code>extractMin</code> now take only <span class="math">Θ(1)</span> time, we find that <code>insert</code> takes <span class="math"><em>O</em>(<em>n</em>)</span> time. So we have not improved matters by maintaining the array as sorted, unless we are making a lot more calls to <code>minimum</code> and <code>extractMin</code> than to <code>insert</code>. In practice, the number of calls to <code>extractMin</code> is often the same as the number of calls to <code>insert</code>, and so we gain no overall advantage from keeping the array sorted.</p>
+<p>Can we do better? Yes, by using a data structure called a "heap."</p>
+<h2 id="heaps">Heaps</h2>
+<p>Heaps are based on binary trees. We usually implement a heap in an array or an <code>ArrayList</code>, however.</p>
+<p>A <strong>heap</strong> is a "nearly complete" binary tree. In other words, we fill in the tree from the root down toward the leaves, level by level, not starting a new level until we have filled the previous level. This is the <strong>shape property</strong> of a heap. For example, here's a heap and its representation in an array or <code>ArrayList</code>. Each node of the heap has its index in the array appearing above the node, and its contents appear within the node.</p>
+<div class="figure">
+<img src="heap-example.png"/>
+</div>
+<p>It's easy to compute the array index of a node's parent, left child, or right child, given the array index <span class="math"><em>i</em></span> of the node:</p>
+<ul>
+<li>The parent is at index <span class="math">(<em>i</em> − 1)/2</span> (using integer division).</li>
+<li>The left child is at index <span class="math">2 * <em>i</em> + 1</span>.</li>
+<li>The right child is at index <span class="math">2 * <em>i</em> + 2</span>.</li>
+</ul>
+<p>We will always store a heap in an array or <code>ArrayList</code>, but given this simple scheme for determining parent and child indices, it's always easy to interpret the array as a binary tree. If we were going to be excruciatingly accurate, we would always refer to "the node indexed by <span class="math"><em>i</em></span>," but we will instead use the less cumbersome language "node <span class="math"><em>i</em></span>."</p>
+<p>There are actually two kinds of heaps: max-heaps and min-heaps. In both kinds, the values in the nodes satisfy a <strong>heap property</strong>, the specifics depending on whether we're talking about a max-heap or a min-heap.</p>
+<p>In a <strong>max-heap</strong>, the nodes satisfy the <strong>max-heap property</strong>:</p>
+<blockquote>
+<p>For every node <span class="math"><em>i</em></span> other than the root, the value in the parent of node <span class="math"><em>i</em></span> is greater than or equal to the value in node <span class="math"><em>i</em></span>.</p>
+</blockquote>
+<p>In other words, the value in a node is at most the value in its parent. The largest value in a max-heap must be at the root, and this property holds for any subtree. The heap in the figure above is a max-heap.</p>
+<p>A <strong>min-heap</strong> is defined in the opposite way, so that the <strong>min-heap property</strong> is</p>
+<blockquote>
+<p>For every node <span class="math"><em>i</em></span> other than the root, the value in the parent of node <span class="math"><em>i</em></span> is less than or equal to the value in node <span class="math"><em>i</em></span>.</p>
+</blockquote>
+<p>In other words, the value in a node is at least the value in its parent. The smallest value in any subtree of a min-heap must be at the root of the subtree.</p>
+<p>We define the <strong>height</strong> of a heap to be the number of edges on the longest path from the root down to a leaf. The height of a heap with <span class="math"><em>n</em></span> nodes is <span class="math">Θ(lg <em>n</em>)</span>. (More precisely, the height is the greatest integer less than or equal to <span class="math">lg <em>n</em></span>.) Showing this property is not too hard, and the book does so on page 371.</p>
+<h3 id="operations-on-a-heap">Operations on a heap</h3>
+<p>We need to implement two operations that change a heap: <code>insert</code> and either <code>extractMin</code> or <code>extractMax</code>. Let's focus on a max-heap, so that we will implement <code>extractMax</code>. In both operations we want to maintain both the shape and heap properties. The trick is for both operations to fix the shape first, and then to fix the heap property.</p>
+<p>Let's consider <code>insert</code>. Suppose we want to insert 15 in the heap shown above. By the shape property, it should go into the position to the right of the value 1, which would be position 10 in the array. (Representing the heap in an <code>ArrayList</code> makes this insertion particularly easy.) So if we put 15 into position 10 the shape property is statisfied:</p>
+<div class="figure">
+<img src="bubble-up-1.png"/>
+</div>
+<p>But what about the heap property? Everything is fine, with the possible exception that the newly inserted element might have a key greater than that of its parent. (This is the case in our example.) But that problem is easy to fix: just swap the keys in the parent and the newly inserted child. Here's what we get:</p>
+<div class="figure">
+<img src="bubble-up-2.png"/>
+</div>
+<p>Now we have the same problem, but moved up a level in the heap. Swap keys again:</p>
+<div class="figure">
+<img src="bubble-up-3.png"/>
+</div>
+<p>Now the max-heap property holds everywhere. In general, we keep swapping keys in a node and its parent until the max-heap property is restored. We know that we'll stop eventually, because the highest up that the new key can go is the root.</p>
+<p>What about extracting the maximum key? We know where it is; it is at the root, position 0 of the array. But simply removing it would leave a hole, which is not allowed:</p>
+<div class="figure">
+<img src="extract-max-1.png"/>
+</div>
+<p>Also, the heap has one fewer element, so that the rightmost leaf at the bottom level has to disappear. We can fix both of these shape problems by moving the rightmost leaf (the last element in the occupied portion of the array) to the root (position 0) and decrementing the size of the occupied portion of the array:</p>
+<div class="figure">
+<img src="extract-max-2.png"/>
+</div>
+<p>What does this do to the heap property? The left and right subtrees of the root are both valid heaps. But the root's key might be less than the key in one or both of its children. Again, this problem is easy to fix by swapping the root with its larger child. Its larger child will be greater than the original root, everything in its subtree, and the smaller child (and thus everything in the smaller child's subtree). Thus it is the largest key in the heap and should be the new root. But we might have moved the problem down into the subtree, because the value swapped into the subtree's root might violate the heap property of the subtree. In this example, it does:</p>
+<div class="figure">
+<img src="extract-max-3.png"/>
+</div>
+<p>But this is the same problem, and so we can repeat the operation, swapping the key in a node with the larger of its children until the max-heap property is restored. In our example, one more swap finishes up:</p>
+<div class="figure">
+<img src="extract-max-4.png"/>
+</div>
+<p>An implementation of a min-heap in an <code>ArrayList</code> is in <a href="HeapMinPriorityQueue.java">HeapMinPriorityQueue.java</a>. It shows how to implement the operations described above. Switching between max-heaps and min-heaps shouldn't throw you.</p>
+<p>Let's look at the worst-case running times of the min-priority queue operations in this implementation. We express them in terms of the number <span class="math"><em>n</em></span> of elements that are in the min-priority queue when the operations occur.</p>
+<ul>
+<li><code>isEmpty</code> just returns a boolean indicating whether the size of the <code>ArrayList</code> is zero. This method takes constant time, or <span class="math">Θ(1)</span>.</li>
+<li><code>insert</code> first adds a new reference at the end of the <code>ArrayList</code>, which takes <span class="math">Θ(1)</span> amortized time. It then has to bubble the value up the heap until it is less than its parent. Each swap takes constant time, and the number of swaps is bounded by the height of the heap. Thus, <code>insert</code> takes <span class="math"><em>O</em>(lg <em>n</em>)</span> time.</li>
+<li><code>minimum</code> just returns what is in position 0 of the <code>ArrayList</code>, taking <span class="math">Θ(1)</span> time.</li>
+<li><code>extractMin</code> returns the element in position 0 and puts the last element in its place, taking <span class="math">Θ(1)</span> time. It then has to restore the heap property, however, and so it has to bubble the new root down until it is smaller than both children or is a leaf. Like <code>insert</code>, this procedure takes <span class="math"><em>O</em>(lg <em>n</em>)</span> time.</li>
+</ul>
+<h2 id="heapsort">Heapsort</h2>
+<p>A heap is the basis of a sorting algorithm called <strong>heapsort</strong>. Its running time is <span class="math"><em>O</em>(<em>n</em> lg <em>n</em>)</span>, and it sorts in place. That is, it needs no additional space for copying values (as merge sort does) or for a stack of recursive calls (as needed in quicksort and merge sort).</p>
+<h3 id="implementing-heapsort">Implementing heapsort</h3>
+<p>Heapsort has two major phases. You can see all the steps in <a href="Heapsort.pptx">this PowerPoint presentation</a>. First, given an array of values in an unknown order, we have to rearrange the values to obey the max-heap property. That is, we have to build a heap. Then, once we've built the heap, we repeatedly pick out the maximum value in the heap—which we know is at the root—swap it with the last leaf in the heap, and restore the max-heap property. When we put the maximum value into the array position that had held the last leaf, we consider that array position to no longer be part of the heap.</p>
+<p>The code for heapsort is in <a href="Heapsort.java">Heapsort.java</a>. We've written it to sort an array, rather than an <code>ArrayList</code>, but you can easily modify it to sort an <code>ArrayList</code>. Or you can use the overloaded version that takes an <code>ArrayList</code>, converts it to an array, sorts the array, and then copies the sorted array back into the <code>ArrayList</code>. At the bottom, you can see some private methods that help out other methods in the class: <code>swap</code>, <code>leftChild</code>, and <code>rightChild</code>.</p>
+<h3 id="how-to-build-a-heap">How to build a heap</h3>
+<p>The obvious way to build a heap is to start with an unordered array. The first element is a valid heap. We can then insert the second element into the heap, then the third, etc. After we have inserted the last element, we have a valid heap. This idea works fine and leads to an <span class="math"><em>O</em>(<em>n</em> lg <em>n</em>)</span>-time heapsort. We can avoid implementing the insert code and speed up the algorithm a bit, however, by building the heap from the bottom up rather than from the top down and using the same idea as when we restore the max-heap property during the <code>extractMax</code> operation.</p>
+<p>The code to restore the max-heap property is in the <code>maxHeapify</code> method. It takes three parameters: the array <code>a</code> holding the heap and indices <code>i</code> and <code>lastLeaf</code> into the array. The <code>maxHeapify</code> method assumes that, when it is called, if you look at the subarray <code>a[i..lastLeaf]</code> (the subarray starting at index <code>i</code> and going through index <code>lastLeaf</code>), the max-heap property holds everywhere in this subarray, except possibly among node <code>i</code> and its children. <code>maxHeapify</code> restores the max-heap property everywhere in the subarray.</p>
+<p><code>maxHeapify</code> works as follows. It computes the indices <code>left</code> and <code>right</code> of the left and right children of node <code>i</code>, if it has such children. Node <code>i</code> has a left child if the index <code>left</code> is no greater than the index <code>lastLeaf</code> of the last leaf in the entire heap, and similarly for the right child.</p>
+<p><code>maxHeapify</code> then determines which node, out of node <code>i</code> and its children, has the greatest key value, storing the index of this node in the variable <code>largest</code>. First, if there's a left child, then whichever of node <code>i</code> and its left child has the larger value is stored in <code>largest</code>. Then, if there's a right child, whichever of the winner of the previous comparison and the right child has the larger value is stored in <code>largest</code>.</p>
+<p>Once <code>largest</code> indexes the node with the largest value among node <code>i</code> and its children, we check to see whether we need to do anything. If <code>largest</code> equals <code>i</code>, then the max-heap property already is satisfied, and we're done. Otherwise, we swap the values in node <code>i</code> and node <code>largest</code>. By swapping, however, we have put a new, smaller value into node <code>largest</code>, which means that the max-heap property might be violated among node <code>largest</code> and its children. We call <code>maxHeapify</code> recursively, with <code>largest</code> taking on the role of <code>i</code>, to correct this possible violation.</p>
+<p>Notice that in each recursive call of <code>maxHeapify</code>, the value taken on by <code>i</code> is one level further down in the heap. The total number of recursive calls we can make, therefore, is at most the height of the heap, which is <span class="math">Θ(lg <em>n</em>)</span>. Because we might not go all the way down to a leaf (remember that we stop once we find a node that does not violate the max-heap property), the total number of recursive calls of <code>maxHeapify</code> is <span class="math"><em>O</em>(lg <em>n</em>)</span>. Each call of <code>maxHeapify</code> takes constant time, not counting the time for the recursive calls. The total time for a call of <code>maxHeapify</code>, therefore, is <span class="math"><em>O</em>(lg <em>n</em>)</span>.</p>
+<p>Now that we know how to correct a single violation of the max-heap property, we can build the entire heap from the bottom up. Suppose we were to call <code>maxHeapify</code> on each leaf. Nothing would change, because the only way that <code>maxHeapify</code> changes anything is when there's a violation of the max-heap property among a node and its children. Now suppose we called <code>maxHeapify</code> on each node that has at least one child that's a leaf. Then afterward, the max-heap property would hold at each of these nodes. But it might not hold at the parents of these nodes. So we can call <code>maxHeapify</code> on the parents of the nodes that we just fixed up, and then on the parents of <em>these</em> nodes, and so on, up to the root.</p>
+<p>That's exactly how the <code>buildMaxHeap</code> method in <a href="Heapsort.java">Heapsort.java</a> works. It computes the index <code>lastNonLeaf</code> of the highest-indexed non-leaf node, and then runs <code>maxHeapify</code> on nodes by decreasing index, all the way up to the root.</p>
+<p>You can see how <code>buildMaxHeap</code> works on our example heap, including all the changes made by <code>maxHeapify</code>, by running the slide show in <a href="Heapsort.pptx">the PowerPoint presentation</a>. Run it for 17 transitions, until you see the message "Heap is built."</p>
+<p>Let's analyze how long it takes to build a heap. We run <code>maxHeapify</code> on at most half of the nodes, or at most <span class="math"><em>n</em>/2</span> nodes. We have already established that each call of <code>maxHeapify</code> takes <span class="math"><em>O</em>(lg <em>n</em>)</span> time. The total time to build a heap, therefore, is <span class="math"><em>O</em>(<em>n</em> lg <em>n</em>)</span>.</p>
+<p>Because we are shooting for a sorting algorithm that takes <span class="math"><em>O</em>(<em>n</em> lg <em>n</em>)</span> time, we can be content with the analysis that says it takes <span class="math"><em>O</em>(<em>n</em> lg <em>n</em>)</span> time to build a heap. It turns out, however, that a more rigorous analysis shows that the total time to run the <code>buildMaxHeap</code> method is only <span class="math"><em>O</em>(<em>n</em>)</span>. Notice that most of the calls of <code>maxHeapify</code> made by <code>buildMaxHeap</code> are on nodes close to a leaf. In fact, about half of the nodes are leaves and take no time, a quarter of the nodes are parents of leaves and require at most 1 swap, an eighth of the nodes are parents of the parents of leaves and take at most 2 swaps, and so on. If we sum the total number of swaps, it ends up being <span class="math"><em>O</em>(<em>n</em>)</span>.</p>
+<h3>
+Sorting once the heap has been built
+</h3>
+<p>The second phase of sorting is the while-loop in the <code>heapsort</code> method in <a href="Heapsort.java">Heapsort.java</a>. After <code>heapsort</code> calls <code>buildMaxHeap</code> so that the array obeys the max-heap property, the while-loop sorts the array. You can see how it works on the example by running the rest of the slide show in <a href="Heapsort.pptx">the PowerPoint presentation</a>.</p>
+<p>Let's think about the array once the heap has been built. We know that the largest value is in the root, node 0. And we know that the largest value should go into the position currently occupied by the last leaf in the heap. So we swap these two values, and declare that the last position—where we just put the largest value—is no longer in the heap. That is, the heap occupies the first <span class="math"><em>n</em> − 1</span> slots of the array, not the first <span class="math"><em>n</em></span>. The local variable <code>lastLeaf</code> indexes the last leaf, and so we decrement it. By swapping a different value into the root, we might have caused a violation of the max-heap property at the root. Fortunately, we haven't touched any other nodes, and so we can call <code>maxHeapify</code> on the root to restore the max-heap property.</p>
+<p>We now have a heap with <span class="math"><em>n</em> − 1</span> nodes. The <span class="math"><em>n</em></span>th slot of the array—<code>a[n-1]</code>—contains the largest element from the original array, and this slot is no longer in the heap. So we can now do the same thing, but now with the last leaf in <code>a[n-2]</code>. Afterward, the second-largest element is in <code>a[n-2]</code>, this slot is no longer in the heap, and we have run <code>maxHeapify</code> on the root to restore the max-heap property. We continue on in this way, until the only node that we have not put into the heap is node 0, the root. By then, it must contain the smallest value, and we can just declare that we're done. (This idea is analogous to how we finish up selection sort, where we put the <span class="math"><em>n</em> − 1</span> smallest values into the first <span class="math"><em>n</em> − 1</span> slots of the array. We then declared that we were done, since the only remaining value must be the smallest, and it's already in its correct place.)</p>
+<p>Analyzing this second phase is easy. The while-loop runs <span class="math"><em>n</em> − 1</span> times (once for each node other than node 0). In each iteration, swapping node values and decrementing <code>lastLeaf</code> take constant time. Each call of <code>maxHeapify</code> takes <span class="math"><em>O</em>(lg <em>n</em>)</span> time, for a total of <span class="math"><em>O</em>(<em>n</em> lg <em>n</em>)</span> time. Adding in the <span class="math"><em>O</em>(<em>n</em> lg <em>n</em>)</span> time to build the heap gives a total sorting time of <span class="math"><em>O</em>(<em>n</em> lg <em>n</em>)</span>.</p>
+</body>
+</html>
